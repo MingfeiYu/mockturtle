@@ -1,0 +1,14 @@
+[
+  {
+    "entries": [
+      {
+        "exact synth. suc.": true,
+        "function": "0001",
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
+      }
+    ],
+    "version": "2286f1f"
+  }
+]

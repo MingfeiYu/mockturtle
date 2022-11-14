@@ -1,0 +1,370 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.07283399999141693,
+        "benchmark": "adder_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 128,
+        "num_and_opt": 128,
+        "num_xor": 549,
+        "num_xor_opt": 549
+      },
+      {
+        "avg. runtime [s]": 0.3003369867801666,
+        "benchmark": "bar_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 832,
+        "num_and_opt": 832,
+        "num_xor": 1728,
+        "num_xor_opt": 1728
+      },
+      {
+        "avg. runtime [s]": 27.021244049072266,
+        "benchmark": "div_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 6060,
+        "num_and_opt": 6060,
+        "num_xor": 8994,
+        "num_xor_opt": 8994
+      },
+      {
+        "avg. runtime [s]": 154.53599548339844,
+        "benchmark": "log2_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 19436,
+        "num_and_opt": 19436,
+        "num_xor": 9371,
+        "num_xor_opt": 9371
+      },
+      {
+        "avg. runtime [s]": 1.6642309427261353,
+        "benchmark": "max_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 931,
+        "num_and_opt": 931,
+        "num_xor": 1479,
+        "num_xor_opt": 1479
+      },
+      {
+        "avg. runtime [s]": 96.6916275024414,
+        "benchmark": "multiplier_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 11940,
+        "num_and_opt": 11940,
+        "num_xor": 8614,
+        "num_xor_opt": 8614
+      },
+      {
+        "avg. runtime [s]": 35.787193298339844,
+        "benchmark": "sin_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 4075,
+        "num_and_opt": 4075,
+        "num_xor": 1770,
+        "num_xor_opt": 1770
+      },
+      {
+        "avg. runtime [s]": 26.8470401763916,
+        "benchmark": "sqrt_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 6244,
+        "num_and_opt": 6244,
+        "num_xor": 9640,
+        "num_xor_opt": 9640
+      },
+      {
+        "avg. runtime [s]": 12.918939590454102,
+        "benchmark": "square_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 5181,
+        "num_and_opt": 5181,
+        "num_xor": 8084,
+        "num_xor_opt": 8084
+      },
+      {
+        "avg. runtime [s]": 15.398383140563965,
+        "benchmark": "arbiter_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 1181,
+        "num_and_opt": 1181,
+        "num_xor": 0,
+        "num_xor_opt": 0
+      },
+      {
+        "avg. runtime [s]": 8.861539840698242,
+        "benchmark": "cavlc_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 494,
+        "num_and_opt": 494,
+        "num_xor": 197,
+        "num_xor_opt": 197
+      },
+      {
+        "avg. runtime [s]": 1.0230900049209595,
+        "benchmark": "ctrl_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 85,
+        "num_and_opt": 85,
+        "num_xor": 8,
+        "num_xor_opt": 8
+      },
+      {
+        "avg. runtime [s]": 0.004288999829441309,
+        "benchmark": "dec_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 341,
+        "num_and_opt": 341,
+        "num_xor": 0,
+        "num_xor_opt": 0
+      },
+      {
+        "avg. runtime [s]": 8.570969581604004,
+        "benchmark": "i2c_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 623,
+        "num_and_opt": 623,
+        "num_xor": 502,
+        "num_xor_opt": 502
+      },
+      {
+        "avg. runtime [s]": 1.5139319896697998,
+        "benchmark": "int2float_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 100,
+        "num_and_opt": 100,
+        "num_xor": 101,
+        "num_xor_opt": 101
+      },
+      {
+        "avg. runtime [s]": 65.71175384521484,
+        "benchmark": "mem_ctrl_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 5113,
+        "num_and_opt": 5113,
+        "num_xor": 4168,
+        "num_xor_opt": 4168
+      },
+      {
+        "avg. runtime [s]": 3.338031053543091,
+        "benchmark": "priority_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 327,
+        "num_and_opt": 327,
+        "num_xor": 158,
+        "num_xor_opt": 158
+      },
+      {
+        "avg. runtime [s]": 2.0652880668640137,
+        "benchmark": "router_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 96,
+        "num_and_opt": 96,
+        "num_xor": 0,
+        "num_xor_opt": 0
+      },
+      {
+        "avg. runtime [s]": 26.812040328979492,
+        "benchmark": "voter_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 5651,
+        "num_and_opt": 5651,
+        "num_xor": 6066,
+        "num_xor_opt": 6066
+      },
+      {
+        "avg. runtime [s]": 0.021188000217080116,
+        "benchmark": "adder_32bit_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 32,
+        "num_and_opt": 32,
+        "num_xor": 150,
+        "num_xor_opt": 150
+      },
+      {
+        "avg. runtime [s]": 0.03946400061249733,
+        "benchmark": "adder_64bit_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 64,
+        "num_and_opt": 64,
+        "num_xor": 284,
+        "num_xor_opt": 284
+      },
+      {
+        "avg. runtime [s]": 22.66742706298828,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 5440,
+        "num_and_opt": 5440,
+        "num_xor": 20325,
+        "num_xor_opt": 20325
+      },
+      {
+        "avg. runtime [s]": 28.873910903930664,
+        "benchmark": "AES-non-expanded_unstilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 6800,
+        "num_and_opt": 6800,
+        "num_xor": 25124,
+        "num_xor_opt": 25124
+      },
+      {
+        "avg. runtime [s]": 1.2881590127944946,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 108,
+        "num_and_opt": 108,
+        "num_xor": 116,
+        "num_xor_opt": 116
+      },
+      {
+        "avg. runtime [s]": 1.0331079959869385,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 114,
+        "num_and_opt": 114,
+        "num_xor": 89,
+        "num_xor_opt": 89
+      },
+      {
+        "avg. runtime [s]": 1.2871880531311035,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 108,
+        "num_and_opt": 108,
+        "num_xor": 116,
+        "num_xor_opt": 116
+      },
+      {
+        "avg. runtime [s]": 1.0231839418411255,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 114,
+        "num_and_opt": 114,
+        "num_xor": 89,
+        "num_xor_opt": 89
+      },
+      {
+        "avg. runtime [s]": 85.29806518554688,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 15126,
+        "num_and_opt": 15126,
+        "num_xor": 11263,
+        "num_xor_opt": 11263
+      },
+      {
+        "avg. runtime [s]": 83.545654296875,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 15093,
+        "num_and_opt": 15093,
+        "num_xor": 11105,
+        "num_xor_opt": 11105
+      },
+      {
+        "avg. runtime [s]": 2.9832239151000977,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 9381,
+        "num_and_opt": 9381,
+        "num_xor": 30325,
+        "num_xor_opt": 30325
+      },
+      {
+        "avg. runtime [s]": 20.56830596923828,
+        "benchmark": "mult_32x32_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 4107,
+        "num_and_opt": 4107,
+        "num_xor": 2473,
+        "num_xor_opt": 2473
+      },
+      {
+        "avg. runtime [s]": 8.073229789733887,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_and": 11820,
+        "num_and_opt": 11820,
+        "num_xor": 44311,
+        "num_xor_opt": 44311
+      },
+      {
+        "avg. runtime [s]": 31.045522689819336,
+        "benchmark": "sha-256_untilsat",
+        "equivalent": true,
+        "improvement %": 0.003311148611828685,
+        "iterations": 2,
+        "num_and": 30201,
+        "num_and_opt": 30200,
+        "num_xor": 91278,
+        "num_xor_opt": 91277
+      }
+    ],
+    "version": "74f7985"
+  }
+]
