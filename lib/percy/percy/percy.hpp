@@ -316,7 +316,7 @@ namespace percy
 
             if ( status == success )
             {
-                if ( spec.verbose )
+                if ( spec.verbosity )
                 {
                     std::cout << "Exact synthesis succeeded! \n";
                 }

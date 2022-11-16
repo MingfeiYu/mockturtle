@@ -34,7 +34,7 @@ static const std::string MPC_benchmarks[] = {
 std::vector<std::string> epfl_benchmarks()
 {
 	std::vector<std::string> result;
-	for ( auto i = 0u; i < 20u; ++i )
+	for ( auto i = 0u; i < 2u; ++i )
 	{
 		result.emplace_back( EPFL_benchmarks[i] );
 	}
@@ -306,63 +306,6 @@ int main()
 		float improve = ( ( static_cast<float> ( num_oh_bfr ) - static_cast<float> ( num_oh_aft ) ) / static_cast<float> ( num_oh_bfr ) ) * 100;
 
 		exp_res( benchmark, opt, num_oh_bfr, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
-
-		//
-
-		/* xmg optimization */
-		/*
-
-		mockturtle::xmg_network xmg;
-		lorina::read_verilog( crypto_benchmark_path( benchmark ), mockturtle::verilog_reader( xmg ) );
-		// or use mapper to get the initial xmg model
-
-		uint32_t num_maj = 0u;
-		uint32_t num_maj_bfr = 0u;
-		uint32_t num_maj_aft = 0u;
-
-		xmg.foreach_gate( [&]( auto f ) {
-			if ( xmg.is_maj( f ) )
-			{
-				++num_maj;
-			}
-		} );
-		num_maj_bfr = num_maj;
-
-		mockturtle::exact_xohg_resynthesis_minmc_params ps_xmg_resyn;
-		ps_xmg_resyn.print_stats = true;
-		ps_xmg_resyn.cache = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::cache_map_t>();
-		ps_xmg_resyn.blacklist_cache = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_map_t>();
-
-		mockturtle::exact_xohg_resynthesis_minmc_stats* pst_xmg_resyn = nullptr;
-
-		mockturtle::exact_xmg_resynthesis_minmc xmg_resyn( "../experiments/db", ps_xmg_resyn, pst_xmg_resyn );
-
-		uint32_t ite_cnt = 0u;
-		const clock_t begin_time = clock();
-		while ( num_maj > num_maj_aft )
-		{
-			++ite_cnt;
-			num_maj = num_maj_aft;
-			num_maj_aft = 0u;
-
-			mockturtle::cut_rewriting_with_compatibility_graph( xmg, xmg_resyn, ps_cut_rew, nullptr, ::detail::num_maj<mockturtle::xmg_network>() );
-			xmg = mockturtle::cleanup_dangling( xmg );
-
-			xmg.foreach_gate( [&]( auto f ) {
-				if ( xmg.is_maj( f ) )
-				{
-					++num_maj_aft;
-				}
-			} );
-		}
-
-		const auto cec = abc_cec_crypto( xmg, benchmark );
-
-		float improve = ( ( num_maj_bfr - num_maj_aft ) / num_maj_bfr ) * 100;
-
-		exp_res( benchmark, num_maj_bfr, num_maj_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
-
-		*/
 	}
 
 	exp_res.save();

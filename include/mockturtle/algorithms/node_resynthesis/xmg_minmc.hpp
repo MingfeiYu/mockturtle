@@ -39,6 +39,7 @@ struct exact_xmg_resynthesis_minmc_stats
 	stopwatch<>::duration time_parse_db{ 0 };
 	int64_t time_exact_synth_success{ 0 };
 	int64_t time_exact_synth_fail{ 0 };
+	std::vector<uint32_t> failures = std::vector<uint32_t> (4, 0u);
 
 	void report( exact_xmg_resynthesis_minmc_params const& ps ) const
 	{
@@ -48,6 +49,10 @@ struct exact_xmg_resynthesis_minmc_stats
 		std::cout << fmt::format( "[i] exact synth time ( fail ) = {:>5.2f} secs", ( time_exact_synth_fail * 1.0 / 1000000 ) ) << std::endl;
 		std::cout << fmt::format( "[i] #functions in the cache   = {:>5}", ( ps.cache->size() ) ) << std::endl;
 		std::cout << fmt::format( "[i] #functions in black list  = {:>5}", ( ps.blacklist_cache->size() ) ) << std::endl;
+		std::cout << fmt::format( "[i] #failed exact synthesis   = {:>5}", ( failures.at( 0 ) ) ) << std::endl;
+		std::cout << fmt::format( "[i] #timeout exact synthesis  = {:>5}", ( failures.at( 1 ) ) ) << std::endl;
+		std::cout << fmt::format( "[i] #failed repr. calculation = {:>5}", ( failures.at( 2 ) ) ) << std::endl;
+		std::cout << fmt::format( "[i] #failed database matching = {:>5}", ( failures.at( 3 ) ) ) << std::endl;
 	}
 };
 template<class Ntk = xmg_network>
@@ -65,11 +70,14 @@ public:
 	};
 
 public:
-	explicit exact_xmg_resynthesis_minmc( std::string const& db_filename, exact_xmg_resynthesis_minmc_params const& ps = {}, exact_xmg_resynthesis_minmc_stats* pst = nullptr )
-			: _ps( ps ), _pst( pst ), func_mc( std::make_shared<std::unordered_map<std::string, uint32_t>>() )
+	explicit exact_xmg_resynthesis_minmc( std::string const& db_filename, exact_xmg_resynthesis_minmc_params const& ps = {}, exact_xmg_resynthesis_minmc_stats* pst = nullptr, bool use_db = true  )
+			: _ps( ps ), _pst( pst ), func_mc( std::make_shared<std::unordered_map<std::string, uint32_t>>() ), _use_db( use_db ) 
 	{
-		build_db( db_filename );
-	}
+		if ( _use_db )
+		{
+			build_db( db_filename );
+		}
+	} 
 
 	~exact_xmg_resynthesis_minmc()
 	{
@@ -303,20 +311,24 @@ public:
 	}
 
 private:
-	void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & valid_mc ) const
+void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & valid_mc )
 	{
-		//
-
-		const auto spectral = kitty::exact_spectral_canonization_limit( tt, 100000 );
-
-		if ( !spectral.second )
+		/* Solution 1: if matching failed, a failure would be generated */
+		if ( _use_db )
 		{
-			( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::compute_repr_fail );
-			mc = 0u;
-			valid_mc = false;
-		}
-		else
-		{
+			const auto tt_lookup = tt.num_vars() < 6u ? kitty::extend_to( tt, 6u ) : tt;
+			const auto spectral = kitty::exact_spectral_canonization_limit( tt_lookup, 100000 );
+
+			if ( !spectral.second )
+			{
+				( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::compute_repr_fail );
+				++_st.failures.at( static_cast<uint8_t>( failure_type::compute_repr_fail ) );
+				mc = 0u;
+				valid_mc = false;
+
+				return;
+			}
+			
 			kitty::dynamic_truth_table tt_repr = spectral.first;
 
 			auto search = func_mc->find( kitty::to_hex( tt_repr ) );
@@ -328,25 +340,19 @@ private:
 			}
 
 			( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::match_db_fail );
+			++_st.failures.at( static_cast<uint8_t>( failure_type::match_db_fail ) );
 			mc = 0u;
 			valid_mc = false;
 		}
 
-		//
-
-		/* without limitation specified
-
-		kitty::dynamic_truth_table tt_repr = kitty::exact_spectral_canonization( tt );
-		auto search = func_mc->find( kitty::to_hex( tt_repr ) );
-		if ( search != func_mc->end() )
+		/* Solution 2: forget about database */
+		else
 		{
-			return std::make_pair( search->second, true );
+			/* need a func. to quickly figure out mc of a given tt */
+			const auto tt_lookup = tt.num_vars() < 5u ? kitty::extend_to( tt, 5u ) : tt;
+			mc = kitty::get_spectral_mc( tt_lookup );
+			valid_mc = true;
 		}
-
-		( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::match_db_fail );
-		return std::make_pair( 0, false );
-
-		*/
 	}
 
 	void build_db( std::string const& db_filename )
@@ -379,5 +385,8 @@ public:
 private:
 	exact_xmg_resynthesis_minmc_params _ps;
 	exact_xmg_resynthesis_minmc_stats* _pst{ nullptr };
+	bool _use_db;
 	std::shared_ptr<std::unordered_map<std::string, uint32_t>> func_mc;
 }; /* exact_xmg_resynthesis_minmc */
+
+}; /* namespace: mockturtle */

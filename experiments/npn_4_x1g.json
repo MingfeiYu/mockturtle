@@ -5,1557 +5,1557 @@
         "exact synth. suc.": true,
         "function": "0000",
         "improvement %": null,
-        "num_alt": 0,
-        "num_and": 0
+        "num_and": 0,
+        "num_onehot": 0
       },
       {
         "exact synth. suc.": true,
         "function": "0001",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0003",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0006",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0007",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "000f",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0016",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0017",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0018",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0019",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "001b",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "001e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "001f",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "003c",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "003d",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "003f",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0069",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "006b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "006f",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "007e",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "007f",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "00ff",
         "improvement %": null,
-        "num_alt": 0,
-        "num_and": 0
+        "num_and": 0,
+        "num_onehot": 0
       },
       {
         "exact synth. suc.": true,
         "function": "0116",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0117",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0118",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0119",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "011a",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "011b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "011e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "011f",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "012c",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "012d",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "012f",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "013c",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "013d",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "013e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "013f",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0168",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0169",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "016a",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "016b",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "016e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "016f",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "017e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "017f",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0180",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0181",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0182",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0183",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0186",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0187",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0189",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "018b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "018f",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0196",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0197",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0198",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0199",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "019a",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "019b",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "019e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "019f",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01a8",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01a9",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01aa",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ab",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ac",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ad",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ae",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01af",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01bc",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01bd",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01be",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01bf",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "01e8",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01e9",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ea",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01eb",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ee",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "01ef",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "01fe",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "033c",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "033d",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "033f",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0356",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0357",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0358",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0359",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "035a",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "035b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "035e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "035f",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0368",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0369",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "036a",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "036b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "036c",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "036d",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "036e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "036f",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "037c",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "037d",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "037e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03c0",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "03c1",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03c3",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "03c5",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03c6",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03c7",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03cf",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "03d4",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03d5",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03d6",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03d7",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03d8",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03d9",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03db",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03dc",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03dd",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03de",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "03fc",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0660",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0661",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0662",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0663",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0666",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0667",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0669",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "066b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "066f",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0672",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0673",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0676",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0678",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0679",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "067a",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "067b",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "067e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0690",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0691",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0693",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0696",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0697",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "069f",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "06b0",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b1",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b2",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b3",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b4",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b5",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b6",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b7",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06b9",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06bd",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06f0",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "06f1",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06f2",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "06f6",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "06f9",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0776",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0778",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "0779",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "077a",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "077e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07b0",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "07b1",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07b4",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07b5",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07b6",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07bc",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07e0",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "07e1",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07e2",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07e3",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07e6",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07e9",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07f0",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "07f1",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "07f2",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "07f8",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "0ff0",
         "improvement %": null,
-        "num_alt": 0,
-        "num_and": 0
+        "num_and": 0,
+        "num_onehot": 0
       },
       {
         "exact synth. suc.": true,
         "function": "1668",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1669",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "166a",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "166b",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "166e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "167e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1681",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1683",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1686",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1687",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1689",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "168b",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "168e",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1696",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1697",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1698",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "1699",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "169a",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "169b",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "169e",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "16a9",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "16ac",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "16ad",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "16bc",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "16e9",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "177e",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "178e",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1796",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1798",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "179a",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "17ac",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "17e8",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "18e7",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "19e1",
-        "improvement %": 0.0,
-        "num_alt": 3,
-        "num_and": 3
+        "improvement %": 33.333335876464844,
+        "num_and": 3,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "19e3",
         "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "num_and": 2,
+        "num_onehot": 2
       },
       {
         "exact synth. suc.": true,
         "function": "19e6",
-        "improvement %": 0.0,
-        "num_alt": 2,
-        "num_and": 2
+        "improvement %": 50.0,
+        "num_and": 2,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1bd8",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1be4",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "1ee1",
         "improvement %": 0.0,
-        "num_alt": 1,
-        "num_and": 1
+        "num_and": 1,
+        "num_onehot": 1
       },
       {
         "exact synth. suc.": true,
         "function": "3cc3",
         "improvement %": null,
-        "num_alt": 0,
-        "num_and": 0
+        "num_and": 0,
+        "num_onehot": 0
       },
       {
         "exact synth. suc.": true,
         "function": "6996",
         "improvement %": null,
-        "num_alt": 0,
-        "num_and": 0
+        "num_and": 0,
+        "num_onehot": 0
       }
     ],
-    "version": "56f31bd"
+    "version": "658d8e2"
   }
 ]

@@ -4,6 +4,7 @@
 #include <fmt/format.h>
 #include <mockturtle/networks/aig.hpp>
 #include <mockturtle/networks/x1g.hpp>
+#include <mockturtle/networks/xmg.hpp>
 #include <mockturtle/utils/include/percy.hpp>
 
 #include <kitty/dynamic_truth_table.hpp>
@@ -144,9 +145,96 @@ bool x1g_minmc_simplified( kitty::dynamic_truth_table const& function, uint32_t 
 	return false;
 }
 
+bool xmg_minmc_simplified( kitty::dynamic_truth_table const& function, uint32_t & mc, uint32_t & num_maj )
+{
+	assert( function.num_vars() == 4u );
+	bool const normal = kitty::is_normal( function );
+
+	percy::spec_minmc spec;
+	spec.nr_in = function.num_vars();
+	spec.fanin_size = 3u;
+	spec.verbosity = 0u;
+	spec.set_steps_upper( 5u );
+	//spec.use_contribution_clauses = _ps.use_contribution_clauses;
+	//spec.conflict_limit = _ps.conflict_limit;
+	spec.set_output( normal ? function : ~function );
+
+	if ( int triv = spec.check_triv(); triv >= 0 )
+	{
+		mc = 0u;
+		num_maj = 0u;
+		return true;
+	}
+
+	kitty::dynamic_truth_table const0{ 3 };
+	kitty::dynamic_truth_table a{ 3 };
+	kitty::dynamic_truth_table b{ 3 };
+	kitty::dynamic_truth_table c{ 3 };
+	kitty::create_nth_var( a, 0 );
+	kitty::create_nth_var( b, 1 );
+	kitty::create_nth_var( c, 2 );
+	spec.add_free_primitive( const0 );													        // 00
+	spec.add_free_primitive( a );													              // aa
+	spec.add_free_primitive( b );													              // cc
+	spec.add_free_primitive( c );													              // f0
+
+	spec.add_primitive( kitty::ternary_majority( a, b, c ) );           // e8
+  spec.add_primitive( kitty::ternary_majority( ~a, b, c ) );          // d4
+  spec.add_primitive( kitty::ternary_majority( a, ~b, c ) );          // b2
+  spec.add_primitive( kitty::ternary_majority( a, b, ~c ) );          // 8e
+
+	spec.add_primitive( kitty::ternary_majority( const0, b, c ) );      // c0
+  spec.add_primitive( kitty::ternary_majority( ~const0, b, c ) );     // fc
+  spec.add_primitive( kitty::ternary_majority( const0, ~b, c ) );     // 30
+  spec.add_primitive( kitty::ternary_majority( const0, b, ~c ) );     // 0c
+  spec.add_primitive( kitty::ternary_majority( a, const0, c ) );      // a0
+  spec.add_primitive( kitty::ternary_majority( ~a, const0, c ) );     // 50
+  spec.add_primitive( kitty::ternary_majority( a, ~const0, c ) );     // fa
+  spec.add_primitive( kitty::ternary_majority( a, const0, ~c ) );     // 0a
+  spec.add_primitive( kitty::ternary_majority( a, b, const0 ) );      // 88
+  spec.add_primitive( kitty::ternary_majority( a, b, ~const0 ) );     // ee
+  spec.add_primitive( kitty::ternary_majority( ~a, b, const0 ) );     // 44
+  spec.add_primitive( kitty::ternary_majority( a, ~b, const0 ) );     // 22
+
+	spec.add_free_primitive( a ^ b ^ c);                                // 96
+	spec.add_free_primitive( a ^ b );                                   // 66
+	spec.add_free_primitive( b ^ c );                                   // 3c
+	spec.add_free_primitive( a ^ c );                                   // 5a
+
+	bool valid_mc{ false };
+	look_up_mc( function, mc, valid_mc );
+	assert( valid_mc );
+
+	uint32_t upper_bound_oh = mc;
+	uint32_t lower_bound_oh = mc;
+
+	percy::chain_minmc chain;
+	for ( uint32_t bound_nfree = lower_bound_oh; bound_nfree <= upper_bound_oh; ++bound_nfree )
+	{
+		spec.set_nfree( bound_nfree );
+		percy::synth_stats synth_st;
+
+		if ( const auto result = percy::std_synthesize_minmc( spec, chain, &synth_st );
+					 result == percy::success )
+		{
+			num_maj = bound_nfree;
+			return true;
+		}
+		else
+		{
+			if ( bound_nfree == upper_bound_oh )
+			{
+				return false;
+			}
+		}
+	}
+
+	return false;
+}
+
 int main()
 {	
-	experiments::experiment<std::string, uint32_t, uint32_t, float, bool> exp_res( "npn_4", "function", "num_and", "num_onehot", "improvement %", "exact synth. suc." );
+	experiments::experiment<std::string, uint32_t, uint32_t, float, bool> exp_res( "npn_4", "function", "num_and", "num_alt", "improvement %", "exact synth. suc." );
 
 	auto const benchmarks = npn_4();
 	for ( auto const& benchmark: benchmarks )
@@ -157,12 +245,15 @@ int main()
 		kitty::create_from_hex_string( function, benchmark );
 
 		uint32_t num_and = 0u;
-		uint32_t num_onehot = 0u;
-		auto const result = x1g_minmc_simplified( function, num_and, num_onehot );
+		uint32_t num_alt = 0u;
 
-		float improve = ( ( static_cast<float> ( num_and ) - static_cast<float> ( num_onehot ) ) / static_cast<float> ( num_and ) ) * 100;
+		//auto const result = x1g_minmc_simplified( function, num_and, num_onehot );
+		auto const result = xmg_minmc_simplified( function, num_and, num_alt );
 
-		exp_res( benchmark, num_and, num_onehot, improve, result );
+
+		float improve = ( ( static_cast<float> ( num_and ) - static_cast<float> ( num_alt ) ) / static_cast<float> ( num_and ) ) * 100;
+
+		exp_res( benchmark, num_and, num_alt, improve, result );
 	}
 
 	exp_res.save();
