@@ -8,7 +8,7 @@
 #include <mockturtle/algorithms/node_resynthesis/xohg_minmc.hpp>
 #include <mockturtle/algorithms/node_resynthesis/x1g_npn.hpp>
 #include <mockturtle/algorithms/cleanup.hpp>
-#include <mockturtle/io/verilog_reader.hpp>
+#include <mockturtle/io/aiger_reader.hpp>
 #include <mockturtle/utils/node_map.hpp>
 #include <mockturtle/views/topo_view.hpp>
 
@@ -31,23 +31,23 @@ static const std::string MPC_benchmarks[] = {
   "voting_N_1_M_3", "voting_N_1_M_4", "voting_N_2_M_2", "voting_N_2_M_3", "voting_N_2_M_4", "voting_N_3_M_4", 
   "stable_matching_comb_Ks_4_S_8", "stable_matching_comb_Ks_8_S_8"};
 
-std::vector<std::string> crypto_benchmarks()
-{
-	std::vector<std::string> result;
-	for ( auto i = 0u; i < 14u; ++i )
-	{
-		result.emplace_back( CRYPTO_benchmarks[i] );
-	}
-
-	return result;
-}
-
 std::vector<std::string> epfl_benchmarks()
 {
 	std::vector<std::string> result;
 	for ( auto i = 0u; i < 20u; ++i )
 	{
 		result.emplace_back( EPFL_benchmarks[i] );
+	}
+
+	return result;
+}
+
+std::vector<std::string> crypto_benchmarks()
+{
+	std::vector<std::string> result;
+	for ( auto i = 0u; i < 14u; ++i )
+	{
+		result.emplace_back( CRYPTO_benchmarks[i] );
 	}
 
 	return result;
@@ -64,28 +64,29 @@ std::vector<std::string> mpc_benchmarks()
 	return result;
 }
 
-std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmark_name )
+std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmark_name, bool opt )
 {
 	switch( benchmark_type )
 	{
 	case 0u:
-		return fmt::format( "../experiments/epfl_benchmarks/{}.v", benchmark_name );
+		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "epfl_opt" : "epfl_benchmarks" ), benchmark_name );
 	case 1u:
-		return fmt::format( "../experiments/crypto_benchmarks/{}.v", benchmark_name );
+		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "crypto_opt" : "crypto_benchmarks" ), benchmark_name );
 	case 2u:
-		return fmt::format( "../experiments/mpc_benchmarks/{}.v", benchmark_name );
+		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
 	default:
 		std::cout << "Unspecified type of benchmark. \n";
 		abort();
 	}
+
 }
 
 template<class Ntk>
-bool abc_cec_crypto( Ntk const& ntk, uint32_t const& benchmark_type, std::string const& benchmark )
+bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const& benchmark, bool opt )
 {
 	mockturtle::write_bench( ntk, "/tmp/test.bench" );
 	std::string abc_path = "/Users/myu/Documents/GitHub/abc/";
-	std::string command = fmt::format( "{}abc -q \"cec -n {} /tmp/test.bench\"", abc_path, benchmark_path( benchmark_type, benchmark ) );
+	std::string command = fmt::format( "{}abc -q \"cec -n {} /tmp/test.bench\"", abc_path, benchmark_path( benchmark_type, benchmark, opt ) );
 
 	std::array<char, 128> buffer;
 	std::string result;
@@ -136,16 +137,17 @@ struct num_maj
 
 int main()
 {
-	experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( "garble_xohg", "benchmark", "num_oh_before", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
+	experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( "garble_xohg", "benchmark", "optimized", "num_oh_before", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
 	uint32_t benchmark_type = 0u; /* 0u - epfl benchmark; 1u - crypto benchmark; 2u - mpc benchmark */
+	bool opt = true;
 	auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
 
 	for ( auto const& benchmark: benchmarks )
 	{
-		std::cout << "[i] processing " << benchmark << std::endl;
+		std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
 		mockturtle::cut_rewriting_params ps_cut_rew;
-		ps_cut_rew.cut_enumeration_ps.cut_size = 4u;
+		ps_cut_rew.cut_enumeration_ps.cut_size = 5u;
 		ps_cut_rew.cut_enumeration_ps.cut_limit = 12u;
 		ps_cut_rew.verbose = true;
 		ps_cut_rew.progress = true;
@@ -208,7 +210,7 @@ int main()
 
 		/* Obtain initial X1G by reading in benchmarks      */
 		/* ( if optimized XAGs are provided as benchmarks ) */
-		auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark ), mockturtle::verilog_reader( x1g ) );
+		auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( x1g ) );
 		assert( read_result == lorina::return_code::success );
 
 		uint32_t num_oh = 0u;
@@ -224,7 +226,7 @@ int main()
 
 		if ( num_oh == 0 )
 		{
-			exp_res( benchmark, 0u, 0u, 0., 0u, 0., true );
+			exp_res( benchmark, opt, 0u, 0u, 0., 0u, 0., true );
 			continue;
 		}
 		num_oh_bfr = num_oh;
@@ -298,12 +300,12 @@ int main()
 			}
 		}
 
-		const auto cec = abc_cec_crypto( x1g, benchmark_type, benchmark );
+		const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
 		//assert( cec );
 
 		float improve = ( ( static_cast<float> ( num_oh_bfr ) - static_cast<float> ( num_oh_aft ) ) / static_cast<float> ( num_oh_bfr ) ) * 100;
 
-		exp_res( benchmark, num_oh_bfr, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
+		exp_res( benchmark, opt, num_oh_bfr, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
 
 		//
 

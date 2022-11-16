@@ -316,7 +316,10 @@ namespace percy
 
             if ( status == success )
             {
-                std::cout << "Exact synthesis succeeded! \n";
+                if ( spec.verbose )
+                {
+                    std::cout << "Exact synthesis succeeded! \n";
+                }
 
 
                 encoder->extract_chain( spec, chain );

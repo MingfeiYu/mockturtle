@@ -83,7 +83,10 @@ public:
 
 		std::vector<uint32_t> fanins_cand( fanin_size );
 
-		std::cout << "There are " << nr_steps << " steps to synthesize, " << nr_nfree << " are non-XOR gates.\n";
+		if ( verbose )
+		{
+			std::cout << "There are " << nr_steps << " steps to synthesize, " << nr_nfree << " are non-XOR gates.\n";
+		}
 
 		for ( auto i = pis; i < pis + nr_steps; ++i )
 		{
