@@ -179,6 +179,204 @@ void x1g_db_gen()
 				signals.emplace_back( x1g.make_signal( x1g.pi_at( 1 ) ) );
 				signals.emplace_back( x1g.make_signal( x1g.pi_at( 2 ) ) );
 				signals.emplace_back( x1g.make_signal( x1g.pi_at( 3 ) ) );
+				/*
+				for ( uint32_t i = 0u; i < static_cast<uint32_t> ( chain.get_nr_steps() ); ++i )
+				{
+					auto const c1 = signals[chain.get_step( i )[0]];
+					auto const c2 = signals[chain.get_step( i )[1]];
+					auto const c3 = signals[chain.get_step( i )[2]];
+
+					switch ( chain.get_operator( i )._bits[0] )
+					{
+					case 0x00:
+						signals.emplace_back( x1g.get_constant( false ) );
+						break;
+					case 0xaa:
+						signals.emplace_back( c1 );
+						break;
+					case 0xcc:
+						signals.emplace_back( c2 );
+						break;
+					case 0xf0:
+						signals.emplace_back( c3 );
+						break;
+					case 0x16:
+						signals.emplace_back(  x1g.create_onehot(  c1,  c2,  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xd6:
+						signals.emplace_back( !x1g.create_onehot( !c1,  c2,  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xb6:
+						signals.emplace_back( !x1g.create_onehot(  c1, !c2,  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x9e:
+						signals.emplace_back( !x1g.create_onehot(  c1,  c2, !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x86:
+						signals.emplace_back(  x1g.create_onehot( !c1, !c2,  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x94:
+						signals.emplace_back(  x1g.create_onehot(  c1, !c2, !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x92:
+						signals.emplace_back(  x1g.create_onehot( !c1,  c2, !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x68:
+						signals.emplace_back(  x1g.create_onehot( !c1, !c2, !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xfc:
+						signals.emplace_back( !x1g.create_onehot(  x1g.get_constant( true ),  c2,  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x0c:
+						signals.emplace_back(  x1g.create_onehot(  x1g.get_constant( true ), !c2,  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x30:
+						signals.emplace_back(  x1g.create_onehot(  x1g.get_constant( true ),  c2, !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xc0:
+						signals.emplace_back(  x1g.create_onehot(  x1g.get_constant( true ), !c2, !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xfa:
+						signals.emplace_back( !x1g.create_onehot(  c1,  x1g.get_constant( true ),  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x0a:
+						signals.emplace_back(  x1g.create_onehot( !c1,  x1g.get_constant( true ),  c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x50:
+						signals.emplace_back(  x1g.create_onehot(  c1,  x1g.get_constant( true ), !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xa0:
+						signals.emplace_back(  x1g.create_onehot( !c1,  x1g.get_constant( true ), !c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0xee:
+						signals.emplace_back( !x1g.create_onehot(  c1,  c2,  x1g.get_constant( true ) ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						++num_ele_cnt;
+						break;
+					case 0x22:
+						signals.emplace_back(  x1g.create_onehot( !c1,  c2,  x1g.get_constant( true ) ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						++num_ele_cnt;
+						break;
+					case 0x44:
+						signals.emplace_back(  x1g.create_onehot(  c1, !c2,  x1g.get_constant( true ) ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						++num_ele_cnt;
+						break;
+					case 0x88:
+						signals.emplace_back(  x1g.create_onehot( !c1, !c2,  x1g.get_constant( true ) ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						++num_ele_cnt;
+						break;
+					case 0x3c:
+						signals.emplace_back( x1g.create_xor( c2, c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( false ).data << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x5a:
+						signals.emplace_back( x1g.create_xor( c1, c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( false ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					case 0x66:
+						signals.emplace_back( x1g.create_xor( c1, c2 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << x1g.get_constant( false ).data << ",";
+						++num_ele_cnt;
+						break;
+					case 0x96:
+						signals.emplace_back( x1g.create_xor3( c1, c2, c3 ) );
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( ( ( c2.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_ele_cnt;
+						break;
+					default:
+						std::cerr << "[e] unsupported operation " << kitty::to_hex( chain.get_operator( i ) ) << std::endl;
+						assert( false );
+						break;
+					}
+				}
+				*/
+
+				//
 				for ( uint32_t i = 0u; i < static_cast<uint32_t> ( chain.get_nr_steps() ); ++i )
 				{
 					auto const c1 = signals[chain.get_step( i )[0]];
@@ -349,7 +547,7 @@ void x1g_db_gen()
 					case 0x5a:
 						signals.emplace_back( x1g.create_xor( c1, c3 ) );
 						fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
-						fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( false ).data << 1 ) ^ 0 ) << ",";
+						fout << "0x" << std::setbase( 16 ) << x1g.get_constant( false ).data << ",";
 						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
 						++num_ele_cnt;
 						break;
@@ -373,6 +571,8 @@ void x1g_db_gen()
 						break;
 					}
 				}
+				//
+
 				auto const output_signal = signals.back();
 				x1g.create_po( normal ? output_signal : !output_signal );
 

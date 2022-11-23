@@ -738,7 +738,17 @@ private:
       kitty::next_inplace( tt );
     } while ( !kitty::is_const0( tt ) );
 
-    /* Constuct supergates */
+    if ( _ps.verbose )
+    {
+      std::cout << classes.size() << " " << NInputs << "-npn functions in total. " << std::endl;
+    }
+
+    /* Construct supergates */
+
+
+    uint32_t sg_num = 0u;
+
+
     for ( auto const& entry : classes )
     {
       supergates_list_t supergates_pos;
@@ -768,12 +778,45 @@ private:
 
       kitty::dynamic_truth_table function = kitty::extend_to( entry, NInputs );
       _rewriting_fn( _database, function, pis.begin(), pis.end(), add_supergate );
-      if ( supergates_pos.size() > 0 )
-        _super_lib.insert( { entry, supergates_pos } );
-      if ( _ps.np_classification && supergates_neg.size() > 0 )
-        _super_lib.insert( { not_entry, supergates_neg } );
-    }
 
+
+      bool already_inserted = false;
+
+      if ( supergates_pos.size() > 0 )
+      {
+        _super_lib.insert( { entry, supergates_pos } );
+
+
+        std::cout << "Entry: ";
+        kitty::print_hex( entry );
+        std::cout << "\t\t";
+        std::cout << "Inserted: ";
+        kitty::print_hex( entry );
+        std::cout << std::endl;
+        ++sg_num;
+        already_inserted = true;
+      }
+
+      if ( _ps.np_classification && supergates_neg.size() > 0 )
+      {
+        _super_lib.insert( { not_entry, supergates_neg } );
+
+
+        std::cout << "Entry: ";
+        kitty::print_hex( entry );
+        std::cout << "\t\t";
+        std::cout << "Inserted: ";
+        kitty::print_hex( not_entry );
+        std::cout << "\t\t";
+        std::cout << "Inverted\n";
+        ++sg_num;
+        if ( already_inserted )
+        {
+          std::cout << "-----------------Aready-Inserted-----------------\n";
+        }
+      }
+    }
+    /*
     if ( _ps.verbose )
     {
       std::cout << "Classified in " << _super_lib.size() << " entries" << std::endl;
@@ -792,7 +835,12 @@ private:
         std::cout << std::endl;
       }
     }
+    */
+
+
+    std::cout << sg_num << " supergates in total.\n";
   }
+
 
   /* Computes delay and area info */
   void compute_info( exact_supergate<Ntk, NInputs>& sg )

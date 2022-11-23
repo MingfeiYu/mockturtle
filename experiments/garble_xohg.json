@@ -35,5 +35,20 @@
       }
     ],
     "version": "2286f1f"
+  },
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.5297495126724243,
+        "benchmark": "adder",
+        "equivalent": false,
+        "improvement %": 100.0,
+        "iterations": 2,
+        "num_oh_after": 0,
+        "num_oh_before": 1775,
+        "optimized": true
+      }
+    ],
+    "version": "07a42b8"
   }
 ]

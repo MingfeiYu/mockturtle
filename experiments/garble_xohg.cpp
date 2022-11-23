@@ -5,6 +5,7 @@
 #include <mockturtle/networks/xmg.hpp>
 #include <mockturtle/networks/x1g.hpp>
 #include <mockturtle/algorithms/cut_rewriting.hpp>
+#include <mockturtle/algorithms/mapper.hpp>
 #include <mockturtle/algorithms/node_resynthesis/xohg_minmc.hpp>
 #include <mockturtle/algorithms/node_resynthesis/x1g_npn.hpp>
 #include <mockturtle/algorithms/cleanup.hpp>
@@ -34,7 +35,7 @@ static const std::string MPC_benchmarks[] = {
 std::vector<std::string> epfl_benchmarks()
 {
 	std::vector<std::string> result;
-	for ( auto i = 0u; i < 2u; ++i )
+	for ( auto i = 0u; i < 1u; ++i )
 	{
 		result.emplace_back( EPFL_benchmarks[i] );
 	}
@@ -147,7 +148,7 @@ int main()
 		std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
 		mockturtle::cut_rewriting_params ps_cut_rew;
-		ps_cut_rew.cut_enumeration_ps.cut_size = 5u;
+		ps_cut_rew.cut_enumeration_ps.cut_size = 4u;
 		ps_cut_rew.cut_enumeration_ps.cut_limit = 12u;
 		ps_cut_rew.verbose = true;
 		ps_cut_rew.progress = true;
@@ -285,11 +286,16 @@ int main()
 
 
 				//mockturtle::cut_rewriting( x1g, x1g_resyn, ps_cut_rew, nullptr );
+				
+				//mockturtle::cut_rewriting_with_compatibility_graph( x1g, x1g_resyn, ps_cut_rew, nullptr, ::detail::num_oh<mockturtle::x1g_network>() );
+    		
+    		mockturtle::exact_library_params _exact_lib_params;
+    		_exact_lib_params.verbose = true;
+    		_exact_lib_params.np_classification = false;
+    		mockturtle::exact_library<mockturtle::x1g_network, decltype( x1g_resyn )> lib( x1g_resyn, _exact_lib_params );
+    		x1g = mockturtle::map( x1g, lib );
 
-
-				mockturtle::cut_rewriting_with_compatibility_graph( x1g, x1g_resyn, ps_cut_rew, nullptr, ::detail::num_oh<mockturtle::x1g_network>() );
-
-				x1g = mockturtle::cleanup_dangling( x1g );
+				//x1g = mockturtle::cleanup_dangling( x1g );
 
 				x1g.foreach_gate( [&]( auto f ) {
 					if ( x1g.is_onehot( f ) )

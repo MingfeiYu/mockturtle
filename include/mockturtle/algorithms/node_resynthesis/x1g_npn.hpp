@@ -1,38 +1,3 @@
-/* mockturtle: C++ logic network library
- * Copyright (C) 2018-2022  EPFL
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
-
-/*!
-  \file x1g_npn.hpp
-  \brief Replace with size-optimum X1Gs from NPN (from ABC rewrite)
-
-  \author Heinz Riener
-  \author Mathias Soeken
-  \author Shubham Rai
-  \author Siang-Yun (Sonia) Lee
-*/
-
 #pragma once
 
 #include <algorithm>
@@ -153,6 +118,18 @@ public:
     /* get representative of function */
     const auto [repr, phase, perm] = _repr[*tt.cbegin()];
 
+
+    /* when working on mapping, input functions themselves must be representatives */
+    if ( tt != repr )
+    {
+      std::cout << "When constructing network: ";
+      kitty::print_hex( tt );
+      std::cout << "(map) is different from ";
+      kitty::print_hex( repr );
+      std::cout << "(db)\n";
+    }
+
+
     /* check if representative has circuits */
     const auto it = _repr_to_signal.find( repr );
     assert( it != _repr_to_signal.end() );
@@ -169,12 +146,13 @@ public:
     for ( auto i = 0; i < 4; ++i )
     {
       db_to_ntk.insert( { i + 1, ( phase >> perm[i] & 1 ) ? ntk.create_not( pis[perm[i]] ) : pis[perm[i]] } );
+      assert( !( phase >> perm[i] & 1 ) );
     }
 
     for ( auto const& cand : it->second )
     {
       const auto f = copy_db_entry( ntk, _db.get_node( cand ), db_to_ntk );
-      if ( !fn( _db.is_complemented( cand ) != ( phase >> 4 & 1 ) ? ntk.create_not( f ) : f ) )
+      if ( fn( _db.is_complemented( cand ) != ( phase >> 4 & 1 ) ? ntk.create_not( f ) : f ) )
       {
         return;
       }

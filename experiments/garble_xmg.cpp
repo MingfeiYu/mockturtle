@@ -3,7 +3,10 @@
 
 #include <mockturtle/networks/xmg.hpp>
 #include <mockturtle/algorithms/cut_rewriting.hpp>
+#include <mockturtle/algorithms/mapper.hpp>
 #include <mockturtle/algorithms/node_resynthesis/xmg_minmc.hpp>
+#include <mockturtle/algorithms/node_resynthesis/xmg3_npn.hpp>
+#include <mockturtle/algorithms/node_resynthesis/xmg_npn_minmc.hpp>
 #include <mockturtle/algorithms/cleanup.hpp>
 #include <mockturtle/io/aiger_reader.hpp>
 #include <mockturtle/utils/node_map.hpp>
@@ -31,7 +34,7 @@ static const std::string MPC_benchmarks[] = {
 std::vector<std::string> epfl_benchmarks()
 {
 	std::vector<std::string> result;
-	for ( auto i = 0u; i < 2u; ++i )
+	for ( auto i = 0u; i < 20u; ++i )
 	{
 		result.emplace_back( EPFL_benchmarks[i] );
 	}
@@ -126,7 +129,7 @@ int main()
 		std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
 		mockturtle::cut_rewriting_params ps_cut_rew;
-		ps_cut_rew.cut_enumeration_ps.cut_size = 5u;
+		ps_cut_rew.cut_enumeration_ps.cut_size = 4u;
 		ps_cut_rew.cut_enumeration_ps.cut_limit = 12u;
 		ps_cut_rew.verbose = true;
 		ps_cut_rew.progress = true;
@@ -147,6 +150,7 @@ int main()
 			}
 		} );
 		num_maj_bfr = num_maj;
+		num_maj_aft = num_maj - 1u;
 
 		mockturtle::exact_xmg_resynthesis_minmc_params ps_xmg_resyn;
 		ps_xmg_resyn.print_stats = true;
@@ -156,17 +160,28 @@ int main()
 		mockturtle::exact_xmg_resynthesis_minmc_stats* pst_xmg_resyn = nullptr;
 		bool use_db = ( ps_cut_rew.cut_enumeration_ps.cut_size == 5u ) ? false : true;
 
-		mockturtle::exact_xmg_resynthesis_minmc xmg_resyn( "../experiments/db", ps_xmg_resyn, pst_xmg_resyn, use_db );
+		//mockturtle::exact_xmg_resynthesis_minmc xmg_resyn( "../experiments/db", ps_xmg_resyn, pst_xmg_resyn, use_db );
+		//mockturtle::xmg3_npn_resynthesis<mockturtle::xmg_network> xmg_resyn;
+		mockturtle::xmg_npn_minmc_resynthesis<mockturtle::xmg_network> xmg_resyn;
+
+		mockturtle::exact_library_params _exact_lib_params;
+    _exact_lib_params.verbose = true;
+    _exact_lib_params.np_classification = false;
+    mockturtle::exact_library<mockturtle::xmg_network, decltype( xmg_resyn )> lib( xmg_resyn, _exact_lib_params );
 
 		uint32_t ite_cnt = 0u;
 		const clock_t begin_time = clock();
 		while ( num_maj > num_maj_aft )
 		{
+			if ( ite_cnt > 0 )
+			{
+				num_maj = num_maj_aft;
+			}
 			++ite_cnt;
-			num_maj = num_maj_aft;
 			num_maj_aft = 0u;
 
-			mockturtle::cut_rewriting_with_compatibility_graph( xmg, xmg_resyn, ps_cut_rew, nullptr, ::detail::num_maj<mockturtle::xmg_network>() );
+			//mockturtle::cut_rewriting_with_compatibility_graph( xmg, xmg_resyn, ps_cut_rew, nullptr, ::detail::num_maj<mockturtle::xmg_network>() );
+			xmg = mockturtle::map( xmg, lib );
 			xmg = mockturtle::cleanup_dangling( xmg );
 
 			xmg.foreach_gate( [&]( auto f ) {
@@ -179,7 +194,7 @@ int main()
 
 		const auto cec = abc_cec( xmg, benchmark_type, benchmark, opt );
 
-		float improve = ( ( num_maj_bfr - num_maj_aft ) / num_maj_bfr ) * 100;
+		float improve = ( ( static_cast<float> ( num_maj_bfr ) - static_cast<float> ( num_maj_aft ) ) / static_cast<float> ( num_maj_bfr ) ) * 100;
 
 		exp_res( benchmark, opt, num_maj_bfr, num_maj_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
 	}
