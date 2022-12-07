@@ -64,8 +64,6 @@ void xmg_db_gen()
   xmg.create_pi();
   xmg.create_pi();
 
-  uint32_t winning_case_cnt{ 0u };
-  uint32_t num_ele_cnt{ 0u };
 	for ( auto const& benchmark: benchmarks )
 	{
 		std::cout << "[i] processing " << benchmark << std::endl;
@@ -149,8 +147,6 @@ void xmg_db_gen()
 			if ( const auto result = percy::std_synthesize_minmc( spec, chain, &synth_st );
 					 result == percy::success )
 			{
-				num_oh = bound_nfree;
-
 				std::vector<mockturtle::xmg_network::signal> signals;
 				signals.emplace_back( xmg.make_signal( xmg.pi_at( 0 ) ) );
 				signals.emplace_back( xmg.make_signal( xmg.pi_at( 1 ) ) );
@@ -278,7 +274,6 @@ void xmg_db_gen()
 						fout << "0x" << std::setbase( 16 ) << ( ( xmg.get_constant( false ).data << 1 ) ^ 1 ) << ",";
 						fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
 						fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
-						++num_ele_cnt;
 						break;
 					case 0x5a:
 						signals.emplace_back(  xmg.create_xor(  c1,  c3 ) );

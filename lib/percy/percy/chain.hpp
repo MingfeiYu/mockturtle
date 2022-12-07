@@ -4,6 +4,10 @@
 #include <cassert>
 #include <iostream>
 #include <memory>
+#include <fstream>
+#include <stdlib.h>
+
+#include <kitty/kitty.hpp>
 
 #include "dag.hpp"
 #include "spec.hpp"
@@ -880,13 +884,6 @@ public:
         return;
     }
 
-    void set_compiled_functions( std::vector<kitty::dynamic_truth_table> functions )
-    {
-        compiled_functions = functions;
-
-        return;
-    }
-
     void set_step( uint32_t idx, std::vector<uint32_t> const& fanin, kitty::dynamic_truth_table const& op )
     {
         for ( auto j = 0u; j < fanin_size; ++j)
@@ -914,11 +911,102 @@ public:
         return steps.size();
     }
 
+    void write_chain( std::ofstream& f, kitty::dynamic_truth_table const& tt ) const
+    {
+        if ( !f.is_open() )
+        {
+            std::cerr << "Cannot open file...\n";
+        }
+
+        /* write the number of pis in this chain */
+        f << tt.num_vars() << "\n";
+
+        /* write the truth table of this chain */
+        kitty::print_hex( tt, f );
+        f << "\n";
+
+        /* write the number of steps in this chain */
+        f << steps.size() << "\n";
+
+        for ( auto idx = 0u; idx < steps.size(); ++idx )
+        {
+            /* write the truth table of each step */
+            kitty::print_hex( operators.at( idx ), f );
+            f << " ";
+
+            /* write the fanins of each step */
+            for ( auto fanin_eachstep: steps.at( idx ) )
+            {
+                f << fanin_eachstep << " ";
+            }
+            f << "\n";
+        }
+    }
+
+    std::optional<kitty::dynamic_truth_table> read_from_file( std::ifstream& f, uint32_t num_fanin = 3u )
+    {
+        if ( !f.is_open() )
+        {
+            std::cerr << "Cannot open file...\n";
+            abort();
+        }
+
+        char buffer[1024] = {0};
+
+        if ( !( f >> buffer ) )
+        {
+            return std::nullopt;
+        }
+
+        /* read the number of pis of this chain */
+        uint32_t num_pis = static_cast<uint32_t>( std::atoi( buffer ) );
+
+        /* read the truth table of this chain */
+        kitty::dynamic_truth_table tt( num_pis );
+        f >> buffer;
+        kitty::create_from_hex_string( tt, buffer );
+
+        /* read the number of steps in this chain */
+        f >> buffer;
+        uint32_t num_steps = static_cast<uint32_t>( std::atoi( buffer ) );
+
+        /* initialize the chain */
+        reset( num_pis, num_steps, num_fanin );
+
+        /* read each step */
+        for ( auto idx = 0u; idx < num_steps; ++idx )
+        {
+            std::vector<uint32_t> fanins_eachstep( fanin_size );
+            for ( auto counter = 0u; counter <= fanin_size ; ++counter )
+            {
+                f >> buffer;
+                if ( counter == 0u )
+                {
+                    /* read the truth table of each step */
+                    kitty::dynamic_truth_table tt_step( fanin_size );
+                    kitty::create_from_hex_string( tt_step, buffer );
+                    operators.at( idx ) = tt_step;
+                }
+                else
+                {
+                    /* read the fanins of each step */
+                    fanins_eachstep.at( counter - 1u ) = static_cast<uint32_t>( std::atoi( buffer ) );
+
+                    if ( counter == fanin_size )
+                    {
+                        steps.at( idx ) = fanins_eachstep;
+                    }
+                }
+            }
+        }
+
+        return std::make_optional( tt );
+    }
+
 private:
     uint32_t pis;
     uint32_t fanin_size;
     uint32_t tt_size;
-    std::vector<kitty::dynamic_truth_table> compiled_functions;
     std::vector<std::vector<uint32_t>> steps;
     std::vector<kitty::dynamic_truth_table> operators;
     uint32_t output;

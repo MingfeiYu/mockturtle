@@ -277,7 +277,7 @@ public:
 		if ( index >= 0.9 * _storage->nodes.capacity() )
 		{
 			_storage->nodes.reserve( static_cast<size_t>( 3.1415 * index ) );
-			_storage->hash.reserve( static_cast<size_t>( 3.1315 * index ) );
+			_storage->hash.reserve( static_cast<size_t>( 3.1415 * index ) );
 		}
 
 		_storage->nodes.push_back( node );
@@ -434,6 +434,18 @@ public:
   signal create_nary_xor( std::vector<signal> const& fs )
   {
     return ternary_tree_reduce( fs.begin(), fs.end(), get_constant( false ), [this]( auto const& a, auto const& b, auto const& c ) { return create_xor3( a, b, c ); } );
+  }
+
+  signal create_node( std::vector<signal> const& children, kitty::dynamic_truth_table const& function )
+  {
+  	kitty::dynamic_truth_table _onehot( 3 );
+		_onehot._bits[0] = 0x16;
+		if ( function != _onehot )
+		{
+			std::cerr << "NtkDest cannot create onehot gates\n";
+		}
+    assert( function == _onehot );
+    return create_onehot( children[0], children[1], children[2] );
   }
 
 	signal clone_node( x1g_network const& other, node const& source, std::vector<signal> const& children )

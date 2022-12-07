@@ -118,18 +118,6 @@ public:
     /* get representative of function */
     const auto [repr, phase, perm] = _repr[*tt.cbegin()];
 
-
-    /* when working on mapping, input functions themselves must be representatives */
-    if ( tt != repr )
-    {
-      std::cout << "When constructing network: ";
-      kitty::print_hex( tt );
-      std::cout << "(map) is different from ";
-      kitty::print_hex( repr );
-      std::cout << "(db)\n";
-    }
-
-
     /* check if representative has circuits */
     const auto it = _repr_to_signal.find( repr );
     assert( it != _repr_to_signal.end() );

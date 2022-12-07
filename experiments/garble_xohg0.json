@@ -1,0 +1,17 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.0031949998810887337,
+        "benchmark": "router",
+        "equivalent": true,
+        "improvement %": 35.48387145996094,
+        "iterations": 3,
+        "num_oh_after": 60,
+        "optimized": true,
+        "previous_best": 93
+      }
+    ],
+    "version": "b83cc8a"
+  }
+]

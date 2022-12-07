@@ -62,6 +62,8 @@ void x1g_db_gen()
 	std::ofstream fout( "x1g_npn_db.txt" );
 	fout << "inline static const uint16_t subgraphs[]\n{\n\t";
 
+	std::vector<uint32_t> npn_mc( 6 );
+
 	mockturtle::x1g_network x1g;
 	x1g.get_constant( false );
   x1g.create_pi();
@@ -111,6 +113,11 @@ void x1g_db_gen()
 			}
 
 			exp_res( benchmark, 0u, 0u, 0., true );
+
+
+			++npn_mc[0];
+
+
 			continue;
 		}
 
@@ -172,6 +179,45 @@ void x1g_db_gen()
 			if ( const auto result = percy::std_synthesize_minmc( spec, chain, &synth_st );
 					 result == percy::success )
 			{
+
+
+				if ( mc == 0u )
+				{
+					assert( bound_nfree == 0u );
+					++npn_mc[0];
+				}
+				else if ( ( mc == 1u ) && ( bound_nfree == 1 ) )
+				{
+					++npn_mc[1];
+				}
+				else if ( mc == 2u )
+				{
+					if ( bound_nfree == 1u )
+					{
+						++npn_mc[2];
+					}
+					else
+					{
+						++npn_mc[3];
+					}
+				}
+				else if ( mc == 3u )
+				{
+					if ( bound_nfree == 2u )
+					{
+						++npn_mc[4];
+					}
+					else
+					{
+						++npn_mc[5];
+					}
+				}
+				else
+				{
+					std::cout << "mc = " << mc << "\n";
+					abort();
+				}
+
 				num_oh = bound_nfree;
 
 				std::vector<mockturtle::x1g_network::signal> signals;
@@ -601,6 +647,10 @@ void x1g_db_gen()
 
 	std::cout << "Get gain on " << winning_case_cnt << " functions.\n";
 	std::cout << "An array with " << num_ele_cnt << " elements is created.\n";
+	for ( auto i = 0u; i < npn_mc.size(); ++i )
+	{
+		std::cout << "npn_mc[" << i << "] is " << npn_mc[i] << "\n";
+	}
 
 	exp_res.save();
 	exp_res.table();

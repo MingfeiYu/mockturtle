@@ -1711,7 +1711,7 @@ struct node_match_t
   float flows[3];
 };
 
-template<class NtkDest, unsigned CutSize, typename CutData, class Ntk, class RewritingFn, unsigned NInputs>
+template<class NtkDest, unsigned CutSize, typename CutData, class Ntk, class RewritingFn, unsigned NInputs, class NodeCostFn>
 class exact_map_impl
 {
 public:
@@ -1719,7 +1719,7 @@ public:
   using cut_t = typename network_cuts_t::cut_t;
 
 public:
-  explicit exact_map_impl( Ntk& ntk, exact_library<NtkDest, RewritingFn, NInputs> const& library, map_params const& ps, map_stats& st )
+  explicit exact_map_impl( Ntk& ntk, exact_library<NtkDest, RewritingFn, NInputs, NodeCostFn> const& library, map_params const& ps, map_stats& st )
       : ntk( ntk ),
         library( library ),
         ps( ps ),
@@ -3043,7 +3043,7 @@ private:
 
 private:
   Ntk& ntk;
-  exact_library<NtkDest, RewritingFn, NInputs> const& library;
+  exact_library<NtkDest, RewritingFn, NInputs, NodeCostFn> const& library;
   map_params const& ps;
   map_stats& st;
 
@@ -3106,8 +3106,8 @@ private:
  * \param ps Mapping params
  * \param pst Mapping statistics
  */
-template<class Ntk, unsigned CutSize = 4u, typename CutData = cut_enumeration_exact_map_cut, class NtkDest, class RewritingFn, unsigned NInputs>
-NtkDest map( Ntk& ntk, exact_library<NtkDest, RewritingFn, NInputs> const& library, map_params const& ps = {}, map_stats* pst = nullptr )
+template<class Ntk, unsigned CutSize = 4u, typename CutData = cut_enumeration_exact_map_cut, class NtkDest, class RewritingFn, unsigned NInputs, class NodeCostFn = unit_cost<Ntk>>
+NtkDest map( Ntk& ntk, exact_library<NtkDest, RewritingFn, NInputs, NodeCostFn> const& library, map_params const& ps = {}, map_stats* pst = nullptr )
 {
   static_assert( is_network_type_v<Ntk>, "Ntk is not a network type" );
   static_assert( has_size_v<Ntk>, "Ntk does not implement the size method" );
@@ -3123,7 +3123,7 @@ NtkDest map( Ntk& ntk, exact_library<NtkDest, RewritingFn, NInputs> const& libra
   static_assert( has_decr_value_v<NtkDest>, "Ntk does not implement the decr_value method" );
 
   map_stats st;
-  detail::exact_map_impl<NtkDest, CutSize, CutData, Ntk, RewritingFn, NInputs> p( ntk, library, ps, st );
+  detail::exact_map_impl<NtkDest, CutSize, CutData, Ntk, RewritingFn, NInputs, NodeCostFn> p( ntk, library, ps, st );
   auto res = p.run();
 
   st.time_total = st.time_mapping + st.cut_enumeration_st.time_total;

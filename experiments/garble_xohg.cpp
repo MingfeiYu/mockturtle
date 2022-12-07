@@ -1,5 +1,6 @@
 #include <string>
 #include <fmt/format.h>
+#include <fstream>
 
 #include <mockturtle/networks/xag.hpp>
 #include <mockturtle/networks/xmg.hpp>
@@ -10,10 +11,56 @@
 #include <mockturtle/algorithms/node_resynthesis/x1g_npn.hpp>
 #include <mockturtle/algorithms/cleanup.hpp>
 #include <mockturtle/io/aiger_reader.hpp>
+#include <mockturtle/io/verilog_reader.hpp>
 #include <mockturtle/utils/node_map.hpp>
+#include <mockturtle/utils/include/percy.hpp>
 #include <mockturtle/views/topo_view.hpp>
 
+#include <kitty/kitty.hpp>
+
 #include <experiments.hpp>
+
+static const uint32_t date20_epfl[] = {
+	128u, 832u, 5291u, 10913u, 890u, 7653u, 2603u, 5381u, 4672u, 1174u, 394u, 
+	45u, 328u, 557u, 85u, 4695u, 323u, 93u, 4257u, 0u};
+
+static const uint32_t date20_crypto[] = {
+	32u, 64u, 5440u, 6800u, 92u, 92u, 92u, 92u, 9205u, 9048u, 9367u, 1689u, 
+	11515u, 26827u};
+
+static const uint32_t date20_mpc[] = {
+	97u, 193u, 232u, 456u, 495u, 975u, 554u, 1162u, 881u, 1919u, 1060u, 2394u, 
+	7u, 15u, 21u, 55u, 104u, 275u, 16001u, 58723u};
+
+std::vector<uint32_t> epfl_date20()
+{
+	std::vector<uint32_t> best_score;
+	for ( auto i = 0u; i < 20u; ++i )
+	{
+		best_score.emplace_back( date20_epfl[i] );
+	}
+	return best_score;
+}
+
+std::vector<uint32_t> crypto_date20()
+{
+	std::vector<uint32_t> best_score;
+	for ( auto i = 0u; i < 14u; ++i )
+	{
+		best_score.emplace_back( date20_crypto[i] );
+	}
+	return best_score;
+}
+
+std::vector<uint32_t> mpc_date20()
+{
+	std::vector<uint32_t> best_score;
+	for ( auto i = 0u; i < 20u; ++i )
+	{
+		best_score.emplace_back( date20_mpc[i] );
+	}
+	return best_score;
+}
 
 static const std::string EPFL_benchmarks[] = {
 	"adder", "bar", "div", "log2", "max", "multiplier", "sin", "sqrt", "square", "arbiter", 
@@ -35,7 +82,7 @@ static const std::string MPC_benchmarks[] = {
 std::vector<std::string> epfl_benchmarks()
 {
 	std::vector<std::string> result;
-	for ( auto i = 0u; i < 1u; ++i )
+	for ( auto i = 0u; i < 20u; ++i )
 	{
 		result.emplace_back( EPFL_benchmarks[i] );
 	}
@@ -70,11 +117,11 @@ std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmar
 	switch( benchmark_type )
 	{
 	case 0u:
-		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "epfl_opt" : "epfl_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? "epfl_opt" : "epfl_benchmarks" ), benchmark_name );
 	case 1u:
-		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "crypto_opt" : "crypto_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? "crypto_opt" : "crypto_benchmarks" ), benchmark_name );
 	case 2u:
-		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
 	default:
 		std::cout << "Unspecified type of benchmark. \n";
 		abort();
@@ -106,6 +153,39 @@ bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const&
 	return result.size() >= 23 && result.substr( 0u, 23u ) == "Networks are equivalent";
 }
 
+void load_cache( mockturtle::exact_xohg_resynthesis_minmc_params::cache_t pcache_db, std::string const& dir_prefix )
+{
+	std::string cache_name = dir_prefix + "cache.db";
+	std::ifstream f( cache_name, std::ios::in );
+	if ( !f )
+	{
+		std::cout << "[i] no database for cache detected\n";
+		std::cout << "[i] skip cache loading\n";
+		return;
+	}
+
+	std::cout << "[i] loading cache\n";
+	
+	bool done = false;
+	while ( !done )
+	{
+		percy::chain_minmc chain;
+		std::optional<kitty::dynamic_truth_table> ttOpt = chain.read_from_file( f );
+		if ( ttOpt )
+		{
+			( *pcache_db )[*ttOpt] = chain;
+		}
+		else
+		{
+			done = true;
+		}
+	}
+
+	f.close();
+	std::cout << "[i] cache loaded\n";
+	std::cout << "[i] " << ( *pcache_db ).size() << " functions in the cache. \n";
+}
+
 namespace detail
 {
 template<class Ntk = mockturtle::xag_network>
@@ -122,7 +202,7 @@ struct num_oh
 {
 	uint32_t operator()( Ntk const& ntk, mockturtle::node<Ntk> const& n ) const
 	{
-		return ntk.is_onehot( n ) ? 1 : 0;
+		return ntk.is_onehot( n ) ? 1u : 0u;
 	}
 };
 
@@ -138,184 +218,172 @@ struct num_maj
 
 int main()
 {
-	experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( "garble_xohg", "benchmark", "optimized", "num_oh_before", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
-	uint32_t benchmark_type = 0u; /* 0u - epfl benchmark; 1u - crypto benchmark; 2u - mpc benchmark */
-	bool opt = true;
-	auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
-
-	for ( auto const& benchmark: benchmarks )
+	for ( auto benchmark_type_each = 0u; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
-		std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+		std::string json_name = "garble_xohg" + std::to_string( benchmark_type_each );
+		experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "optimized", "previous_best", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
+		//uint32_t benchmark_type = 0u; /* 0u - epfl benchmark; 1u - crypto benchmark; 2u - mpc benchmark */
+		uint32_t benchmark_type = benchmark_type_each;
+		bool opt = true;
+		auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
+		auto const best_scores = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_date20() : mpc_date20() ) : epfl_date20();
+		auto const dir_prefix = benchmark_type ? ( ( benchmark_type == 1u ) ? "../experiments/databases/crypto/" : "../experiments/databases/mpc/" ) : "../experiments/databases/epfl/";
 
 		mockturtle::cut_rewriting_params ps_cut_rew;
-		ps_cut_rew.cut_enumeration_ps.cut_size = 4u;
+		ps_cut_rew.cut_enumeration_ps.cut_size = 5u;
 		ps_cut_rew.cut_enumeration_ps.cut_limit = 12u;
-		ps_cut_rew.verbose = true;
+		ps_cut_rew.verbose = false;
 		ps_cut_rew.progress = true;
 		ps_cut_rew.min_cand_cut_size = 2u;
 
-		mockturtle::x1g_network x1g;
-		/* Obtain initial X1G from optimized XAGs                                  */
-		/* ( if there is no optimized XAGs available, but only optimization flow ) */
-    /*
-    using sig_x1g = typename mockturtle::x1g_network::signal;
+		for ( auto i = 0u; i < benchmarks.size(); ++i )
+		{
 
-    // derive signals in the targeted X1G from nodes in the original XAG
-    auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark ), mockturtle::verilog_reader( xag ) );
-		assert( read_result == lorina::return_code::success );
-    node_map<sig_x1g, mockturtle::xag_network> xag_node2x1g_sig( xag );
 
-    // create const
-    xag_node2x1g_sig[xag.get_node( xag.get_constant( false ) )] = x1g.get_constant( false );
-
-    // create pis
-    xag.foreach_pi( [&]( auto n ) {
-      xag_node2x1g_sig[n] = x1g.create_pi();
-    } );
-    
-    // create OneHots and XOR-3s
-    mockturtle::topo_view xag_topo{xag};
-    xag_topo.foreach_node( [&]( auto n ) {
-      if ( xag.is_constant( n ) || xag.is_pi( n ) )
-        return;
-      std::vector<sig_x1g> children;
-      xag.foreach_fanin( n, [&]( auto const& f ) {
-        children.push_back( xag.is_complemented( f ) ? x1g.create_not( xag_node2x1g_sig[f] ) : xag_node2x1g_sig[f] );
-      } );
-
-      assert( children.size() == 2u );
-      if ( xag.is_and( n ) )
-      {
-        xag_node2x1g_sig[n] = x1g.create_and( children[0], children[1] );
-      }
-      else if ( xag.is_xor( n ) )
-      {
-        xag_node2x1g_sig[n] = x1g.create_xor( children[0], children[1] );
-      }
-      else
-      {
-        std::cerr << "Unknown gate type detected! \n";
-        abort();
-      }
-    } );
-    
-    // create pos
-    xag.foreach_po( [&]( auto const& f ) {
-      auto const o = xag.is_complemented( f ) ? x1g.create_not( xag_node2x1g_sig[f] ) : xag_node2x1g_sig[f];
-      x1g.create_po( o );
-    } );
-    */
-
-		/* xohg optimization */
-		
-
-		/* Obtain initial X1G by reading in benchmarks      */
-		/* ( if optimized XAGs are provided as benchmarks ) */
-		auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( x1g ) );
-		assert( read_result == lorina::return_code::success );
-
-		uint32_t num_oh = 0u;
-		uint32_t num_oh_bfr = 0u;
-		uint32_t num_oh_aft = 0u;
-
-		x1g.foreach_gate( [&]( auto f ) {
-			if ( x1g.is_onehot( f ) )
+			if ( i < 0u )
 			{
-				++num_oh;
+				continue;
 			}
-		} );
-
-		if ( num_oh == 0 )
-		{
-			exp_res( benchmark, opt, 0u, 0u, 0., 0u, 0., true );
-			continue;
-		}
-		num_oh_bfr = num_oh;
-		num_oh_aft = num_oh - 1u;
-
-		clock_t begin_time;
-		uint32_t ite_cnt = 0u;
-		if ( ps_cut_rew.cut_enumeration_ps.cut_size > 4u )
-		{
-			mockturtle::exact_xohg_resynthesis_minmc_params ps_xohg_resyn;
-			ps_xohg_resyn.print_stats = true;
-			ps_xohg_resyn.conflict_limit = 1000000u;
-			ps_xohg_resyn.cache = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::cache_map_t>();
-			ps_xohg_resyn.blacklist_cache = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_map_t>();
-
-			mockturtle::exact_xohg_resynthesis_minmc_stats* pst_xohg_resyn = nullptr;
-			bool use_db = ( ps_cut_rew.cut_enumeration_ps.cut_size == 5u ) ? false : true;
-
-			mockturtle::exact_xohg_resynthesis_minmc xohg_resyn( "../experiments/db", ps_xohg_resyn, pst_xohg_resyn, use_db );
-
-			begin_time = clock();
-			while ( num_oh > num_oh_aft )
+			else if ( i > 0u )
 			{
-				if ( ite_cnt > 0u )
+				return 0;
+			}
+
+
+			auto const benchmark = benchmarks[i];
+			auto const best_score = best_scores[i];
+			auto const dir_prefix_benchmark = dir_prefix + benchmark + "/";
+			mockturtle::exact_xohg_resynthesis_minmc_params::cache_t pcache_db = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::cache_map_t>();
+			if ( ps_cut_rew.cut_enumeration_ps.cut_size > 4u )
+			{
+				load_cache( pcache_db, dir_prefix_benchmark );
+			}
+
+			std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+
+			mockturtle::x1g_network x1g;
+			
+			/* Obtain initial X1G by reading in benchmarks */
+			//auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( x1g ) );
+			auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::verilog_reader( x1g ) );
+			assert( read_result == lorina::return_code::success );
+
+			uint32_t num_oh = 0u;
+			uint32_t num_oh_bfr = 0u;
+			uint32_t num_oh_aft = 0u;
+
+			x1g.foreach_gate( [&]( auto f ) {
+				if ( x1g.is_onehot( f ) )
 				{
-					num_oh = num_oh_aft;
+					++num_oh;
 				}
-				++ite_cnt;
-				num_oh_aft = 0u;
+			} );
 
-				mockturtle::cut_rewriting_with_compatibility_graph( x1g, xohg_resyn, ps_cut_rew, nullptr, ::detail::num_oh<mockturtle::x1g_network>() );
-
-				x1g = mockturtle::cleanup_dangling( x1g );
-
-				x1g.foreach_gate( [&]( auto f ) {
-					if ( x1g.is_onehot( f ) )
-					{
-						++num_oh_aft;
-					}
-				} );
-			}
-		}
-		else
-		{
-			mockturtle::x1g_npn_resynthesis<mockturtle::x1g_network> x1g_resyn;
-
-			begin_time = clock();
-			while ( num_oh > num_oh_aft )
+			if ( num_oh == 0 )
 			{
-				if ( ite_cnt > 0u )
-				{
-					num_oh = num_oh_aft;
-				}
-				++ite_cnt;
-				num_oh_aft = 0u;
-
-
-				//mockturtle::cut_rewriting( x1g, x1g_resyn, ps_cut_rew, nullptr );
-				
-				//mockturtle::cut_rewriting_with_compatibility_graph( x1g, x1g_resyn, ps_cut_rew, nullptr, ::detail::num_oh<mockturtle::x1g_network>() );
-    		
-    		mockturtle::exact_library_params _exact_lib_params;
-    		_exact_lib_params.verbose = true;
-    		_exact_lib_params.np_classification = false;
-    		mockturtle::exact_library<mockturtle::x1g_network, decltype( x1g_resyn )> lib( x1g_resyn, _exact_lib_params );
-    		x1g = mockturtle::map( x1g, lib );
-
-				//x1g = mockturtle::cleanup_dangling( x1g );
-
-				x1g.foreach_gate( [&]( auto f ) {
-					if ( x1g.is_onehot( f ) )
-					{
-						++num_oh_aft;
-					}
-				} );
+				exp_res( benchmark, opt, 0u, 0u, 0., 0u, 0., true );
+				continue;
 			}
+			num_oh_bfr = num_oh;
+			num_oh_aft = num_oh - 1u;
+
+			clock_t begin_time;
+			uint32_t ite_cnt = 0u;
+			if ( ps_cut_rew.cut_enumeration_ps.cut_size > 4u )
+			{
+				mockturtle::exact_xohg_resynthesis_minmc_params ps_xohg_resyn;
+				ps_xohg_resyn.print_stats = true;
+				ps_xohg_resyn.conflict_limit = 1000000u;
+				ps_xohg_resyn.cache = pcache_db;
+				ps_xohg_resyn.blacklist_cache = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_map_t>();
+
+				mockturtle::exact_xohg_resynthesis_minmc_stats* pst_xohg_resyn = nullptr;
+				bool use_db = ( ps_cut_rew.cut_enumeration_ps.cut_size == 5u ) ? false : true;
+
+				mockturtle::exact_xohg_resynthesis_minmc xohg_resyn( "../experiments/db", dir_prefix_benchmark, ps_xohg_resyn, pst_xohg_resyn, use_db );
+
+				begin_time = clock();
+				while ( num_oh > num_oh_aft )
+				{
+					if ( ite_cnt > 0u )
+					{
+						num_oh = num_oh_aft;
+					}
+					++ite_cnt;
+					num_oh_aft = 0u;
+
+					x1g = mockturtle::cut_rewriting<mockturtle::x1g_network, decltype( xohg_resyn ), ::detail::num_oh<mockturtle::x1g_network>>( x1g, xohg_resyn, ps_cut_rew );
+
+					x1g.foreach_gate( [&]( auto f ) {
+						if ( x1g.is_onehot( f ) )
+						{
+							++num_oh_aft;
+						}
+					} );
+				}
+			}
+			else
+			{
+				mockturtle::x1g_npn_resynthesis<mockturtle::x1g_network> x1g_resyn;
+
+				begin_time = clock();
+				while ( num_oh > num_oh_aft )
+				{
+					if ( ite_cnt > 0u )
+					{
+						num_oh = num_oh_aft;
+					}
+					++ite_cnt;
+					num_oh_aft = 0u;
+
+
+					//mockturtle::cut_rewriting<mockturtle::x1g_network, decltype( x1g_resyn ), ::detail::num_oh<mockturtle::x1g_network>>( x1g, x1g_resyn, ps_cut_rew, nullptr );
+	    		
+	    		//
+	    		mockturtle::exact_library_params _exact_lib_params;
+	    		_exact_lib_params.verbose = false;
+	    		_exact_lib_params.np_classification = false;
+	    		mockturtle::exact_library<mockturtle::x1g_network, decltype( x1g_resyn ), 4u, ::detail::num_oh<mockturtle::x1g_network>> lib( x1g_resyn, _exact_lib_params );
+	    		mockturtle::map_params _map_params;
+	    		_map_params.skip_delay_round = false;
+	    		_map_params.area_flow_rounds = 3u;
+	    		_map_params.ela_rounds = 3u;
+	    		_map_params.enable_logic_sharing = true;
+	    		_map_params.verbose = true;
+	    		x1g = mockturtle::map( x1g, lib, _map_params );
+	    		//
+
+					x1g = mockturtle::cleanup_dangling( x1g );
+
+					x1g.foreach_gate( [&]( auto f ) {
+						if ( x1g.is_onehot( f ) )
+						{
+							++num_oh_aft;
+						}
+					} );
+				}
+			}
+
+			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
+			//assert( cec );
+
+			float improve = ( ( static_cast<float> ( best_score ) - static_cast<float> ( num_oh_aft ) ) / static_cast<float> ( best_score ) ) * 100;
+
+			exp_res( benchmark, opt, best_score, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
+
+
+			if ( i == 0u )
+			{
+				exp_res.save();
+				exp_res.table();
+			}
+
+
 		}
 
-		const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
-		//assert( cec );
-
-		float improve = ( ( static_cast<float> ( num_oh_bfr ) - static_cast<float> ( num_oh_aft ) ) / static_cast<float> ( num_oh_bfr ) ) * 100;
-
-		exp_res( benchmark, opt, num_oh_bfr, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
+		exp_res.save();
+		exp_res.table();
 	}
 
-	exp_res.save();
-	exp_res.table();
-	
 	return 0;
 }

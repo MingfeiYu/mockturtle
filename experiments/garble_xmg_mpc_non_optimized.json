@@ -1,0 +1,207 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.0031536666210740805,
+        "benchmark": "auction_N_2_W_16",
+        "equivalent": true,
+        "improvement %": 30.86419677734375,
+        "iterations": 3,
+        "num_maj_after": 224,
+        "num_maj_before": 324,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.005956333130598068,
+        "benchmark": "auction_N_2_W_32",
+        "equivalent": true,
+        "improvement %": 30.30303192138672,
+        "iterations": 3,
+        "num_maj_after": 460,
+        "num_maj_before": 660,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.0072096665389835835,
+        "benchmark": "auction_N_3_W_16",
+        "equivalent": true,
+        "improvement %": 27.06964683532715,
+        "iterations": 3,
+        "num_maj_after": 555,
+        "num_maj_before": 761,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.015181000344455242,
+        "benchmark": "auction_N_3_W_32",
+        "equivalent": true,
+        "improvement %": 26.796117782592773,
+        "iterations": 3,
+        "num_maj_after": 1131,
+        "num_maj_before": 1545,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.015704000368714333,
+        "benchmark": "auction_N_4_W_16",
+        "equivalent": true,
+        "improvement %": 26.4957275390625,
+        "iterations": 3,
+        "num_maj_after": 1204,
+        "num_maj_before": 1638,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.034255001693964005,
+        "benchmark": "auction_N_4_W_32",
+        "equivalent": true,
+        "improvement %": 25.979507446289063,
+        "iterations": 3,
+        "num_maj_after": 2456,
+        "num_maj_before": 3318,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.029274335131049156,
+        "benchmark": "knn_comb_K_1_N_8",
+        "equivalent": true,
+        "improvement %": 67.3194580078125,
+        "iterations": 3,
+        "num_maj_after": 1068,
+        "num_maj_before": 3268,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.061954665929079056,
+        "benchmark": "knn_comb_K_1_N_16",
+        "equivalent": true,
+        "improvement %": 67.58538055419922,
+        "iterations": 3,
+        "num_maj_after": 2164,
+        "num_maj_before": 6676,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.05140000209212303,
+        "benchmark": "knn_comb_K_2_N_8",
+        "equivalent": true,
+        "improvement %": 51.39146423339844,
+        "iterations": 3,
+        "num_maj_after": 2358,
+        "num_maj_before": 4851,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.10523749887943268,
+        "benchmark": "knn_comb_K_2_N_16",
+        "equivalent": true,
+        "improvement %": 47.562286376953125,
+        "iterations": 4,
+        "num_maj_after": 5367,
+        "num_maj_before": 10235,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.0829315036535263,
+        "benchmark": "knn_comb_K_3_N_8",
+        "equivalent": true,
+        "improvement %": 40.06804656982422,
+        "iterations": 2,
+        "num_maj_after": 3699,
+        "num_maj_before": 6172,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.187608003616333,
+        "benchmark": "knn_comb_K_3_N_16",
+        "equivalent": true,
+        "improvement %": 36.8432731628418,
+        "iterations": 2,
+        "num_maj_after": 8535,
+        "num_maj_before": 13514,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.0004050000279676169,
+        "benchmark": "voting_N_1_M_3",
+        "equivalent": true,
+        "improvement %": 73.33333587646484,
+        "iterations": 3,
+        "num_maj_after": 8,
+        "num_maj_before": 30,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.0007983333780430257,
+        "benchmark": "voting_N_1_M_4",
+        "equivalent": true,
+        "improvement %": 80.48780822753906,
+        "iterations": 3,
+        "num_maj_after": 16,
+        "num_maj_before": 82,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.0012666666880249977,
+        "benchmark": "voting_N_2_M_2",
+        "equivalent": true,
+        "improvement %": 43.26923370361328,
+        "iterations": 3,
+        "num_maj_after": 59,
+        "num_maj_before": 104,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.002687666565179825,
+        "benchmark": "voting_N_2_M_3",
+        "equivalent": true,
+        "improvement %": 51.82186508178711,
+        "iterations": 3,
+        "num_maj_after": 119,
+        "num_maj_before": 247,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.004022750072181225,
+        "benchmark": "voting_N_2_M_4",
+        "equivalent": true,
+        "improvement %": 63.89961242675781,
+        "iterations": 4,
+        "num_maj_after": 187,
+        "num_maj_before": 518,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.010188666172325611,
+        "benchmark": "voting_N_3_M_4",
+        "equivalent": true,
+        "improvement %": 60.122161865234375,
+        "iterations": 3,
+        "num_maj_after": 457,
+        "num_maj_before": 1146,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 0.4108542501926422,
+        "benchmark": "stable_matching_comb_Ks_4_S_8",
+        "equivalent": true,
+        "improvement %": 11.487916946411133,
+        "iterations": 4,
+        "num_maj_after": 26335,
+        "num_maj_before": 29753,
+        "optimized": false
+      },
+      {
+        "avg. runtime [s]": 1.516086459159851,
+        "benchmark": "stable_matching_comb_Ks_8_S_8",
+        "equivalent": true,
+        "improvement %": 11.151068687438965,
+        "iterations": 4,
+        "num_maj_after": 92896,
+        "num_maj_before": 104555,
+        "optimized": false
+      }
+    ],
+    "version": "07a42b8"
+  }
+]

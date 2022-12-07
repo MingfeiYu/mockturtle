@@ -1,0 +1,207 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.07036499679088593,
+        "benchmark": "auction_N_2_W_16",
+        "equivalent": true,
+        "improvement %": -18.556699752807617,
+        "iterations": 1,
+        "num_oh_after": 115,
+        "optimized": true,
+        "previous_best": 97
+      },
+      {
+        "avg. runtime [s]": 0.08013299852609634,
+        "benchmark": "auction_N_2_W_32",
+        "equivalent": true,
+        "improvement %": -17.616580963134766,
+        "iterations": 1,
+        "num_oh_after": 227,
+        "optimized": true,
+        "previous_best": 193
+      },
+      {
+        "avg. runtime [s]": 0.08044999837875366,
+        "benchmark": "auction_N_3_W_16",
+        "equivalent": true,
+        "improvement %": -2.5862069129943848,
+        "iterations": 1,
+        "num_oh_after": 238,
+        "optimized": true,
+        "previous_best": 232
+      },
+      {
+        "avg. runtime [s]": 0.10610199719667435,
+        "benchmark": "auction_N_3_W_32",
+        "equivalent": true,
+        "improvement %": -1.3157894611358643,
+        "iterations": 1,
+        "num_oh_after": 462,
+        "optimized": true,
+        "previous_best": 456
+      },
+      {
+        "avg. runtime [s]": 0.10498400032520294,
+        "benchmark": "auction_N_4_W_16",
+        "equivalent": true,
+        "improvement %": -3.4343433380126953,
+        "iterations": 1,
+        "num_oh_after": 512,
+        "optimized": true,
+        "previous_best": 495
+      },
+      {
+        "avg. runtime [s]": 0.15829800069332123,
+        "benchmark": "auction_N_4_W_32",
+        "equivalent": true,
+        "improvement %": -1.7435897588729858,
+        "iterations": 1,
+        "num_oh_after": 992,
+        "optimized": true,
+        "previous_best": 975
+      },
+      {
+        "avg. runtime [s]": 0.11545299738645554,
+        "benchmark": "knn_comb_K_1_N_8",
+        "equivalent": true,
+        "improvement %": -5.956678867340088,
+        "iterations": 1,
+        "num_oh_after": 587,
+        "optimized": true,
+        "previous_best": 554
+      },
+      {
+        "avg. runtime [s]": 0.17710499465465546,
+        "benchmark": "knn_comb_K_1_N_16",
+        "equivalent": true,
+        "improvement %": -3.1841650009155273,
+        "iterations": 1,
+        "num_oh_after": 1199,
+        "optimized": true,
+        "previous_best": 1162
+      },
+      {
+        "avg. runtime [s]": 0.16764500737190247,
+        "benchmark": "knn_comb_K_2_N_8",
+        "equivalent": true,
+        "improvement %": -5.448354244232178,
+        "iterations": 1,
+        "num_oh_after": 929,
+        "optimized": true,
+        "previous_best": 881
+      },
+      {
+        "avg. runtime [s]": 0.29323700070381165,
+        "benchmark": "knn_comb_K_2_N_16",
+        "equivalent": true,
+        "improvement %": -2.8660762310028076,
+        "iterations": 1,
+        "num_oh_after": 1974,
+        "optimized": true,
+        "previous_best": 1919
+      },
+      {
+        "avg. runtime [s]": 0.21602800488471985,
+        "benchmark": "knn_comb_K_3_N_8",
+        "equivalent": true,
+        "improvement %": -3.4905660152435303,
+        "iterations": 1,
+        "num_oh_after": 1097,
+        "optimized": true,
+        "previous_best": 1060
+      },
+      {
+        "avg. runtime [s]": 0.42555299401283264,
+        "benchmark": "knn_comb_K_3_N_16",
+        "equivalent": true,
+        "improvement %": -1.378446102142334,
+        "iterations": 1,
+        "num_oh_after": 2427,
+        "optimized": true,
+        "previous_best": 2394
+      },
+      {
+        "avg. runtime [s]": 0.06235349923372269,
+        "benchmark": "voting_N_1_M_3",
+        "equivalent": true,
+        "improvement %": 14.285715103149414,
+        "iterations": 2,
+        "num_oh_after": 6,
+        "optimized": true,
+        "previous_best": 7
+      },
+      {
+        "avg. runtime [s]": 0.06313899904489517,
+        "benchmark": "voting_N_1_M_4",
+        "equivalent": true,
+        "improvement %": 13.333333969116211,
+        "iterations": 2,
+        "num_oh_after": 13,
+        "optimized": true,
+        "previous_best": 15
+      },
+      {
+        "avg. runtime [s]": 0.06449499726295471,
+        "benchmark": "voting_N_2_M_2",
+        "equivalent": true,
+        "improvement %": -42.85714340209961,
+        "iterations": 1,
+        "num_oh_after": 30,
+        "optimized": true,
+        "previous_best": 21
+      },
+      {
+        "avg. runtime [s]": 0.06847599893808365,
+        "benchmark": "voting_N_2_M_3",
+        "equivalent": true,
+        "improvement %": -41.818180084228516,
+        "iterations": 1,
+        "num_oh_after": 78,
+        "optimized": true,
+        "previous_best": 55
+      },
+      {
+        "avg. runtime [s]": 0.0749870017170906,
+        "benchmark": "voting_N_2_M_4",
+        "equivalent": true,
+        "improvement %": -38.46154022216797,
+        "iterations": 1,
+        "num_oh_after": 144,
+        "optimized": true,
+        "previous_best": 104
+      },
+      {
+        "avg. runtime [s]": 0.09007100015878677,
+        "benchmark": "voting_N_3_M_4",
+        "equivalent": true,
+        "improvement %": -16.0,
+        "iterations": 1,
+        "num_oh_after": 319,
+        "optimized": true,
+        "previous_best": 275
+      },
+      {
+        "avg. runtime [s]": 0.6055417656898499,
+        "benchmark": "stable_matching_comb_Ks_4_S_8",
+        "equivalent": true,
+        "improvement %": 5.368414402008057,
+        "iterations": 4,
+        "num_oh_after": 15142,
+        "optimized": true,
+        "previous_best": 16001
+      },
+      {
+        "avg. runtime [s]": 1.9972763061523438,
+        "benchmark": "stable_matching_comb_Ks_8_S_8",
+        "equivalent": true,
+        "improvement %": 11.494644165039063,
+        "iterations": 15,
+        "num_oh_after": 51973,
+        "optimized": true,
+        "previous_best": 58723
+      }
+    ],
+    "version": "b83cc8a"
+  }
+]

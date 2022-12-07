@@ -550,6 +550,21 @@ template<class Ntk>
 inline constexpr bool has_create_nary_xor_v = has_create_nary_xor<Ntk>::value;
 #pragma endregion
 
+#pragma region has_create_onehot
+template<class Ntk, class = void>
+struct has_create_onehot : std::false_type
+{
+};
+
+template<class Ntk>
+struct has_create_onehot<Ntk, std::void_t<decltype( std::declval<Ntk>().create_onehot( std::declval<signal<Ntk>>(), std::declval<signal<Ntk>>(), std::declval<signal<Ntk>>() ) )>> : std::true_type
+{
+};
+
+template<class Ntk>
+inline constexpr bool has_create_onehot_v = has_create_onehot<Ntk>::value;
+#pragma endregion
+
 #pragma region has_create_node
 template<class Ntk, class = void>
 struct has_create_node : std::false_type
@@ -1120,6 +1135,17 @@ template<class Ntk>
 inline constexpr bool has_is_nary_xor_v = has_is_nary_xor<Ntk>::value;
 #pragma endregion
 
+#pragma region has_is_onehot
+template<class Ntk, class = void>
+struct has_is_onehot : std::false_type
+{
+};
+
+template<class Ntk>
+struct has_is_onehot<Ntk, std::void_t<decltype( std::declval<Ntk>().is_onehot( std::declval<node<Ntk>>() ) )>> : std::true_type
+{
+};
+
 #pragma region has_is_function
 template<class Ntk, class = void>
 struct has_is_function : std::false_type
@@ -1140,6 +1166,10 @@ template<class Ntk, class = void>
 struct has_node_function : std::false_type
 {
 };
+
+template<class Ntk>
+inline constexpr bool has_is_onehot_v = has_is_onehot<Ntk>::value;
+#pragma endregion
 
 template<class Ntk>
 struct has_node_function<Ntk, std::void_t<decltype( std::declval<Ntk>().node_function( std::declval<node<Ntk>>() ) )>> : std::true_type

@@ -858,7 +858,6 @@ public:
  	void extract_chain( spec_minmc const& spec, chain_minmc & chain )
  	{
  		chain.reset( pis, nr_steps, fanin_size );
- 		chain.set_compiled_functions( spec.get_compiled_primitives() );
 
  		if ( verbose )
  		{

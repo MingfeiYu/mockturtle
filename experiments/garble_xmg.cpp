@@ -9,10 +9,53 @@
 #include <mockturtle/algorithms/node_resynthesis/xmg_npn_minmc.hpp>
 #include <mockturtle/algorithms/cleanup.hpp>
 #include <mockturtle/io/aiger_reader.hpp>
+#include <mockturtle/io/verilog_reader.hpp>
 #include <mockturtle/utils/node_map.hpp>
 #include <mockturtle/views/topo_view.hpp>
 
 #include <experiments.hpp>
+
+static const uint32_t date20_epfl[] = {
+	128u, 832u, 5291u, 10913u, 890u, 7653u, 2603u, 5381u, 4672u, 1174u, 394u, 
+	45u, 328u, 557u, 85u, 4695u, 323u, 93u, 4257u, 0u};
+
+static const uint32_t date20_crypto[] = {
+	32u, 64u, 5440u, 6800u, 92u, 92u, 92u, 92u, 9205u, 9048u, 9367u, 1689u, 
+	11515u, 26827u};
+
+static const uint32_t date20_mpc[] = {
+	97u, 193u, 232u, 456u, 495u, 975u, 554u, 1162u, 881u, 1919u, 1060u, 2394u, 
+	7u, 15u, 21u, 55u, 104u, 275u, 16001u, 58723u};
+
+std::vector<uint32_t> epfl_date20()
+{
+	std::vector<uint32_t> best_score;
+	for ( auto i = 0u; i < 20u; ++i )
+	{
+		best_score.emplace_back( date20_epfl[i] );
+	}
+	return best_score;
+}
+
+std::vector<uint32_t> crypto_date20()
+{
+	std::vector<uint32_t> best_score;
+	for ( auto i = 0u; i < 14u; ++i )
+	{
+		best_score.emplace_back( date20_crypto[i] );
+	}
+	return best_score;
+}
+
+std::vector<uint32_t> mpc_date20()
+{
+	std::vector<uint32_t> best_score;
+	for ( auto i = 0u; i < 20u; ++i )
+	{
+		best_score.emplace_back( date20_mpc[i] );
+	}
+	return best_score;
+}
 
 static const std::string EPFL_benchmarks[] = {
 	"adder", "bar", "div", "log2", "max", "multiplier", "sin", "sqrt", "square", "arbiter", 
@@ -69,11 +112,11 @@ std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmar
 	switch( benchmark_type )
 	{
 	case 0u:
-		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "epfl_opt" : "epfl_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? "epfl_opt" : "epfl_benchmarks" ), benchmark_name );
 	case 1u:
-		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "crypto_opt" : "crypto_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? "crypto_opt" : "crypto_benchmarks" ), benchmark_name );
 	case 2u:
-		return fmt::format( "../experiments/{}/{}.aig", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
 	default:
 		std::cout << "Unspecified type of benchmark. \n";
 		abort();
@@ -119,13 +162,17 @@ struct num_maj
 
 int main()
 {
-	experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( "garble_xmg", "benchmark", "optimized", "num_maj_before", "num_maj_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
+	experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( "garble_xmg", "benchmark", "optimized", "previous_best", "num_maj_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
 	uint32_t benchmark_type = 0u; /* 0u - epfl benchmark; 1u - crypto benchmark; 2u - mpc benchmark */
 	bool opt = true;
 	auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
+	auto const best_scores = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_date20() : mpc_date20() ) : epfl_date20();
 
-	for ( auto const& benchmark: benchmarks )
+	for ( auto i = 0u; i < benchmarks.size(); ++i )
+	//for ( auto const& benchmark: benchmarks )
 	{
+		auto const benchmark = benchmarks[i];
+		auto const best_score = best_scores[i];
 		std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
 		mockturtle::cut_rewriting_params ps_cut_rew;
@@ -136,7 +183,8 @@ int main()
 		ps_cut_rew.min_cand_cut_size = 2u;
 
 		mockturtle::xmg_network xmg;
-		auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( xmg ) );
+		//auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( xmg ) );
+		auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::verilog_reader( xmg ) );
 		assert( read_result == lorina::return_code::success );
 
 		uint32_t num_maj = 0u;
@@ -169,15 +217,18 @@ int main()
     _exact_lib_params.np_classification = false;
     mockturtle::exact_library<mockturtle::xmg_network, decltype( xmg_resyn )> lib( xmg_resyn, _exact_lib_params );
 
-		uint32_t ite_cnt = 0u;
+		uint32_t ite_cnt = 5u;
 		const clock_t begin_time = clock();
-		while ( num_maj > num_maj_aft )
+
+
+		for ( auto j = 0u; j < ite_cnt; ++j )
+		//while ( num_maj > num_maj_aft )
 		{
 			if ( ite_cnt > 0 )
 			{
 				num_maj = num_maj_aft;
 			}
-			++ite_cnt;
+			//++ite_cnt;
 			num_maj_aft = 0u;
 
 			//mockturtle::cut_rewriting_with_compatibility_graph( xmg, xmg_resyn, ps_cut_rew, nullptr, ::detail::num_maj<mockturtle::xmg_network>() );
@@ -194,9 +245,9 @@ int main()
 
 		const auto cec = abc_cec( xmg, benchmark_type, benchmark, opt );
 
-		float improve = ( ( static_cast<float> ( num_maj_bfr ) - static_cast<float> ( num_maj_aft ) ) / static_cast<float> ( num_maj_bfr ) ) * 100;
+		float improve = ( ( static_cast<float> ( best_score ) - static_cast<float> ( num_maj_aft ) ) / static_cast<float> ( best_score ) ) * 100;
 
-		exp_res( benchmark, opt, num_maj_bfr, num_maj_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
+		exp_res( benchmark, opt, best_score, num_maj_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
 	}
 
 	exp_res.save();

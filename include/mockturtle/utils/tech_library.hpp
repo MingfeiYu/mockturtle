@@ -38,6 +38,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <mockturtle/utils/cost_functions.hpp>
+
 #include <kitty/constructors.hpp>
 #include <kitty/dynamic_truth_table.hpp>
 #include <kitty/npn.hpp>
@@ -674,7 +676,7 @@ struct exact_library_params
       mockturtle::exact_library<mockturtle::mig_network, mockturtle::mig_npn_resynthesis> lib( mig_resyn );
    \endverbatim
  */
-template<typename Ntk, class RewritingFn, unsigned NInputs = 4u>
+template<typename Ntk, class RewritingFn, unsigned NInputs = 4u, class NodeCostFn = unit_cost<Ntk>>
 class exact_library
 {
   using supergates_list_t = std::vector<exact_supergate<Ntk, NInputs>>;
@@ -688,6 +690,7 @@ public:
         _ps( ps ),
         _super_lib()
   {
+    NodeCostFn _cost_fn{};
     generate_library();
   }
 
@@ -886,7 +889,7 @@ private:
     /* add gate area once */
     if ( _database.visited( n ) != _database.trav_id() )
     {
-      area += _ps.area_gate;
+      area += _cost_fn( _database, n );
       _database.set_value( n, 0u );
       _database.set_visited( n, _database.trav_id() );
     }
@@ -914,6 +917,7 @@ private:
   RewritingFn const& _rewriting_fn;
   exact_library_params const _ps;
   lib_t _super_lib;
+  NodeCostFn _cost_fn;
 }; /* class exact_library */
 
 } // namespace mockturtle

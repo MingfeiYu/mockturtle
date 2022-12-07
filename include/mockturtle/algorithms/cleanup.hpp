@@ -190,6 +190,15 @@ void cleanup_dangling_impl( NtkSrc const& ntk, NtkDest& dest, LeavesIterator beg
           old_to_new[node] = dest.create_node( children, ntk.node_function( node ) );
           break;
         }
+        if constexpr ( has_is_onehot_v<NtkSrc> )
+        {
+          static_assert( has_create_onehot_v<NtkDest>, "NtkDest cannot create Onehot gates" );
+          if ( ntk.is_onehot( node ) )
+          {
+            old_to_new[node] = dest.create_onehot( children[0], children[1], children[2] );
+            break;
+          }
+        }
         std::cerr << "[e] something went wrong, could not copy node " << ntk.node_to_index( node ) << "\n";
       } while ( false );
     }

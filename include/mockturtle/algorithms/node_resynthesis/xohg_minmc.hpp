@@ -71,8 +71,8 @@ public:
 	};
 
 public:
-	explicit exact_xohg_resynthesis_minmc( std::string const& db_filename, exact_xohg_resynthesis_minmc_params const& ps = {}, exact_xohg_resynthesis_minmc_stats* pst = nullptr, bool use_db = true )
-			: _ps( ps ), _pst( pst ), func_mc( std::make_shared<std::unordered_map<std::string, uint32_t>>() ), _use_db( use_db )
+	explicit exact_xohg_resynthesis_minmc( std::string const& db_filename, std::string const& dir_prefix = "", exact_xohg_resynthesis_minmc_params const& ps = {}, exact_xohg_resynthesis_minmc_stats* pst = nullptr, bool use_db = true )
+			: _ps( ps ), _pst( pst ), func_mc( std::make_shared<std::unordered_map<std::string, uint32_t>>() ), _use_db( use_db ), _dir_prefix( dir_prefix )
 	{
 		if ( _use_db )
 		{
@@ -94,7 +94,7 @@ public:
 	}
 
 	template<typename LeavesIterator, typename Fn>
-	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, kitty::dynamic_truth_table const& dont_cares, LeavesIterator begin, LeavesIterator end, Fn const& fn )
+	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, kitty::dynamic_truth_table const& dont_cares, LeavesIterator begin, LeavesIterator end, Fn const& fn ) const
 	{
 		auto const tt = function.num_vars() < 3u ? kitty::extend_to( function, 3u ) : function;
 		auto const tt_dc = dont_cares.num_vars() < 3u ? kitty::extend_to( dont_cares, 3u ) : dont_cares;
@@ -186,9 +186,7 @@ public:
 				}
 			}
 
-			uint32_t mc{ 0u };
-			bool valid_mc{ false };
-			look_up_mc( tt, mc, valid_mc );
+			auto [mc, valid_mc] = look_up_mc( tt );
 
 			if ( !valid_mc )
 			{
@@ -210,14 +208,23 @@ public:
 					if( !with_dc && _ps.cache )
 					{
 						( *_ps.cache )[tt] = chain;
+
+						if ( _dir_prefix != "" )
+						{
+							std::string cache_name = "cache_new.db";
+							std::ofstream fout;
+							fout.open( _dir_prefix + cache_name, std::ios::app );
+							chain.write_chain( fout, tt );
+							fout.close();
+						}	
 					}
 
-					_st.time_exact_synth_success += synth_st.sat_time;
+					//_st.time_exact_synth_success += synth_st.sat_time;
 					return chain;
 				}
 				else
 				{
-					_st.time_exact_synth_fail += synth_st.unsat_time;
+					//_st.time_exact_synth_fail += synth_st.unsat_time;
 
 					if ( bound_nfree == upper_bound_oh )
 					{
@@ -226,12 +233,12 @@ public:
 							if ( result == percy::timeout )
 							{
 								( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::exact_synth_conflict_fail );
-								++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_conflict_fail ) );
+								//++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_conflict_fail ) );
 							}
 							else
 							{
 								( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::exact_synth_fail );
-								++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_fail ) );
+								//++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_fail ) );
 							}
 						}
 						return std::nullopt;
@@ -353,7 +360,7 @@ public:
 	}
 
 	template<typename LeavesIterator, typename Fn>
-	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, LeavesIterator begin, LeavesIterator end, Fn&& fn )
+	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
 	{
 		const kitty::dynamic_truth_table tt = function.num_vars() < 3u ? kitty::extend_to( function, 3u ) : function;
 
@@ -361,75 +368,78 @@ public:
 	}
 
 private:
-void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & valid_mc )
+std::tuple<uint32_t, bool> look_up_mc( kitty::dynamic_truth_table const& tt ) const
+{
+	uint32_t mc = 0u;
+	bool valid_mc = false;
+	/* Solution 1: if matching failed, a failure would be generated */
+	if ( _use_db )
 	{
-		/* Solution 1: if matching failed, a failure would be generated */
-		if ( _use_db )
+		const auto tt_lookup = tt.num_vars() < 6u ? kitty::extend_to( tt, 6u ) : tt;
+		const auto spectral = kitty::exact_spectral_canonization_limit( tt_lookup, 100000 );
+
+		if ( !spectral.second )
 		{
-			const auto tt_lookup = tt.num_vars() < 6u ? kitty::extend_to( tt, 6u ) : tt;
-			const auto spectral = kitty::exact_spectral_canonization_limit( tt_lookup, 100000 );
-
-			if ( !spectral.second )
-			{
-				( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::compute_repr_fail );
-				++_st.failures.at( static_cast<uint8_t>( failure_type::compute_repr_fail ) );
-				mc = 0u;
-				valid_mc = false;
-
-				return;
-			}
-			
-			kitty::dynamic_truth_table tt_repr = spectral.first;
-
-			auto search = func_mc->find( kitty::to_hex( tt_repr ) );
-			if ( search != func_mc->end() )
-			{
-				mc = search->second;
-				valid_mc = true;
-				return;
-			}
-
-			( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::match_db_fail );
-			++_st.failures.at( static_cast<uint8_t>( failure_type::match_db_fail ) );
+			( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::compute_repr_fail );
+			//++_st.failures.at( static_cast<uint8_t>( failure_type::compute_repr_fail ) );
 			mc = 0u;
 			valid_mc = false;
+			return { mc, valid_mc };
 		}
+		
+		kitty::dynamic_truth_table tt_repr = spectral.first;
 
-		/* Solution 2: forget about database */
-		else
+		auto search = func_mc->find( kitty::to_hex( tt_repr ) );
+		if ( search != func_mc->end() )
 		{
-			/* need a func. to quickly figure out mc of a given tt */
-			const auto tt_lookup = tt.num_vars() < 5u ? kitty::extend_to( tt, 5u ) : tt;
-			mc = kitty::get_spectral_mc( tt_lookup );
+			mc = search->second;
 			valid_mc = true;
+			return { mc, valid_mc };
 		}
+
+		( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::match_db_fail );
+		//++_st.failures.at( static_cast<uint8_t>( failure_type::match_db_fail ) );
+		mc = 0u;
+		valid_mc = false;
+		return { mc, valid_mc };
 	}
 
-	void build_db( std::string const& db_filename )
+	/* Solution 2: forget about database */
+	else
 	{
-		stopwatch t_total( _st.time_total );
-		stopwatch t_parse_db( _st.time_parse_db );
-
-		std::ifstream db( db_filename.c_str(), std::ifstream::in );
-
-		std::string line;
-		unsigned pos{ 0u };
-
-		while ( std::getline( db, line ) )
-		{
-			pos = static_cast<unsigned>( line.find( '\t' ) );
-
-      pos += 18u;
-      const auto repr = line.substr( pos, 16u );
-
-      pos += 17u;
-			auto mc = std::stoul( line.substr( pos, 1u ) );
-
-			func_mc->emplace( repr, static_cast<uint32_t>( mc ) );
-		}
-
-		std::cout << func_mc->size() << " representatives in the database\n";
+		/* need a func. to quickly figure out mc of a given tt */
+		const auto tt_lookup = tt.num_vars() < 5u ? kitty::extend_to( tt, 5u ) : tt;
+		mc = kitty::get_spectral_mc( tt_lookup );
+		valid_mc = true;
+		return { mc, valid_mc };
 	}
+}
+
+void build_db( std::string const& db_filename )
+{
+	stopwatch t_total( _st.time_total );
+	stopwatch t_parse_db( _st.time_parse_db );
+
+	std::ifstream db( db_filename.c_str(), std::ifstream::in );
+
+	std::string line;
+	unsigned pos{ 0u };
+
+	while ( std::getline( db, line ) )
+	{
+		pos = static_cast<unsigned>( line.find( '\t' ) );
+
+    pos += 18u;
+    const auto repr = line.substr( pos, 16u );
+
+    pos += 17u;
+		auto mc = std::stoul( line.substr( pos, 1u ) );
+
+		func_mc->emplace( repr, static_cast<uint32_t>( mc ) );
+	}
+
+	std::cout << func_mc->size() << " representatives in the database\n";
+}
 
 public:
 	exact_xohg_resynthesis_minmc_stats _st;
@@ -439,6 +449,7 @@ private:
 	exact_xohg_resynthesis_minmc_stats* _pst{ nullptr };
 	bool _use_db;
 	std::shared_ptr<std::unordered_map<std::string, uint32_t>> func_mc;
+	std::string _dir_prefix;
 }; /* exact_xohg_resynthesis_minmc */
 
 } /* namespace mockturtle */
