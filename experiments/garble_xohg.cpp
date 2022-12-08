@@ -186,6 +186,51 @@ void load_cache( mockturtle::exact_xohg_resynthesis_minmc_params::cache_t pcache
 	std::cout << "[i] " << ( *pcache_db ).size() << " functions in the cache. \n";
 }
 
+void load_blacklist( mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_t pblacklist_db, std::string const& dir_prefix )
+{
+	std::string blacklist_name = dir_prefix + "blacklist.db";
+	std::ifstream f( blacklist_name, std::ios::in );
+	if ( !f )
+	{
+		std::cout << "[i] no database for blacklist detected\n";
+		std::cout << "[i] skip blacklist loading\n";
+		return;
+	}
+
+	std::cout << "[i] loading blacklist\n";
+
+	bool done = false;
+	while ( !done )
+	{
+		char buffer[1024] = {0};
+		if ( f >> buffer )
+		{
+			/* read the number of pis       */
+			uint32_t num_pis = static_cast<uint32_t>( std::atoi( buffer ) );
+
+      /* read the truth table         */
+      kitty::dynamic_truth_table tt( num_pis );
+      f >> buffer;
+      kitty::create_from_hex_string( tt, buffer );
+
+      /* read the conflict limitation */
+      f >> buffer;
+      uint32_t conflict_limitation = static_cast<uint32_t>( std::atoi( buffer ) );
+
+      /* store this entry */
+      ( *pblacklist_db )[tt] = conflict_limitation;
+		}
+		else
+		{
+			done = true;
+		}
+	}
+
+	f.close();
+	std::cout << "[i] blacklist loaded\n";
+	std::cout << "[i] " << ( *pblacklist_db ).size() << " functions in the cache. \n";
+}
+
 namespace detail
 {
 template<class Ntk = mockturtle::xag_network>
@@ -218,7 +263,7 @@ struct num_maj
 
 int main()
 {
-	for ( auto benchmark_type_each = 0u; benchmark_type_each <= 2u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each = 0u; benchmark_type_each <= 0u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "garble_xohg" + std::to_string( benchmark_type_each );
 		experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "optimized", "previous_best", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
@@ -240,11 +285,7 @@ int main()
 		{
 
 
-			if ( i < 0u )
-			{
-				continue;
-			}
-			else if ( i > 0u )
+			if ( i > 0u )
 			{
 				return 0;
 			}
@@ -254,9 +295,11 @@ int main()
 			auto const best_score = best_scores[i];
 			auto const dir_prefix_benchmark = dir_prefix + benchmark + "/";
 			mockturtle::exact_xohg_resynthesis_minmc_params::cache_t pcache_db = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::cache_map_t>();
+			mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_t pblacklist_db = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_map_t>();
 			if ( ps_cut_rew.cut_enumeration_ps.cut_size > 4u )
 			{
 				load_cache( pcache_db, dir_prefix_benchmark );
+				load_blacklist( pblacklist_db, dir_prefix_benchmark );
 			}
 
 			std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
@@ -295,7 +338,7 @@ int main()
 				ps_xohg_resyn.print_stats = true;
 				ps_xohg_resyn.conflict_limit = 1000000u;
 				ps_xohg_resyn.cache = pcache_db;
-				ps_xohg_resyn.blacklist_cache = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_map_t>();
+				ps_xohg_resyn.blacklist_cache = pblacklist_db;
 
 				mockturtle::exact_xohg_resynthesis_minmc_stats* pst_xohg_resyn = nullptr;
 				bool use_db = ( ps_cut_rew.cut_enumeration_ps.cut_size == 5u ) ? false : true;
@@ -377,8 +420,6 @@ int main()
 				exp_res.save();
 				exp_res.table();
 			}
-
-
 		}
 
 		exp_res.save();

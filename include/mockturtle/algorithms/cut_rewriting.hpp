@@ -806,18 +806,8 @@ struct cut_rewriting_impl
     NtkDest ret = cleanup_dangling<NtkDest>( res );
 
     /* new costs */
-    std::cout << "The cost of the original circuit is " << orig_cost << "\n";
-    std::cout << "The cost of the optimized circuit is " << costs<NtkDest, NodeCostFn>( ret ) << "\n";
-    if ( costs<NtkDest, NodeCostFn>( ret ) > orig_cost )
-    {
-      std::cout << "The optimized circuit is not better than the original one...\n";
-      return static_cast<NtkDest>( ntk_ );
-    }
-    {
-      std::cout << "The optimized circuit is better than the original one!\n";
-      return ret;
-    }
-    //return costs<NtkDest, NodeCostFn>( ret ) > orig_cost ? static_cast<NtkDest>( ntk_ ) : ret;
+    std::cout << "\toptimized cost = " << costs<NtkDest, NodeCostFn>( ret ) << "\n";
+    return costs<NtkDest, NodeCostFn>( ret ) > orig_cost ? static_cast<NtkDest>( ntk_ ) : ret;
   }
 
 private:

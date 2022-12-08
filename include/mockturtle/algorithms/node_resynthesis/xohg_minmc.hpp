@@ -21,7 +21,7 @@ struct exact_xohg_resynthesis_minmc_params
 {
 	using cache_map_t = std::unordered_map<kitty::dynamic_truth_table, percy::chain_minmc, kitty::hash<kitty::dynamic_truth_table>>;
 	using cache_t = std::shared_ptr<cache_map_t>;
-	using blacklist_cache_map_t = std::unordered_map<kitty::dynamic_truth_table, uint8_t, kitty::hash<kitty::dynamic_truth_table>>;
+	using blacklist_cache_map_t = std::unordered_map<kitty::dynamic_truth_table, uint32_t, kitty::hash<kitty::dynamic_truth_table>>;
 	using blacklist_cache_t = std::shared_ptr<blacklist_cache_map_t>;
 
 	cache_t cache;
@@ -216,7 +216,7 @@ public:
 							fout.open( _dir_prefix + cache_name, std::ios::app );
 							chain.write_chain( fout, tt );
 							fout.close();
-						}	
+						}
 					}
 
 					//_st.time_exact_synth_success += synth_st.sat_time;
@@ -232,13 +232,35 @@ public:
 						{
 							if ( result == percy::timeout )
 							{
-								( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::exact_synth_conflict_fail );
+								/* failed due to conflict limitation  */
+								/* record current conflict limitation */
+								( *_ps.blacklist_cache )[tt] = _ps.conflict_limit;
+
 								//++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_conflict_fail ) );
 							}
 							else
 							{
-								( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::exact_synth_fail );
+								/* failed due to there's no solution */
+								( *_ps.blacklist_cache )[tt] = 0u;
+
 								//++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_fail ) );
+
+							}
+							if ( _dir_prefix != "" )
+							{
+								std::string cache_name = "blacklist_new.db";
+								std::ofstream fout;
+								fout.open( _dir_prefix + cache_name, std::ios::app );
+								/* write the number of pis       */
+								fout << tt.num_vars() << "\n";
+
+        				/* write the truth table         */
+        				kitty::print_hex( tt, fout );
+        				fout << "\n";
+
+								/* write the conflict limitation */
+								fout << _ps.conflict_limit << "\n";
+								fout.close();
 							}
 						}
 						return std::nullopt;
