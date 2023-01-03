@@ -32,6 +32,19 @@ static const uint32_t date20_mpc[] = {
 	97u, 193u, 232u, 456u, 495u, 975u, 554u, 1162u, 881u, 1919u, 1060u, 2394u, 
 	7u, 15u, 21u, 55u, 104u, 275u, 16001u, 58723u};
 
+/* skip benchmarks whose best scores are 0 */
+static const uint32_t tcad22_epfl[] = {
+	0u, 832u, 5132u, 8773u, 872u, 7585u, 1959u, 5217u, 4596u, 
+	0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u};
+
+static const uint32_t tcad22_crypto[] = {
+	0u, 0u, 5440u, 6800u, 84u, 87u, 84u, 87u, 6915u, 6833u, 
+	9367u, 1689u, 11483u, 26464u};
+
+static const uint32_t host19_mpc[] = {
+	97u, 194u, 228u, 454u, 492u, 975u, 556u, 1159u, 1079u, 2367u, 
+	1516u, 3500u, 8u, 16u, 37u, 79u, 147u, 388u, 157182u, 264192u};
+
 std::vector<uint32_t> epfl_date20()
 {
 	std::vector<uint32_t> best_score;
@@ -62,13 +75,43 @@ std::vector<uint32_t> mpc_date20()
 	return best_score;
 }
 
+std::vector<uint32_t> epfl_tcad22()
+{
+	std::vector<uint32_t> best_score;
+	for( auto i = 0u; i < 20u; ++i )
+	{
+		best_score.emplace_back( tcad22_epfl[i] );
+	}
+	return best_score;
+}
+
+std::vector<uint32_t> crypto_tcad22()
+{
+	std::vector<uint32_t> best_score;
+	for( auto i = 0u; i < 14u; ++i )
+	{
+		best_score.emplace_back( tcad22_crypto[i] );
+	}
+	return best_score;
+}
+
+std::vector<uint32_t> mpc_host19()
+{
+	std::vector<uint32_t> best_score;
+	for( auto i = 0u; i < 20u; ++i )
+	{
+		best_score.emplace_back( host19_mpc[i] );
+	}
+	return best_score;
+}
+
 static const std::string EPFL_benchmarks[] = {
 	"adder", "bar", "div", "log2", "max", "multiplier", "sin", "sqrt", "square", "arbiter", 
 	"cavlc", "ctrl" , "dec", "i2c", "int2float" , "mem_ctrl", "priority", "router", "voter", 
 	"hyp"};
 
 static const std::string CRYPTO_benchmarks[] = {
-  "adder_32bit_untilsat", "adder_64bit_untilsat", "AES-expanded_untilsat", "AES-non-expanded_unstilsat", 
+  "adder_32bit_untilsat", "adder_64bit_untilsat", "AES-expanded_untilsat", "AES-non-expanded_untilsat", 
   "comparator_32bit_signed_lt_untilsat", "comparator_32bit_signed_lteq_untilsat", "comparator_32bit_unsigned_lt_untilsat", "comparator_32bit_unsigned_lteq_untilsat", 
   "DES-expanded_untilsat", "DES-non-expanded_untilsat", "md5_untilsat", "mult_32x32_untilsat", "sha-1_untilsat", 
   "sha-256_untilsat"};
@@ -112,14 +155,14 @@ std::vector<std::string> mpc_benchmarks()
 	return result;
 }
 
-std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmark_name, bool opt )
+std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmark_name, uint8_t opt )
 {
 	switch( benchmark_type )
 	{
 	case 0u:
-		return fmt::format( "../experiments/{}/{}.v", ( opt ? "epfl_opt" : "epfl_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? ( ( opt == 1u ) ? "epfl_opt" : "epfl_tcad22" ) : "epfl_benchmarks" ), benchmark_name );
 	case 1u:
-		return fmt::format( "../experiments/{}/{}.v", ( opt ? "crypto_opt" : "crypto_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? ( ( opt == 1u ) ? "crypto_opt" : "crypto_tcad22" ) : "crypto_benchmarks" ), benchmark_name );
 	case 2u:
 		return fmt::format( "../experiments/{}/{}.v", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
 	default:
@@ -130,7 +173,7 @@ std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmar
 }
 
 template<class Ntk>
-bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const& benchmark, bool opt )
+bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const& benchmark, uint8_t opt )
 {
 	mockturtle::write_bench( ntk, "/tmp/test.bench" );
 	std::string abc_path = "/Users/myu/Documents/GitHub/abc/";
@@ -228,7 +271,7 @@ void load_blacklist( mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_
 
 	f.close();
 	std::cout << "[i] blacklist loaded\n";
-	std::cout << "[i] " << ( *pblacklist_db ).size() << " functions in the cache. \n";
+	std::cout << "[i] " << ( *pblacklist_db ).size() << " functions in the blacklist. \n";
 }
 
 namespace detail
@@ -238,7 +281,7 @@ struct num_and
 {
 	uint32_t operator()( Ntk const& ntk, mockturtle::node<Ntk> const& n ) const
 	{
-		return ntk.is_and( n ) ? 1 : 0;
+		return ntk.is_and( n ) ? 1u : 0u;
 	}
 };
 
@@ -256,22 +299,33 @@ struct num_maj
 {
 	uint32_t operator()( Ntk const& ntk, mockturtle::node<Ntk> const& n ) const
 	{
-		return ntk.is_maj( n ) ? 1 : 0;
+		return ntk.is_maj( n ) ? 1u : 0u;
 	}
 };
 }
 
 int main()
 {
-	for ( auto benchmark_type_each = 0u; benchmark_type_each <= 0u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each = 1u; benchmark_type_each <= 1u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "garble_xohg" + std::to_string( benchmark_type_each );
 		experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "optimized", "previous_best", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
 		//uint32_t benchmark_type = 0u; /* 0u - epfl benchmark; 1u - crypto benchmark; 2u - mpc benchmark */
 		uint32_t benchmark_type = benchmark_type_each;
-		bool opt = true;
+		/* 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 */
+		uint8_t opt = 2u;
+		std::cout << "[i] working on " << ( opt ? ( ( opt == 1u ) ? "DATE20 benchmarks\n" : "TCAD22 benchmarks\n" ) : "unoptimized benchmarks\n" );
 		auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
-		auto const best_scores = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_date20() : mpc_date20() ) : epfl_date20();
+		//std::vector<uint32_t> const best_scores  = benchmark_type ? crypto_tcad22() : epfl_tcad22();
+		std::vector<uint32_t> const best_scores  = benchmark_type ? mpc_host19() : epfl_tcad22();
+		//if ( opt == 2u )
+		//{
+		//	best_scores = benchmark_type ? crypto_tcad22() : epfl_tcad22();
+		//}
+		//else
+		//{
+		//	best_scores = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_date20() : mpc_date20() ) : epfl_date20();
+		//}
 		auto const dir_prefix = benchmark_type ? ( ( benchmark_type == 1u ) ? "../experiments/databases/crypto/" : "../experiments/databases/mpc/" ) : "../experiments/databases/epfl/";
 
 		mockturtle::cut_rewriting_params ps_cut_rew;
@@ -281,18 +335,18 @@ int main()
 		ps_cut_rew.progress = true;
 		ps_cut_rew.min_cand_cut_size = 2u;
 
-		for ( auto i = 0u; i < benchmarks.size(); ++i )
+		for ( auto i = 7u; i < benchmarks.size(); ++i )
 		{
-
-
-			if ( i > 0u )
-			{
-				return 0;
-			}
-
-
 			auto const benchmark = benchmarks[i];
 			auto const best_score = best_scores[i];
+			if ( best_score == 0u )
+			{
+				std::cout << "[i] skip " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+				continue;
+			}
+
+			std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+
 			auto const dir_prefix_benchmark = dir_prefix + benchmark + "/";
 			mockturtle::exact_xohg_resynthesis_minmc_params::cache_t pcache_db = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::cache_map_t>();
 			mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_t pblacklist_db = std::make_shared<mockturtle::exact_xohg_resynthesis_minmc_params::blacklist_cache_map_t>();
@@ -302,18 +356,18 @@ int main()
 				load_blacklist( pblacklist_db, dir_prefix_benchmark );
 			}
 
-			std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
-
 			mockturtle::x1g_network x1g;
 			
 			/* Obtain initial X1G by reading in benchmarks */
 			//auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( x1g ) );
 			auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::verilog_reader( x1g ) );
 			assert( read_result == lorina::return_code::success );
+			( void )read_result;
 
 			uint32_t num_oh = 0u;
 			uint32_t num_oh_bfr = 0u;
 			uint32_t num_oh_aft = 0u;
+			( void )num_oh_bfr;
 
 			x1g.foreach_gate( [&]( auto f ) {
 				if ( x1g.is_onehot( f ) )
@@ -414,11 +468,11 @@ int main()
 
 			exp_res( benchmark, opt, best_score, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
 
-
-			if ( i == 0u )
+			if ( i == 7u )
 			{
 				exp_res.save();
 				exp_res.table();
+				return 0;
 			}
 		}
 
