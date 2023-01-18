@@ -1,0 +1,147 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.003194000106304884,
+        "benchmark": "adder_32bit_untilsat",
+        "equivalent": true,
+        "improvement %": 93.36099243164063,
+        "iterations": 2,
+        "num_maj_after": 32,
+        "num_maj_before": 482,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 0.0057830000296235085,
+        "benchmark": "adder_64bit_untilsat",
+        "equivalent": true,
+        "improvement %": 93.01309967041016,
+        "iterations": 2,
+        "num_maj_after": 64,
+        "num_maj_before": 916,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 1.209547996520996,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": 89.40576934814453,
+        "iterations": 2,
+        "num_maj_after": 6987,
+        "num_maj_before": 65951,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": null,
+        "benchmark": "AES-non-expanded_unstilsat",
+        "equivalent": false,
+        "improvement %": null,
+        "iterations": 0,
+        "num_maj_after": 4294967295,
+        "num_maj_before": 0,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 0.0037865000776946545,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "improvement %": 71.5492935180664,
+        "iterations": 2,
+        "num_maj_after": 101,
+        "num_maj_before": 355,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 0.004242499824613333,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 70.83332824707031,
+        "iterations": 2,
+        "num_maj_after": 105,
+        "num_maj_before": 360,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 0.003558000084012747,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "improvement %": 71.5492935180664,
+        "iterations": 2,
+        "num_maj_after": 101,
+        "num_maj_before": 355,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 0.004021000117063522,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 70.83332824707031,
+        "iterations": 2,
+        "num_maj_after": 105,
+        "num_maj_before": 360,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 1.4510469436645508,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": 71.3838119506836,
+        "iterations": 2,
+        "num_maj_after": 13882,
+        "num_maj_before": 48511,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 1.3975889682769775,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": 71.66915893554688,
+        "iterations": 2,
+        "num_maj_after": 13660,
+        "num_maj_before": 48216,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 1.7912185192108154,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "improvement %": 90.34933471679688,
+        "iterations": 2,
+        "num_maj_after": 9401,
+        "num_maj_before": 97413,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 0.22923000156879425,
+        "benchmark": "mult_32x32_untilsat",
+        "equivalent": true,
+        "improvement %": 87.15340423583984,
+        "iterations": 2,
+        "num_maj_after": 1705,
+        "num_maj_before": 13272,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 1.543265461921692,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "improvement %": 91.88902282714844,
+        "iterations": 4,
+        "num_maj_after": 11609,
+        "num_maj_before": 143127,
+        "optimized": true
+      },
+      {
+        "avg. runtime [s]": 1.5672144889831543,
+        "benchmark": "sha-256_untilsat",
+        "equivalent": true,
+        "improvement %": 90.97264099121094,
+        "iterations": 10,
+        "num_maj_after": 27014,
+        "num_maj_before": 299246,
+        "optimized": true
+      }
+    ],
+    "version": "07a42b8"
+  }
+]
