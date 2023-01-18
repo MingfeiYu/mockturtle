@@ -1,0 +1,127 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 7.1743550300598145,
+        "benchmark": "AES-expanded_untilsat",
+        "garble_cost_after": 10560,
+        "garble_cost_before": 10880,
+        "improvement %": 2.941176414489746,
+        "maximum fanin size": 3,
+        "num_and_after": 5120,
+        "num_and_before": 5440
+      },
+      {
+        "avg. runtime [s]": 10.189931869506836,
+        "benchmark": "AES-non-expanded_untilsat",
+        "garble_cost_after": 13200,
+        "garble_cost_before": 13600,
+        "improvement %": 2.941176414489746,
+        "maximum fanin size": 3,
+        "num_and_after": 6400,
+        "num_and_before": 6800
+      },
+      {
+        "avg. runtime [s]": 0.0007140000234358013,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "garble_cost_after": 149,
+        "garble_cost_before": 168,
+        "improvement %": 11.309523582458496,
+        "maximum fanin size": 7,
+        "num_and_after": 65,
+        "num_and_before": 84
+      },
+      {
+        "avg. runtime [s]": 0.0006150000263005495,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "garble_cost_after": 159,
+        "garble_cost_before": 174,
+        "improvement %": 8.620689392089844,
+        "maximum fanin size": 5,
+        "num_and_after": 72,
+        "num_and_before": 87
+      },
+      {
+        "avg. runtime [s]": 0.0006380000268109143,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "garble_cost_after": 149,
+        "garble_cost_before": 168,
+        "improvement %": 11.309523582458496,
+        "maximum fanin size": 7,
+        "num_and_after": 65,
+        "num_and_before": 84
+      },
+      {
+        "avg. runtime [s]": 0.0006389999762177467,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "garble_cost_after": 159,
+        "garble_cost_before": 174,
+        "improvement %": 8.620689392089844,
+        "maximum fanin size": 5,
+        "num_and_after": 72,
+        "num_and_before": 87
+      },
+      {
+        "avg. runtime [s]": 5.32185697555542,
+        "benchmark": "DES-expanded_untilsat",
+        "garble_cost_after": 13479,
+        "garble_cost_before": 13830,
+        "improvement %": 2.537961006164551,
+        "maximum fanin size": 7,
+        "num_and_after": 6589,
+        "num_and_before": 6915
+      },
+      {
+        "avg. runtime [s]": 4.9462480545043945,
+        "benchmark": "DES-non-expanded_untilsat",
+        "garble_cost_after": 13340,
+        "garble_cost_before": 13666,
+        "improvement %": 2.3854823112487793,
+        "maximum fanin size": 7,
+        "num_and_after": 6507,
+        "num_and_before": 6833
+      },
+      {
+        "avg. runtime [s]": 14.652246475219727,
+        "benchmark": "md5_untilsat",
+        "garble_cost_after": 18734,
+        "garble_cost_before": 18734,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 9367,
+        "num_and_before": 9367
+      },
+      {
+        "avg. runtime [s]": 0.25303998589515686,
+        "benchmark": "mult_32x32_untilsat",
+        "garble_cost_after": 3378,
+        "garble_cost_before": 3378,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1689,
+        "num_and_before": 1689
+      },
+      {
+        "avg. runtime [s]": 31.111352920532227,
+        "benchmark": "sha-1_untilsat",
+        "garble_cost_after": 22873,
+        "garble_cost_before": 22966,
+        "improvement %": 0.4049464464187622,
+        "maximum fanin size": 5,
+        "num_and_after": 11390,
+        "num_and_before": 11483
+      },
+      {
+        "avg. runtime [s]": 137.1831512451172,
+        "benchmark": "sha-256_untilsat",
+        "garble_cost_after": 52128,
+        "garble_cost_before": 52928,
+        "improvement %": 1.5114872455596924,
+        "maximum fanin size": 6,
+        "num_and_after": 25664,
+        "num_and_before": 26464
+      }
+    ],
+    "version": "23ba0cd"
+  }
+]

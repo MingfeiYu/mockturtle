@@ -2,14 +2,14 @@
   {
     "entries": [
       {
-        "avg. runtime [s]": 0.0031949998810887337,
-        "benchmark": "router",
+        "avg. runtime [s]": 0.3513999879360199,
+        "benchmark": "bar",
         "equivalent": true,
-        "improvement %": 35.48387145996094,
-        "iterations": 3,
-        "num_oh_after": 60,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_oh_after": 832,
         "optimized": true,
-        "previous_best": 93
+        "previous_best": 832
       }
     ],
     "version": "b83cc8a"

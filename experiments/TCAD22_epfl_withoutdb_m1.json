@@ -1,0 +1,87 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.3513999879360199,
+        "benchmark": "bar",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_oh_after": 832,
+        "optimized": true,
+        "previous_best": 832
+      },
+      {
+        "avg. runtime [s]": 11464.3017578125,
+        "benchmark": "div",
+        "equivalent": true,
+        "improvement %": 5.222135543823242,
+        "iterations": 3,
+        "num_oh_after": 4864,
+        "optimized": true,
+        "previous_best": 5132
+      },
+      {
+        "avg. runtime [s]": 25234.8671875,
+        "benchmark": "log2",
+        "equivalent": true,
+        "improvement %": 6.770773887634277,
+        "iterations": 3,
+        "num_oh_after": 8179,
+        "optimized": true,
+        "previous_best": 8773
+      }
+      {
+        "avg. runtime [s]": 1901.1119384765625,
+        "benchmark": "max",
+        "equivalent": true,
+        "improvement %": 5.045871257781982,
+        "iterations": 2,
+        "num_oh_after": 828,
+        "optimized": true,
+        "previous_best": 872
+      },
+      {
+        "avg. runtime [s]": 6887.81689453125,
+        "benchmark": "multiplier",
+        "equivalent": true,
+        "improvement %": 1.7666445970535278,
+        "iterations": 4,
+        "num_oh_after": 7451,
+        "optimized": true,
+        "previous_best": 7585
+      },
+      {
+        "avg. runtime [s]": 12393.107421875,
+        "benchmark": "sin",
+        "equivalent": true,
+        "improvement %": 11.17917251586914,
+        "iterations": 4,
+        "num_oh_after": 1740,
+        "optimized": true,
+        "previous_best": 1959
+      },
+      {
+        "avg. runtime [s]": 10662.732421875,
+        "benchmark": "sqrt",
+        "equivalent": true,
+        "improvement %": 4.715353488922119,
+        "iterations": 4,
+        "num_oh_after": 4971,
+        "optimized": true,
+        "previous_best": 5217
+      },
+      {
+        "avg. runtime [s]": 7010.89990234375,
+        "benchmark": "square",
+        "equivalent": true,
+        "improvement %": 3.285465717315674,
+        "iterations": 3,
+        "num_oh_after": 4445,
+        "optimized": true,
+        "previous_best": 4596
+      }
+    ],
+    "version": "b83cc8a"
+  }
+]

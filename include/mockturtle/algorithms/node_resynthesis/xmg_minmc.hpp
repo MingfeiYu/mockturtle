@@ -70,8 +70,8 @@ public:
 	};
 
 public:
-	explicit exact_xmg_resynthesis_minmc( std::string const& db_filename, exact_xmg_resynthesis_minmc_params const& ps = {}, exact_xmg_resynthesis_minmc_stats* pst = nullptr, bool use_db = true  )
-			: _ps( ps ), _pst( pst ), func_mc( std::make_shared<std::unordered_map<std::string, uint32_t>>() ), _use_db( use_db ) 
+	explicit exact_xmg_resynthesis_minmc( std::string const& db_filename, std::string const& dir_prefix = "", exact_xmg_resynthesis_minmc_params const& ps = {}, exact_xmg_resynthesis_minmc_stats* pst = nullptr, bool use_db = true  )
+			: _ps( ps ), _pst( pst ), func_mc( std::make_shared<std::unordered_map<std::string, uint32_t>>() ), _use_db( use_db ), _dir_prefix( dir_prefix )
 	{
 		if ( _use_db )
 		{
@@ -93,7 +93,7 @@ public:
 	}
 
 	template<typename LeavesIterator, typename Fn>
-	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, kitty::dynamic_truth_table const& dont_cares, LeavesIterator begin, LeavesIterator end, Fn const& fn )
+	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, kitty::dynamic_truth_table const& dont_cares, LeavesIterator begin, LeavesIterator end, Fn const& fn ) const
 	{
 		auto const tt = function.num_vars() < 3u ? kitty::extend_to( function, 3u ) : function;
 		auto const tt_dc = dont_cares.num_vars() < 3u ? kitty::extend_to( dont_cares, 3u ) : dont_cares;
@@ -101,7 +101,7 @@ public:
 
 		percy::spec_minmc spec;
 		spec.fanin_size = 3;
-		spec.verbosity = 5;
+		spec.verbosity = 0;
 		spec.has_dc_mask = false;
 		spec.use_contribution_clauses = _ps.use_contribution_clauses;
 		spec.conflict_limit = _ps.conflict_limit;
@@ -176,18 +176,18 @@ public:
 				}
 			}
 
-			uint32_t mc{ 0u };
-			bool valid_mc{ false };
-			look_up_mc( tt, mc, valid_mc );
+			auto [mc, valid_mc] = look_up_mc( tt );
 
 			if ( !valid_mc )
 			{
 				return std::nullopt;
 			}
 
-			uint32_t bound_maj = mc;
+			uint32_t bound_nfree = mc;
+
 			percy::chain_minmc chain;
-			spec.set_nfree( bound_maj );
+			
+			spec.set_nfree( bound_nfree );
 			percy::synth_stats synth_st;
 
 			if ( const auto result = percy::std_synthesize_minmc( spec, chain, &synth_st );
@@ -196,20 +196,59 @@ public:
 				if( !with_dc && _ps.cache )
 				{
 					( *_ps.cache )[tt] = chain;
+
+					if ( _dir_prefix != "" )
+					{
+						std::string cache_name = "cache_new.db";
+						std::ofstream fout;
+						fout.open( _dir_prefix + cache_name, std::ios::app );
+						chain.write_chain( fout, tt );
+						fout.close();
+					}
 				}
 
-				_st.time_exact_synth_success += synth_st.sat_time;
+				//_st.time_exact_synth_success += synth_st.sat_time;
 				return chain;
 			}
 			else
 			{
-				_st.time_exact_synth_fail += synth_st.unsat_time;
+				//_st.time_exact_synth_fail += synth_st.unsat_time;
 
 				if ( !with_dc && _ps.blacklist_cache )
 				{
-					( *_ps.blacklist_cache )[tt] = result == percy::timeout ? static_cast<uint8_t>( failure_type::exact_synth_conflict_fail ) : static_cast<uint8_t>( failure_type::exact_synth_fail );
+					if ( result == percy::timeout )
+					{
+						/* failed due to conflict limitation  */
+						/* record current conflict limitation */
+						( *_ps.blacklist_cache )[tt] = _ps.conflict_limit;
+
+						//++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_conflict_fail ) );
+					}
+					else
+					{
+						/* failed due to there's no solution */
+						( *_ps.blacklist_cache )[tt] = 0u;
+
+						//++_st.failures.at( static_cast<uint8_t>( failure_type::exact_synth_fail ) );
+
+					}
+					if ( _dir_prefix != "" )
+					{
+						std::string cache_name = "blacklist_new.db";
+						std::ofstream fout;
+						fout.open( _dir_prefix + cache_name, std::ios::app );
+						/* write the number of pis       */
+						fout << tt.num_vars() << "\n";
+
+    				/* write the truth table         */
+    				kitty::print_hex( tt, fout );
+    				fout << "\n";
+
+						/* write the conflict limitation */
+						fout << _ps.conflict_limit << "\n";
+						fout.close();
+					}
 				}
-				
 				return std::nullopt;
 			}
 		}();
@@ -304,15 +343,17 @@ public:
 	}
 
 	template<typename LeavesIterator, typename Fn>
-	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, LeavesIterator begin, LeavesIterator end, Fn&& fn )
+	void operator()( Ntk& ntk, kitty::dynamic_truth_table const& function, LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
 	{
 		const kitty::dynamic_truth_table tt = function.num_vars() < 3u ? kitty::extend_to( function, 3u ) : function;
 		operator()( ntk, tt, tt.construct(), begin, end, fn );
 	}
 
 private:
-void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & valid_mc )
+	std::tuple<uint32_t, bool> look_up_mc( kitty::dynamic_truth_table const& tt ) const
 	{
+		uint32_t mc = 0u;
+		bool valid_mc = false;
 		/* Solution 1: if matching failed, a failure would be generated */
 		if ( _use_db )
 		{
@@ -322,11 +363,10 @@ void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & val
 			if ( !spectral.second )
 			{
 				( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::compute_repr_fail );
-				++_st.failures.at( static_cast<uint8_t>( failure_type::compute_repr_fail ) );
+				//++_st.failures.at( static_cast<uint8_t>( failure_type::compute_repr_fail ) );
 				mc = 0u;
 				valid_mc = false;
-
-				return;
+				return { mc, valid_mc };
 			}
 			
 			kitty::dynamic_truth_table tt_repr = spectral.first;
@@ -336,13 +376,14 @@ void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & val
 			{
 				mc = search->second;
 				valid_mc = true;
-				return;
+				return { mc, valid_mc };
 			}
 
 			( *_ps.blacklist_cache )[tt] = static_cast<uint8_t>( failure_type::match_db_fail );
-			++_st.failures.at( static_cast<uint8_t>( failure_type::match_db_fail ) );
+			//++_st.failures.at( static_cast<uint8_t>( failure_type::match_db_fail ) );
 			mc = 0u;
 			valid_mc = false;
+			return { mc, valid_mc };
 		}
 
 		/* Solution 2: forget about database */
@@ -352,6 +393,7 @@ void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & val
 			const auto tt_lookup = tt.num_vars() < 5u ? kitty::extend_to( tt, 5u ) : tt;
 			mc = kitty::get_spectral_mc( tt_lookup );
 			valid_mc = true;
+			return { mc, valid_mc };
 		}
 	}
 
@@ -387,6 +429,7 @@ private:
 	exact_xmg_resynthesis_minmc_stats* _pst{ nullptr };
 	bool _use_db;
 	std::shared_ptr<std::unordered_map<std::string, uint32_t>> func_mc;
+	std::string _dir_prefix;
 }; /* exact_xmg_resynthesis_minmc */
 
 }; /* namespace: mockturtle */

@@ -203,5 +203,200 @@
       }
     ],
     "version": "07a42b8"
+  },
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.13921000063419342,
+        "benchmark": "adder",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 128,
+        "optimized": true,
+        "previous_best": 128
+      },
+      {
+        "avg. runtime [s]": 0.2065500020980835,
+        "benchmark": "bar",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 832,
+        "optimized": true,
+        "previous_best": 832
+      },
+      {
+        "avg. runtime [s]": 78.11832427978516,
+        "benchmark": "div",
+        "equivalent": true,
+        "improvement %": 0.3780003786087036,
+        "iterations": 6,
+        "num_maj_after": 5271,
+        "optimized": true,
+        "previous_best": 5291
+      },
+      {
+        "avg. runtime [s]": 237.83331298828125,
+        "benchmark": "log2",
+        "equivalent": true,
+        "improvement %": 0.07330706715583801,
+        "iterations": 3,
+        "num_maj_after": 10905,
+        "optimized": true,
+        "previous_best": 10913
+      },
+      {
+        "avg. runtime [s]": 17.087385177612305,
+        "benchmark": "max",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 890,
+        "optimized": true,
+        "previous_best": 890
+      },
+      {
+        "avg. runtime [s]": 91.80731201171875,
+        "benchmark": "multiplier",
+        "equivalent": true,
+        "improvement %": 0.0784006267786026,
+        "iterations": 4,
+        "num_maj_after": 7647,
+        "optimized": true,
+        "previous_best": 7653
+      },
+      {
+        "avg. runtime [s]": 109.32327270507813,
+        "benchmark": "sin",
+        "equivalent": true,
+        "improvement %": 0.1536688357591629,
+        "iterations": 3,
+        "num_maj_after": 2599,
+        "optimized": true,
+        "previous_best": 2603
+      },
+      {
+        "avg. runtime [s]": 156.99232482910156,
+        "benchmark": "sqrt",
+        "equivalent": true,
+        "improvement %": 0.09291952848434448,
+        "iterations": 3,
+        "num_maj_after": 5376,
+        "optimized": true,
+        "previous_best": 5381
+      },
+      {
+        "avg. runtime [s]": 97.34793853759766,
+        "benchmark": "square",
+        "equivalent": true,
+        "improvement %": 0.06421232968568802,
+        "iterations": 3,
+        "num_maj_after": 4669,
+        "optimized": true,
+        "previous_best": 4672
+      },
+      {
+        "avg. runtime [s]": 2.299402952194214,
+        "benchmark": "arbiter",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 1174,
+        "optimized": true,
+        "previous_best": 1174
+      },
+      {
+        "avg. runtime [s]": 148.57354736328125,
+        "benchmark": "cavlc",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 394,
+        "optimized": true,
+        "previous_best": 394
+      },
+      {
+        "avg. runtime [s]": 7.389325141906738,
+        "benchmark": "ctrl",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 45,
+        "optimized": true,
+        "previous_best": 45
+      },
+      {
+        "avg. runtime [s]": 0.0078940000385046,
+        "benchmark": "dec",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 328,
+        "optimized": true,
+        "previous_best": 328
+      },
+      {
+        "avg. runtime [s]": 86.21538543701172,
+        "benchmark": "i2c",
+        "equivalent": true,
+        "improvement %": 0.1795332133769989,
+        "iterations": 2,
+        "num_maj_after": 556,
+        "optimized": true,
+        "previous_best": 557
+      },
+      {
+        "avg. runtime [s]": 16.712064743041992,
+        "benchmark": "int2float",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 85,
+        "optimized": true,
+        "previous_best": 85
+      },
+      {
+        "avg. runtime [s]": 311.86016845703125,
+        "benchmark": "mem_ctrl",
+        "equivalent": true,
+        "improvement %": 0.042598508298397064,
+        "iterations": 2,
+        "num_maj_after": 4693,
+        "optimized": true,
+        "previous_best": 4695
+      },
+      {
+        "avg. runtime [s]": 11.936001777648926,
+        "benchmark": "priority",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 323,
+        "optimized": true,
+        "previous_best": 323
+      },
+      {
+        "avg. runtime [s]": 0.5632979869842529,
+        "benchmark": "router",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_maj_after": 93,
+        "optimized": true,
+        "previous_best": 93
+      },
+      {
+        "avg. runtime [s]": 420.81427001953125,
+        "benchmark": "voter",
+        "equivalent": true,
+        "improvement %": 0.11745360493659973,
+        "iterations": 4,
+        "num_maj_after": 4252,
+        "optimized": true,
+        "previous_best": 4257
+      }
+    ],
+    "version": "b83cc8a"
   }
 ]

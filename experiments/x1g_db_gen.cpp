@@ -13,6 +13,7 @@
 #include <kitty/hash.hpp>
 #include <kitty/spectral.hpp>
 #include <kitty/constructors.hpp>
+#include <kitty/properties.hpp>
 
 #include <experiments.hpp>
 
@@ -73,6 +74,8 @@ void x1g_db_gen()
 
   uint32_t winning_case_cnt{ 0u };
   uint32_t num_ele_cnt{ 0u };
+  float time_accum = 0.0;
+
 	for ( auto const& benchmark: benchmarks )
 	{
 		std::cout << "[i] processing " << benchmark << std::endl;
@@ -82,6 +85,7 @@ void x1g_db_gen()
 
 		uint32_t mc{ 0u };
 		uint32_t num_oh{ 0u };
+		const clock_t begin_time = clock();
 
 		assert( function.num_vars() == 4u );
 		bool const normal = kitty::is_normal( function );
@@ -116,6 +120,7 @@ void x1g_db_gen()
 
 
 			++npn_mc[0];
+			time_accum += ( float( clock() - begin_time ) / CLOCKS_PER_SEC );
 
 
 			continue;
@@ -630,6 +635,7 @@ void x1g_db_gen()
 				{
 					++winning_case_cnt;
 				}
+				time_accum += ( float( clock() - begin_time ) / CLOCKS_PER_SEC );
 				break;
 			}
 			else
@@ -651,6 +657,9 @@ void x1g_db_gen()
 	{
 		std::cout << "npn_mc[" << i << "] is " << npn_mc[i] << "\n";
 	}
+
+	std::cout << "Spent " << time_accum / benchmarks.size() << "s in average\n";
+	std::cout << std::endl;
 
 	exp_res.save();
 	exp_res.table();

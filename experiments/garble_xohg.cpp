@@ -43,7 +43,7 @@ static const uint32_t tcad22_crypto[] = {
 
 static const uint32_t host19_mpc[] = {
 	97u, 194u, 228u, 454u, 492u, 975u, 556u, 1159u, 1079u, 2367u, 
-	1516u, 3500u, 8u, 16u, 37u, 79u, 147u, 388u, 157182u, 264192u};
+	1516u, 3500u, 8u, 16u, 37u, 79u, 147u, 388u, 0u, 0u};//157182u, 264192u
 
 std::vector<uint32_t> epfl_date20()
 {
@@ -164,7 +164,7 @@ std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmar
 	case 1u:
 		return fmt::format( "../experiments/{}/{}.v", ( opt ? ( ( opt == 1u ) ? "crypto_opt" : "crypto_tcad22" ) : "crypto_benchmarks" ), benchmark_name );
 	case 2u:
-		return fmt::format( "../experiments/{}/{}.v", ( opt ? "mpc_opt" : "mpc_benchmarks" ), benchmark_name );
+		return fmt::format( "../experiments/{}/{}.v", ( opt ? ( ( opt == 1u ) ? "mpc_opt" : "mpc_host19" ) : "mpc_benchmarks" ), benchmark_name );
 	default:
 		std::cout << "Unspecified type of benchmark. \n";
 		abort();
@@ -293,31 +293,22 @@ struct num_oh
 		return ntk.is_onehot( n ) ? 1u : 0u;
 	}
 };
-
-template<class Ntk = mockturtle::xmg_network>
-struct num_maj
-{
-	uint32_t operator()( Ntk const& ntk, mockturtle::node<Ntk> const& n ) const
-	{
-		return ntk.is_maj( n ) ? 1u : 0u;
-	}
-};
 }
 
 int main()
 {
-	for ( auto benchmark_type_each = 1u; benchmark_type_each <= 1u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each = 2u; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "garble_xohg" + std::to_string( benchmark_type_each );
 		experiments::experiment<std::string, bool, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "optimized", "previous_best", "num_oh_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
 		//uint32_t benchmark_type = 0u; /* 0u - epfl benchmark; 1u - crypto benchmark; 2u - mpc benchmark */
 		uint32_t benchmark_type = benchmark_type_each;
 		/* 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 */
-		uint8_t opt = 2u;
-		std::cout << "[i] working on " << ( opt ? ( ( opt == 1u ) ? "DATE20 benchmarks\n" : "TCAD22 benchmarks\n" ) : "unoptimized benchmarks\n" );
+		uint8_t opt = 1u;
+		std::cout << "[i] working on " << ( opt ? ( ( opt == 1u ) ? "DATE20 benchmarks\n" : "HOST19 benchmarks\n" ) : "unoptimized benchmarks\n" );
 		auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
 		//std::vector<uint32_t> const best_scores  = benchmark_type ? crypto_tcad22() : epfl_tcad22();
-		std::vector<uint32_t> const best_scores  = benchmark_type ? mpc_host19() : epfl_tcad22();
+		std::vector<uint32_t> const best_scores  = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_date20() : mpc_date20() ) : epfl_date20();
 		//if ( opt == 2u )
 		//{
 		//	best_scores = benchmark_type ? crypto_tcad22() : epfl_tcad22();
@@ -335,7 +326,7 @@ int main()
 		ps_cut_rew.progress = true;
 		ps_cut_rew.min_cand_cut_size = 2u;
 
-		for ( auto i = 7u; i < benchmarks.size(); ++i )
+		for ( auto i = 19u; i < benchmarks.size(); ++i )
 		{
 			auto const benchmark = benchmarks[i];
 			auto const best_score = best_scores[i];
@@ -364,10 +355,19 @@ int main()
 			assert( read_result == lorina::return_code::success );
 			( void )read_result;
 
+
+			if ( read_result == lorina::return_code::success )
+			{
+				std::cout << "[i] successfully read " << benchmark << std::endl;
+			}
+			else
+			{
+				std::cout << "[i] failed to read " << benchmark << std::endl;
+			}
+
+
 			uint32_t num_oh = 0u;
-			uint32_t num_oh_bfr = 0u;
 			uint32_t num_oh_aft = 0u;
-			( void )num_oh_bfr;
 
 			x1g.foreach_gate( [&]( auto f ) {
 				if ( x1g.is_onehot( f ) )
@@ -381,7 +381,6 @@ int main()
 				exp_res( benchmark, opt, 0u, 0u, 0., 0u, 0., true );
 				continue;
 			}
-			num_oh_bfr = num_oh;
 			num_oh_aft = num_oh - 1u;
 
 			clock_t begin_time;
@@ -461,19 +460,17 @@ int main()
 				}
 			}
 
+
+			mockturtle::write_bench( x1g, "/Users/myu/Documents/GitHub/abc/bench" );
+			return 0;
+
+
 			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
 			//assert( cec );
 
 			float improve = ( ( static_cast<float> ( best_score ) - static_cast<float> ( num_oh_aft ) ) / static_cast<float> ( best_score ) ) * 100;
 
 			exp_res( benchmark, opt, best_score, num_oh_aft, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
-
-			if ( i == 7u )
-			{
-				exp_res.save();
-				exp_res.table();
-				return 0;
-			}
 		}
 
 		exp_res.save();

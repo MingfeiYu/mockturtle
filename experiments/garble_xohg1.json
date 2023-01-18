@@ -1,0 +1,17 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 1151.9696044921875,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 93.96551513671875,
+        "iterations": 3,
+        "num_oh_after": 70,
+        "optimized": true,
+        "previous_best": 1160
+      }
+    ],
+    "version": "b83cc8a"
+  }
+]

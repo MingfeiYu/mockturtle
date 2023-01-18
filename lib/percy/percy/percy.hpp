@@ -282,7 +282,7 @@ namespace percy
         uint32_t upper;
         if ( spec.nr_steps_upper == 0u )
         {
-            upper = ( spec.nfree == 0u ) ? MAX_STEPS : ( ( spec.conflict_limit == 0u ) ? 2 * spec.nfree + 1 : MAX_STEPS );
+            upper = ( spec.nfree <= 2u ) ? MAX_STEPS : ( ( spec.conflict_limit == 0u ) ? 2 * spec.nfree + 1 : MAX_STEPS );
         }
         else
         {

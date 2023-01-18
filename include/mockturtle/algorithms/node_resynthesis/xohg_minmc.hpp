@@ -110,8 +110,6 @@ public:
 
 		if ( int triv = spec.check_triv(); triv >= 0 )
 		{
-			kitty::print_binary( tt, std::cout );
-
 			auto const output_signal = ( triv == 0 ) ? ntk.get_constant( false ) : 
 																								 *( begin + ( triv - 1 ) );
 			fn( normal ? output_signal : !output_signal );
@@ -205,6 +203,16 @@ public:
 				if ( const auto result = percy::std_synthesize_minmc( spec, chain, &synth_st );
 					 	 result == percy::success )
 				{
+					if ( bound_nfree < upper_bound_oh )
+					{
+						std::cout << "[i] Awesome! Achieve lower garbling cost! \n";
+
+					}
+
+
+
+
+
 					if( !with_dc && _ps.cache )
 					{
 						( *_ps.cache )[tt] = chain;

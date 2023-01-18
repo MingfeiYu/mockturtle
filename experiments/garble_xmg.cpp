@@ -148,6 +148,84 @@ bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const&
 	return result.size() >= 23 && result.substr( 0u, 23u ) == "Networks are equivalent";
 }
 
+void load_cache( mockturtle::exact_xmg_resynthesis_minmc_params::cache_t pcache_db, std::string const& dir_prefix )
+{
+	std::string cache_name = dir_prefix + "cache.db";
+	std::ifstream f( cache_name, std::ios::in );
+	if ( !f )
+	{
+		std::cout << "[i] no database for cache detected\n";
+		std::cout << "[i] skip cache loading\n";
+		return;
+	}
+
+	std::cout << "[i] loading cache\n";
+	
+	bool done = false;
+	while ( !done )
+	{
+		percy::chain_minmc chain;
+		std::optional<kitty::dynamic_truth_table> ttOpt = chain.read_from_file( f );
+		if ( ttOpt )
+		{
+			( *pcache_db )[*ttOpt] = chain;
+		}
+		else
+		{
+			done = true;
+		}
+	}
+
+	f.close();
+	std::cout << "[i] cache loaded\n";
+	std::cout << "[i] " << ( *pcache_db ).size() << " functions in the cache. \n";
+}
+
+void load_blacklist( mockturtle::exact_xmg_resynthesis_minmc_params::blacklist_cache_t pblacklist_db, std::string const& dir_prefix )
+{
+	std::string blacklist_name = dir_prefix + "blacklist.db";
+	std::ifstream f( blacklist_name, std::ios::in );
+	if ( !f )
+	{
+		std::cout << "[i] no database for blacklist detected\n";
+		std::cout << "[i] skip blacklist loading\n";
+		return;
+	}
+
+	std::cout << "[i] loading blacklist\n";
+
+	bool done = false;
+	while ( !done )
+	{
+		char buffer[1024] = {0};
+		if ( f >> buffer )
+		{
+			/* read the number of pis       */
+			uint32_t num_pis = static_cast<uint32_t>( std::atoi( buffer ) );
+
+      /* read the truth table         */
+      kitty::dynamic_truth_table tt( num_pis );
+      f >> buffer;
+      kitty::create_from_hex_string( tt, buffer );
+
+      /* read the conflict limitation */
+      f >> buffer;
+      uint32_t conflict_limitation = static_cast<uint32_t>( std::atoi( buffer ) );
+
+      /* store this entry */
+      ( *pblacklist_db )[tt] = conflict_limitation;
+		}
+		else
+		{
+			done = true;
+		}
+	}
+
+	f.close();
+	std::cout << "[i] blacklist loaded\n";
+	std::cout << "[i] " << ( *pblacklist_db ).size() << " functions in the blacklist. \n";
+}
+
 namespace detail
 {
 template<class Ntk = mockturtle::xmg_network>
@@ -167,28 +245,43 @@ int main()
 	bool opt = true;
 	auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
 	auto const best_scores = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_date20() : mpc_date20() ) : epfl_date20();
+	auto const dir_prefix = benchmark_type ? ( ( benchmark_type == 1u ) ? "../experiments/databases_xmg/crypto/" : "../experiments/databases_xmg/mpc/" ) : "../experiments/databases_xmg/epfl/";
+
+	mockturtle::cut_rewriting_params ps_cut_rew;
+	ps_cut_rew.cut_enumeration_ps.cut_size = 5u;
+	ps_cut_rew.cut_enumeration_ps.cut_limit = 12u;
+	ps_cut_rew.verbose = true;
+	ps_cut_rew.progress = true;
+	ps_cut_rew.min_cand_cut_size = 2u;
 
 	for ( auto i = 0u; i < benchmarks.size(); ++i )
-	//for ( auto const& benchmark: benchmarks )
 	{
 		auto const benchmark = benchmarks[i];
 		auto const best_score = best_scores[i];
+		if ( best_score == 0u )
+		{
+			std::cout << "[i] skip " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+			continue;
+		}
+
 		std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
-		mockturtle::cut_rewriting_params ps_cut_rew;
-		ps_cut_rew.cut_enumeration_ps.cut_size = 4u;
-		ps_cut_rew.cut_enumeration_ps.cut_limit = 12u;
-		ps_cut_rew.verbose = true;
-		ps_cut_rew.progress = true;
-		ps_cut_rew.min_cand_cut_size = 2u;
+		auto const dir_prefix_benchmark = dir_prefix + benchmark + "/";
+		mockturtle::exact_xmg_resynthesis_minmc_params::cache_t pcache_db = std::make_shared<mockturtle::exact_xmg_resynthesis_minmc_params::cache_map_t>();
+		mockturtle::exact_xmg_resynthesis_minmc_params::blacklist_cache_t pblacklist_db = std::make_shared<mockturtle::exact_xmg_resynthesis_minmc_params::blacklist_cache_map_t>();
+		if ( ps_cut_rew.cut_enumeration_ps.cut_size > 4u )
+		{
+			load_cache( pcache_db, dir_prefix_benchmark );
+			load_blacklist( pblacklist_db, dir_prefix_benchmark );
+		}
 
 		mockturtle::xmg_network xmg;
 		//auto const read_result = lorina::read_aiger( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::aiger_reader( xmg ) );
 		auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::verilog_reader( xmg ) );
 		assert( read_result == lorina::return_code::success );
+		( void ) read_result;
 
 		uint32_t num_maj = 0u;
-		uint32_t num_maj_bfr = 0u;
 		uint32_t num_maj_aft = 0u;
 
 		xmg.foreach_gate( [&]( auto f ) {
@@ -197,7 +290,6 @@ int main()
 				++num_maj;
 			}
 		} );
-		num_maj_bfr = num_maj;
 		num_maj_aft = num_maj - 1u;
 
 		mockturtle::exact_xmg_resynthesis_minmc_params ps_xmg_resyn;
@@ -205,34 +297,54 @@ int main()
 		ps_xmg_resyn.cache = std::make_shared<mockturtle::exact_xmg_resynthesis_minmc_params::cache_map_t>();
 		ps_xmg_resyn.blacklist_cache = std::make_shared<mockturtle::exact_xmg_resynthesis_minmc_params::blacklist_cache_map_t>();
 
-		mockturtle::exact_xmg_resynthesis_minmc_stats* pst_xmg_resyn = nullptr;
-		bool use_db = ( ps_cut_rew.cut_enumeration_ps.cut_size == 5u ) ? false : true;
-
-		//mockturtle::exact_xmg_resynthesis_minmc xmg_resyn( "../experiments/db", ps_xmg_resyn, pst_xmg_resyn, use_db );
-		//mockturtle::xmg3_npn_resynthesis<mockturtle::xmg_network> xmg_resyn;
-		mockturtle::xmg_npn_minmc_resynthesis<mockturtle::xmg_network> xmg_resyn;
-
-		mockturtle::exact_library_params _exact_lib_params;
-    _exact_lib_params.verbose = true;
-    _exact_lib_params.np_classification = false;
-    mockturtle::exact_library<mockturtle::xmg_network, decltype( xmg_resyn )> lib( xmg_resyn, _exact_lib_params );
-
-		uint32_t ite_cnt = 5u;
-		const clock_t begin_time = clock();
-
-
-		for ( auto j = 0u; j < ite_cnt; ++j )
-		//while ( num_maj > num_maj_aft )
+		uint32_t ite_cnt = 0u;
+		clock_t begin_time;
+		if ( ps_cut_rew.cut_enumeration_ps.cut_size > 4u )
 		{
-			if ( ite_cnt > 0 )
-			{
-				num_maj = num_maj_aft;
-			}
-			//++ite_cnt;
-			num_maj_aft = 0u;
+			mockturtle::exact_xmg_resynthesis_minmc_params ps_xmg_resyn;
+			ps_xmg_resyn.print_stats = true;
+			ps_xmg_resyn.conflict_limit = 1000000u;
+			ps_xmg_resyn.cache = pcache_db;
+			ps_xmg_resyn.blacklist_cache = pblacklist_db;
 
-			//mockturtle::cut_rewriting_with_compatibility_graph( xmg, xmg_resyn, ps_cut_rew, nullptr, ::detail::num_maj<mockturtle::xmg_network>() );
-			xmg = mockturtle::map( xmg, lib );
+			mockturtle::exact_xmg_resynthesis_minmc_stats* pst_xmg_resyn = nullptr;
+			bool use_db = ( ps_cut_rew.cut_enumeration_ps.cut_size == 5u ) ? false : true;
+
+			mockturtle::exact_xmg_resynthesis_minmc xmg_resyn( "../experiments/db", dir_prefix_benchmark, ps_xmg_resyn, pst_xmg_resyn, use_db );
+
+			begin_time = clock();
+			while ( num_maj > num_maj_aft )
+			{
+				if ( ite_cnt > 0u )
+				{
+					num_maj = num_maj_aft;
+				}
+				++ite_cnt;
+				num_maj_aft = 0u;
+
+				xmg = mockturtle::cut_rewriting<mockturtle::xmg_network, decltype( xmg_resyn ), ::detail::num_maj<mockturtle::xmg_network>>( xmg, xmg_resyn, ps_cut_rew );
+
+				xmg.foreach_gate( [&]( auto f ) {
+					if ( xmg.is_maj( f ) )
+					{
+						++num_maj_aft;
+					}
+				} );
+			}
+		}
+		else
+		{
+			//mockturtle::xmg3_npn_resynthesis<mockturtle::xmg_network> xmg_resyn;
+			mockturtle::xmg_npn_minmc_resynthesis<mockturtle::xmg_network> xmg_resyn;
+
+			begin_time = clock();
+
+			mockturtle::exact_library_params _exact_lib_params;
+	    _exact_lib_params.verbose = true;
+	    _exact_lib_params.np_classification = false;
+	    mockturtle::exact_library<mockturtle::xmg_network, decltype( xmg_resyn )> lib( xmg_resyn, _exact_lib_params );
+
+	    xmg = mockturtle::map( xmg, lib );
 			xmg = mockturtle::cleanup_dangling( xmg );
 
 			xmg.foreach_gate( [&]( auto f ) {

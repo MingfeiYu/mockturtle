@@ -1,0 +1,2177 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.00024900000425986946,
+        "benchmark": "0001",
+        "garble_cost_after": 4,
+        "garble_cost_before": 6,
+        "improvement %": 33.333335876464844,
+        "maximum fanin size": 4,
+        "num_and_after": 1,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 2.2000000171829015e-05,
+        "benchmark": "0003",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.9999999494757503e-05,
+        "benchmark": "0006",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.8999999156221747e-05,
+        "benchmark": "0007",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "000f",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 2.300000051036477e-05,
+        "benchmark": "0016",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.700000029813964e-05,
+        "benchmark": "0017",
+        "garble_cost_after": 7,
+        "garble_cost_before": 4,
+        "improvement %": -75.0,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 2.300000051036477e-05,
+        "benchmark": "0018",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.5999999959603883e-05,
+        "benchmark": "0019",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "001b",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "001e",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "001f",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "003c",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "003d",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "003f",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "0069",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "006b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "006f",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "007e",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "007f",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "0116",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0117",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0118",
+        "garble_cost_after": 7,
+        "garble_cost_before": 6,
+        "improvement %": -16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0119",
+        "garble_cost_after": 10,
+        "garble_cost_before": 4,
+        "improvement %": -150.0,
+        "maximum fanin size": 2,
+        "num_and_after": 5,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "011a",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "011b",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "011e",
+        "garble_cost_after": 7,
+        "garble_cost_before": 6,
+        "improvement %": -16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "011f",
+        "garble_cost_after": 5,
+        "garble_cost_before": 4,
+        "improvement %": -25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "012c",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "012d",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "012f",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.8999999156221747e-05,
+        "benchmark": "013c",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "013d",
+        "garble_cost_after": 5,
+        "garble_cost_before": 4,
+        "improvement %": -25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "013e",
+        "garble_cost_after": 7,
+        "garble_cost_before": 4,
+        "improvement %": -75.0,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "013f",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "0168",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0169",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "016a",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "016b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "016e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "016f",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "017e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "017f",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "0180",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0181",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0182",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "0183",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "0186",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0187",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0189",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "018b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "018f",
+        "garble_cost_after": 10,
+        "garble_cost_before": 4,
+        "improvement %": -150.0,
+        "maximum fanin size": 2,
+        "num_and_after": 5,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0196",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0197",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "0198",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0199",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "019a",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "019b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "019e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "019f",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "01a8",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.8000000636675395e-05,
+        "benchmark": "01a9",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "01aa",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "01ab",
+        "garble_cost_after": 7,
+        "garble_cost_before": 4,
+        "improvement %": -75.0,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "01ac",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "01ad",
+        "garble_cost_after": 7,
+        "garble_cost_before": 4,
+        "improvement %": -75.0,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "01ae",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "01af",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "01bc",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "01bd",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "01be",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "01bf",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.5999999959603883e-05,
+        "benchmark": "01e8",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "01e9",
+        "garble_cost_after": 10,
+        "garble_cost_before": 4,
+        "improvement %": -150.0,
+        "maximum fanin size": 2,
+        "num_and_after": 5,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "01ea",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "01eb",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "01ee",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "01ef",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "01fe",
+        "garble_cost_after": 3,
+        "garble_cost_before": 4,
+        "improvement %": 25.0,
+        "maximum fanin size": 3,
+        "num_and_after": 1,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "033c",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "033d",
+        "garble_cost_after": 9,
+        "garble_cost_before": 6,
+        "improvement %": -50.0,
+        "maximum fanin size": 3,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "033f",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "0356",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.000000318337698e-06,
+        "benchmark": "0357",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "0358",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "0359",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "035a",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "035b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "035e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "035f",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "0368",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0369",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "036a",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "036b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "036c",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "036d",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "036e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "036f",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "037c",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "037d",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "037e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.000000318337698e-06,
+        "benchmark": "03c0",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "03c1",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 7.999999979801942e-06,
+        "benchmark": "03c3",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "03c5",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "03c6",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "03c7",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 7.999999979801942e-06,
+        "benchmark": "03cf",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "03d4",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "03d5",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "03d6",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "03d7",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "03d8",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.700000029813964e-05,
+        "benchmark": "03d9",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "03db",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "03dc",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "03dd",
+        "garble_cost_after": 7,
+        "garble_cost_before": 4,
+        "improvement %": -75.0,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "03de",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 7.999999979801942e-06,
+        "benchmark": "03fc",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 9.000000318337698e-06,
+        "benchmark": "0660",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "0661",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0662",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0663",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "0666",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0667",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0669",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "066b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "066f",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0672",
+        "garble_cost_after": 10,
+        "garble_cost_before": 4,
+        "improvement %": -150.0,
+        "maximum fanin size": 2,
+        "num_and_after": 5,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0673",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0676",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0678",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "0679",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "067a",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.8000000636675395e-05,
+        "benchmark": "067b",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.5999999959603883e-05,
+        "benchmark": "067e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0690",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0691",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0693",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0696",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0697",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "069f",
+        "garble_cost_after": 4,
+        "garble_cost_before": 2,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "06b0",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06b1",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "06b2",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06b3",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06b4",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06b5",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06b6",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "06b7",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06b9",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "06bd",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "06f0",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "06f1",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "06f2",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "06f6",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 9.000000318337698e-06,
+        "benchmark": "06f9",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "0776",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "0778",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "0779",
+        "garble_cost_after": 10,
+        "garble_cost_before": 4,
+        "improvement %": -150.0,
+        "maximum fanin size": 2,
+        "num_and_after": 5,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "077a",
+        "garble_cost_after": 7,
+        "garble_cost_before": 4,
+        "improvement %": -75.0,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "077e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "07b0",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "07b1",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "07b4",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "07b5",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "07b6",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "07bc",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "07e0",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "07e1",
+        "garble_cost_after": 10,
+        "garble_cost_before": 6,
+        "improvement %": -66.66667175292969,
+        "maximum fanin size": 2,
+        "num_and_after": 5,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "07e2",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "07e3",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "07e6",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "07e9",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "07f0",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "07f1",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "07f2",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.000000318337698e-06,
+        "benchmark": "07f8",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "1668",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "1669",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "166a",
+        "garble_cost_after": 9,
+        "garble_cost_before": 6,
+        "improvement %": -50.0,
+        "maximum fanin size": 3,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "166b",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "166e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "167e",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "1681",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "1683",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "1686",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "1687",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "1689",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "168b",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "168e",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "1696",
+        "garble_cost_after": 5,
+        "garble_cost_before": 6,
+        "improvement %": 16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 2,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "1697",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "1698",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "1699",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "169a",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.5999999959603883e-05,
+        "benchmark": "169b",
+        "garble_cost_after": 8,
+        "garble_cost_before": 4,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "169e",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4000000192027073e-05,
+        "benchmark": "16a9",
+        "garble_cost_after": 7,
+        "garble_cost_before": 6,
+        "improvement %": -16.666667938232422,
+        "maximum fanin size": 3,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "16ac",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "16ad",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "16bc",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "16e9",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "177e",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "178e",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "1796",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "1798",
+        "garble_cost_after": 6,
+        "garble_cost_before": 6,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "179a",
+        "garble_cost_after": 9,
+        "garble_cost_before": 4,
+        "improvement %": -125.0,
+        "maximum fanin size": 3,
+        "num_and_after": 4,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.4999999621068127e-05,
+        "benchmark": "17ac",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "17e8",
+        "garble_cost_after": 8,
+        "garble_cost_before": 2,
+        "improvement %": -300.0,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "18e7",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 1.2999999853491317e-05,
+        "benchmark": "19e1",
+        "garble_cost_after": 8,
+        "garble_cost_before": 6,
+        "improvement %": -33.333335876464844,
+        "maximum fanin size": 2,
+        "num_and_after": 4,
+        "num_and_before": 3
+      },
+      {
+        "avg. runtime [s]": 1.2000000424450263e-05,
+        "benchmark": "19e3",
+        "garble_cost_after": 6,
+        "garble_cost_before": 4,
+        "improvement %": -50.0,
+        "maximum fanin size": 2,
+        "num_and_after": 3,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "19e6",
+        "garble_cost_after": 4,
+        "garble_cost_before": 4,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 2
+      },
+      {
+        "avg. runtime [s]": 1.1000000085914508e-05,
+        "benchmark": "1bd8",
+        "garble_cost_after": 4,
+        "garble_cost_before": 2,
+        "improvement %": -100.0,
+        "maximum fanin size": 2,
+        "num_and_after": 2,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "1be4",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "1ee1",
+        "garble_cost_after": 2,
+        "garble_cost_before": 2,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1,
+        "num_and_before": 1
+      }
+    ],
+    "version": "23ba0cd"
+  }
+]
