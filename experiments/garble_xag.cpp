@@ -229,6 +229,7 @@ void count_and_size_rec( merge_view& xag, mockturtle::xag_network::node const& f
 				xag.foreach_fanin( f, [&]( auto const& fi ) {
 					auto const child = xag.get_node( fi );
 					if ( xag.is_and( child ) && !xag.is_complemented( fi ) )
+					//if ( xag.is_and( child ) )
 					{
 						count_and_size_rec( xag, child, root );
 					}
@@ -243,6 +244,7 @@ void count_and_size_rec( merge_view& xag, mockturtle::xag_network::node const& f
 			xag.foreach_fanin( f, [&]( auto const& fi ) {
 				auto const child = xag.get_node( fi );
 				if ( xag.is_and( child ) && !xag.is_complemented( fi ) )
+				//if ( xag.is_and( child ) )
 				{
 					//std::cout << "child node " << child << " is an AND, ";
 					count_and_size_rec( xag, child, f );
@@ -362,7 +364,8 @@ int main()
 
 		mockturtle::xag_network xag;
 		//auto const read_result = lorina::read_verilog( "../experiments/epfl_opt/test.v", mockturtle::verilog_reader( xag ) );
-		auto const read_result = lorina::read_verilog( "../experiments/crypto_tcad22/AES-expanded_untilsat.v", mockturtle::verilog_reader( xag ) );
+		//auto const read_result = lorina::read_verilog( "../experiments/crypto_tcad22/AES-expanded_untilsat.v", mockturtle::verilog_reader( xag ) );
+		auto const read_result = lorina::read_verilog( "../experiments/epfl_opt/mem_ctrl.v", mockturtle::verilog_reader( xag ) );
 		assert( read_result == lorina::return_code::success );
 		( void )read_result;
 		
@@ -371,7 +374,7 @@ int main()
 		uint32_t garble_cost_bfr = 0u;
 		uint32_t garble_cost_aft = 0u;
 		uint32_t max_fan_in = 0u;
-		std::vector<uint32_t> and_size;
+		//std::vector<uint32_t> and_size;
 
 		xag.foreach_gate( [&]( auto f ) {
 			if ( xag.is_and( f ) )
@@ -396,7 +399,7 @@ int main()
 				count_and_size_rec( xag_merge, f, f );
 				garble_cost_aft += xag_merge.value( f );
 
-				and_size.emplace_back( xag_merge.value( f ) );
+				//and_size.emplace_back( xag_merge.value( f ) );
 				max_fan_in = ( xag_merge.value( f ) > max_fan_in ) ? xag_merge.value( f ) : max_fan_in;
 			}
 
@@ -407,11 +410,11 @@ int main()
 		std::cout << "after: " << garble_cost_aft << "\n";
 		std::cout << num_and_aft << " cliques detected, ";
 		std::cout << "the largest is with size: " << max_fan_in << "\n";
-		std::cout << "Here are each clique's size: ";
-		for (auto and_size_each: and_size)
-		{
-			std::cout << and_size_each << ", ";
-		}
+		//std::cout << "Here are each clique's size: ";
+		//for (auto and_size_each: and_size)
+		//{
+		//	std::cout << and_size_each << ", ";
+		//}
 		std::cout << std::endl;
 	}
 

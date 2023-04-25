@@ -254,7 +254,7 @@ int main()
 	ps_cut_rew.progress = true;
 	ps_cut_rew.min_cand_cut_size = 2u;
 
-	for ( auto i = 0u; i < benchmarks.size(); ++i )
+	for ( auto i = 4u; i < benchmarks.size(); ++i )
 	{
 		auto const benchmark = benchmarks[i];
 		auto const best_score = best_scores[i];

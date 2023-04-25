@@ -460,10 +460,7 @@ int main()
 				}
 			}
 
-
 			mockturtle::write_bench( x1g, "/Users/myu/Documents/GitHub/abc/bench" );
-			return 0;
-
 
 			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
 			//assert( cec );

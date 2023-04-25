@@ -1,60 +1,15 @@
-/* mockturtle: C++ logic network library
- * Copyright (C) 2018-2022  EPFL
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
-
-/*!
-  \file x1g.hpp
-  \brief X1(OneHot)G logic network implementation for garble circuit synthesis
-*/
-
 #pragma once
 
-/*
-#include <memory>
-#include <optional>
-#include <stack>
-#include <string>
-
-#include <kitty/dynamic_truth_table.hpp>
-#include <kitty/operators.hpp>
-
-#include "../traits.hpp"
-#include "../utils/algorithm.hpp"
-#include "detail/foreach.hpp"
-#include "events.hpp"
-#include "storage.hpp"
-*/
 #include "storage.hpp"
 #include "events.hpp"
 #include "../utils/algorithm.hpp"
 #include "detail/foreach.hpp"
 
-#include <kitty/dynamic_truth_table.hpp>
+#include <kitty/constructors.hpp>
 
-#include <vector>
-#include <functional>
 #include <algorithm>
+#include <functional>
+#include <vector>
 
 namespace mockturtle
 {
@@ -236,7 +191,7 @@ public:
 
 	signal create_onehot( signal a, signal b, signal c )
 	{
-		/* Order inputs */
+		/* order inputs */
 		if ( a.index > b.index )
 		{
 			std::swap( a, b );
@@ -250,7 +205,7 @@ public:
 			std::swap( a, b );
 		}
 
-		/* Trivial cases */
+		/* trivial cases */
 		if ( a.index == b.index && a.complement != b.complement)
 		{
 			return !c;
@@ -310,10 +265,11 @@ public:
 			std::swap( a, b );
 		}
 
-		/* Propagate complement edges */
+		/* propagate complement edges */
 		bool fcompl = ( a.complement != b.complement ) != c.complement;
     a.complement = b.complement = c.complement = false;
-		/* Trivial cases */
+
+		/* trivial cases */
 		if ( a.index == b.index )
     {
       return c ^ fcompl;
@@ -380,9 +336,50 @@ public:
   	return create_onehot( b, c, !create_onehot( a, !b, !c ) );
   }
 
-	signal create_and( signal const& a, signal const& b )
+	signal create_and( signal a, signal b )
 	{
+		if ( a.index > b.index )
+    {
+      std::swap( a, b );
+    }
+    if ( a.index == b.index )
+    {
+      return a.complement == b.complement ? a : get_constant( false );
+    }
+    else if ( a.index == 0 )
+    {
+      return a.complement == false ? get_constant( false ) : b;
+    }
 		return create_onehot( get_constant( true ), !a, !b );
+	}
+
+	signal create_and3( signal a, signal b, signal c )
+	{
+		if ( a.index > b.index )
+		{
+			std::swap( a, b );
+		}
+		if ( b.index > c.index )
+		{
+			std::swap( b, c );
+		}
+		if ( a.index > b.index )
+		{
+			std::swap( a, b );
+		}
+		if ( a.index == 0 )
+    {
+      return a.complement == false ? get_constant( false ) : create_and( b, c );
+    }
+  	if ( a.index == b.index )
+    {
+      return a.complement == b.complement ? create_and( a, c ) : get_constant( false );
+    }
+    if ( b.index == c.index )
+    {
+      return b.complement == c.complement ? create_and( a, b ) : get_constant( false );
+    }
+		return create_xor3( get_constant( false ), create_onehot( a, b, c ), create_xor3( c, b, a ) );
 	}
 
 	signal create_nand( signal const& a, signal const& b )
@@ -420,10 +417,32 @@ public:
     return create_xor3( get_constant( true ), a, b );
   }
 
- 	/* Create tree-like multi-input functions */
+  template<class Iterator>
+	signal create_serial_and( Iterator first, Iterator last )
+	{
+	  const auto len = std::distance( first, last );
+	  switch ( len )
+	  {
+	  case 0u:
+	    return get_constant( true );
+	  case 1u:
+	    return *first;
+	  case 2u:
+	    return create_and( *first, *( first + 1 ) );
+	  case 3u:
+	    return create_and3( *first, *( first + 1 ), *( first + 2 ) );
+	  default:
+	  	std::vector<signal> signals_res;
+	  	signals_res.emplace_back( create_and3( *first, *( first + 1 ), *( first + 2 ) ) );
+	  	std::copy( first + 3, last, std::back_inserter( signals_res ) );
+	  	return create_serial_and( signals_res.begin(), signals_res.end() );
+	  }
+	}
+
+ 	/* Create multi-input functions */
   signal create_nary_and( std::vector<signal> const& fs )
   {
-    return tree_reduce( fs.begin(), fs.end(), get_constant( true ), [this]( auto const& a, auto const& b ) { return create_and( a, b ); } );
+    return create_serial_and( fs.begin(), fs.end() );
   }
 
   signal create_nary_or( std::vector<signal> const& fs )

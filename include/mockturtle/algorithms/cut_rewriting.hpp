@@ -844,7 +844,7 @@ private:
  * \param pst Rewriting statistics
  */
 template<class Ntk, class RewritingFn, class NodeCostFn = unit_cost<Ntk>>
-Ntk cut_rewriting( Ntk const& ntk, RewritingFn const& rewriting_fn = {}, cut_rewriting_params const& ps = {}, cut_rewriting_stats* pst = nullptr)
+Ntk cut_rewriting( Ntk const& ntk, RewritingFn const& rewriting_fn = {}, cut_rewriting_params const& ps = {}, cut_rewriting_stats* pst = nullptr )
 {
   cut_rewriting_stats st;
   const auto result = [&]() {

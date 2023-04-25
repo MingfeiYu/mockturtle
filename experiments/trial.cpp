@@ -13,13 +13,14 @@ void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & val
 
 int main()
 {
-	std::string func = "1110111100010000";
-	kitty::dynamic_truth_table tt( 4u );
+	std::string func = "10000000";
+	kitty::dynamic_truth_table tt( 3u );
 	kitty::create_from_binary_string( tt, func );
+	//tt._bits[0] = 32768u;
 	kitty::dynamic_truth_table dont_cares = tt.construct();
 
 	percy::spec_minmc spec;
-	spec.fanin_size = 4u;
+	spec.fanin_size = 2u;
 	spec.verbosity = 1u;
 	spec.use_contribution_clauses = true;
 	spec.conflict_limit = 0u;
@@ -30,7 +31,7 @@ int main()
 		spec.set_dont_care( dont_cares );
 	}
 
-  uint32_t mc = 0u;
+  uint32_t mc{ 0u };
 	bool valid_mc{ false };
 	look_up_mc( tt, mc, valid_mc );
 	assert( valid_mc );
