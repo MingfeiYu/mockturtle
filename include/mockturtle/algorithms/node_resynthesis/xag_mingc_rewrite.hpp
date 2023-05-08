@@ -182,10 +182,91 @@ public:
 				} );
 			} );
 		}
+		/*
 		else if ( kitty::is_const0( real_repr ) )
 		{
-			po_db_repr = db_.get_constant( false );
+			if ( !kitty::is_const0( func_ext ) )
+			{
+				bool po_inv{ false };
+				std::vector<xag_network::signal> pis( 5u, xag.get_constant( false ) );
+				std::copy( begin, end, pis.begin() );
+				std::unordered_map<xag_network::node, bool> record;
+				for ( auto const& pi: pis )
+				{
+					// Bool indicates if the signal shall be considered or not 
+					record.insert( std::make_pair( pi.index, false ) );
+				}
+
+				for ( auto const& op: trans )
+				{
+					switch ( op._kind )
+					{
+					case kitty::detail::spectral_operation::kind::permutation:
+					{	
+						const auto v1 = log2( op._var1 );
+						const auto v2 = log2( op._var2 );
+						std::swap( pis[v1], pis[v2] );
+						break;
+					}
+					case kitty::detail::spectral_operation::kind::input_negation:
+					{	
+						const auto v1 = log2( op._var1 );
+						pis[v1] = !pis[v1];
+						break;
+					}
+					case kitty::detail::spectral_operation::kind::output_negation:
+					{	
+						po_inv = !po_inv;
+						break;
+					}
+					case kitty::detail::spectral_operation::kind::spectral_translation:
+					{
+						const auto v1 = log2( op._var1 );
+						const auto v2 = log2( op._var2 );
+						auto entry1 = record.find( pis[v1].index );
+						entry1->second = true;
+						auto entry2 = record.find( pis[v2].index );
+						entry2->second = true;
+						break;
+					}
+					case kitty::detail::spectral_operation::kind::disjoint_translation:
+					{
+						const auto v1 = log2( op._var1 );
+						auto entry = record.find( pis[v1].index );
+						entry->second = true;
+						break;
+					}
+					default:
+						abort();
+					}
+				}
+
+				//std::cout << "[m] function 0x";
+				//kitty::print_hex( func_ext );
+				//std::cout << " is the X" << ( po_inv ? "N" : "" ) << "ORed result of signals: ";
+
+				std::vector<xag_network::signal> po_xors;
+				for ( auto const& pi: pis )
+				{
+					auto entry = record.find( pi.index );
+					if ( entry->second )
+					{
+						po_xors.emplace_back( pi );
+						//std::cout << ( xag.is_complemented( pi ) ? "!" : "" ) << pi.index << " ";
+					}
+				}
+				//std::cout << "\n";
+
+				xag_network::signal po = xag.create_nary_xor( po_xors );
+				fn( ( po_inv ? !po : po ), 0u );
+				return;
+			}
+			else
+			{
+				po_db_repr = db_.get_constant( false );
+			}
 		}
+		*/
 		else
 		{
 			pst_->unknown_func_abort++;
@@ -254,8 +335,8 @@ public:
 			po = xag.create_xor( po, po_xor );
 		}
 
-		/* the new 'fn' function takes in 2 parameters */
-		fn( ( po_inv ? !po : po ), gc );
+		//std::cout << "[m] cost of current cut is " << gc << "\n";
+		fn( po_inv ? !po : po );
 	}
 
 private:
@@ -367,6 +448,7 @@ private:
 			pfunc_gc_->insert( std::make_pair( repr_real_str, std::make_tuple( repr_db_str, gc, po ) ) );
 		}
 		std::cout << "[i] load db finished\n";
+		//std::cout << "[i] " << ( db_._storage )->nodes.size() << " nodes in the database XAG\n";
 	}
 
 private:

@@ -23,15 +23,15 @@ namespace mockturtle
 
 struct optimum_gc_synthesis_params
 {
-  bool no_constant_linear_fanin{ true };
+  bool no_constant_linear_fanin{ false };
   bool break_commutativity{ false };
-  bool break_symmetric_variables{ true };
+  bool break_symmetric_variables{ false };
   bool use_all_gates_variables{ true };
   bool no_subset_linear_fanin{ false };
   bool multilevel_subset_relation{ false };
   bool forbid_po_xor{ false };
   //std::optional<uint32_t> heuristic_xor_bound{};
-  uint32_t conflict_limit{ 1000000u };
+  uint32_t conflict_limit{ 50000u };
   std::optional<std::string> write_dimacs{};
   bool verbose{ false };
   bool verify_solution{ false };

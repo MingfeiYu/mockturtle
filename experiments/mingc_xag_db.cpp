@@ -16,6 +16,8 @@
 #include <mockturtle/views/fanout_view.hpp>
 #include <mockturtle/views/topo_view.hpp>
 
+#include <experiments.hpp>
+
 namespace mockturtle
 {
 
@@ -46,38 +48,38 @@ static std::vector<AND_topo> and_topos_lib = {
 	{ { 1u, 1u, 2u }, 4u, 7u }, 
 	{ { 1u, 2u, 1u }, 4u, 7u }, 
 	{ { 2u, 1u, 1u }, 4u, 7u }, 
+	{ { 4u, 1u }, 5u, 7u }, 
 	{ { 1u, 4u }, 5u, 7u }, 
 	{ { 2u, 3u }, 5u, 7u }, 
 	{ { 3u, 2u }, 5u, 7u }, 
-	{ { 4u, 1u }, 5u, 7u }, 
+	{ { 6u }, 6u, 7u }, 
 	{ { 1u, 1u, 1u, 1u }, 4u, 8u }, 
-	{ { 1u, 1u, 3u }, 5u, 8u }, 
 	{ { 1u, 2u, 2u }, 5u, 8u }, 
 	{ { 1u, 3u, 1u }, 5u, 8u }, 
-	{ { 2u, 1u, 2u }, 5u, 8u }, 
+	{ { 1u, 1u, 3u }, 5u, 8u }, 
 	{ { 2u, 2u, 1u }, 5u, 8u }, 
 	{ { 3u, 1u, 1u }, 5u, 8u }, 
-	{ { 1u, 1u, 1u, 2u }, 5u, 9u }, 
-	{ { 1u, 1u, 2u, 1u }, 5u, 9u }, 
-	{ { 1u, 2u, 1u, 1u }, 5u, 9u }, 
-	{ { 2u, 1u, 1u, 1u }, 5u, 9u }, 
-	{ { 1u, 1u, 1u, 1u, 1u }, 5u, 10u }, 
-	{ { 6u }, 6u, 7u }, 
-	{ { 1u, 5u }, 6u, 8u }, 
-	{ { 2u, 4u }, 6u, 8u }, 
-	{ { 3u, 3u }, 6u, 8u }, 
+	{ { 2u, 1u, 2u }, 5u, 8u }, 
 	{ { 4u, 2u }, 6u, 8u }, 
+	{ { 1u, 5u }, 6u, 8u }, 
+	{ { 3u, 3u }, 6u, 8u }, 
 	{ { 5u, 1u }, 6u, 8u }, 
+	{ { 2u, 4u }, 6u, 8u }, 
+	{ { 1u, 1u, 2u, 1u }, 5u, 9u }, 
+	{ { 1u, 1u, 1u, 2u }, 5u, 9u }, 
+	{ { 2u, 1u, 1u, 1u }, 5u, 9u }, 
+	{ { 1u, 2u, 1u, 1u }, 5u, 9u }, 
+	{ { 2u, 1u, 3u }, 6u, 9u }, 
 	{ { 1u, 1u, 4u }, 6u, 9u }, 
 	{ { 1u, 2u, 3u }, 6u, 9u }, 
 	{ { 1u, 3u, 2u }, 6u, 9u }, 
 	{ { 1u, 4u, 1u }, 6u, 9u }, 
-	{ { 2u, 1u, 3u }, 6u, 9u }, 
 	{ { 2u, 2u, 2u }, 6u, 9u }, 
 	{ { 2u, 3u, 1u }, 6u, 9u }, 
 	{ { 3u, 1u, 2u }, 6u, 9u }, 
 	{ { 3u, 2u, 1u }, 6u, 9u }, 
 	{ { 4u, 1u, 1u }, 6u, 9u }, 
+	{ { 1u, 1u, 1u, 1u, 1u }, 5u, 10u }, 
 	{ { 1u, 1u, 1u, 3u }, 6u, 10u }, 
 	{ { 1u, 1u, 2u, 2u }, 6u, 10u }, 
 	{ { 1u, 1u, 3u, 1u }, 6u, 10u }, 
@@ -95,6 +97,7 @@ static std::vector<AND_topo> and_topos_lib = {
 	{ { 2u, 1u, 1u, 1u, 1u }, 6u, 11u }, 
 	{ { 1u, 1u, 1u, 1u, 1u, 1u }, 6u, 12u }
 };
+
 
 /* X1G-oriented topos */
 static std::vector<AND_topo> and_topos_lib_6_x1g_oriented = {
@@ -104,56 +107,56 @@ static std::vector<AND_topo> and_topos_lib_6_x1g_oriented = {
 	{ { 3u }, 3u, 4u }, 
 	{ { 1u, 2u }, 3u, 4u }, 
 	{ { 2u, 1u }, 3u, 4u }, 
-	{ { 1u, 1u, 1u }, 3u, 6u }, 
-	{ { 2u, 2u }, 4u, 4u }, 
 	{ { 4u }, 4u, 4u }, 
+	{ { 2u, 2u }, 4u, 4u }, 
+	{ { 1u, 1u, 1u }, 3u, 6u }, 
 	{ { 1u, 3u }, 4u, 6u }, 
 	{ { 3u, 1u }, 4u, 6u }, 
 	{ { 1u, 1u, 2u }, 4u, 6u }, 
 	{ { 1u, 2u, 1u }, 4u, 6u }, 
 	{ { 2u, 1u, 1u }, 4u, 6u }, 
-	{ { 1u, 1u, 1u, 1u }, 4u, 8u }, 
+	{ { 2u, 2u, 1u }, 5u, 6u }, 
+	{ { 5u }, 5u, 6u }, 
 	{ { 1u, 4u }, 5u, 6u }, 
 	{ { 2u, 3u }, 5u, 6u }, 
 	{ { 3u, 2u }, 5u, 6u }, 
 	{ { 4u, 1u }, 5u, 6u }, 
-	{ { 1u, 2u, 2u }, 5u, 6u }, 
-	{ { 5u }, 5u, 6u }, 
-	{ { 2u, 2u, 1u }, 5u, 6u }, 
 	{ { 2u, 1u, 2u }, 5u, 6u }, 
-	{ { 1u, 3u, 1u }, 5u, 8u }, 
-	{ { 1u, 1u, 3u }, 5u, 8u }, 
-	{ { 3u, 1u, 1u }, 5u, 8u }, 
-	{ { 1u, 1u, 1u, 2u }, 5u, 8u }, 
-	{ { 1u, 1u, 2u, 1u }, 5u, 8u }, 
-	{ { 1u, 2u, 1u, 1u }, 5u, 8u }, 
-	{ { 2u, 1u, 1u, 1u }, 5u, 8u }, 
-	{ { 1u, 1u, 1u, 1u, 1u }, 5u, 10u }, 
+	{ { 1u, 2u, 2u }, 5u, 6u }, 
 	{ { 6u }, 6u, 6u }, 
 	{ { 2u, 4u }, 6u, 6u }, 
 	{ { 4u, 2u }, 6u, 6u }, 
 	{ { 2u, 2u, 2u }, 6u, 6u }, 
-	{ { 1u, 5u }, 6u, 8u }, 
+	{ { 1u, 1u, 1u, 1u }, 4u, 8u }, 
+	{ { 1u, 1u, 2u, 1u }, 5u, 8u }, 
+	{ { 1u, 1u, 3u }, 5u, 8u }, 
+	{ { 2u, 1u, 1u, 1u }, 5u, 8u }, 
+	{ { 1u, 1u, 1u, 2u }, 5u, 8u }, 
+	{ { 1u, 3u, 1u }, 5u, 8u }, 
+	{ { 3u, 1u, 1u }, 5u, 8u }, 
+	{ { 1u, 2u, 1u, 1u }, 5u, 8u }, 
 	{ { 3u, 3u }, 6u, 8u }, 
+	{ { 1u, 5u }, 6u, 8u }, 
 	{ { 5u, 1u }, 6u, 8u }, 
 	{ { 1u, 1u, 4u }, 6u, 8u }, 
 	{ { 1u, 2u, 3u }, 6u, 8u }, 
 	{ { 1u, 3u, 2u }, 6u, 8u }, 
 	{ { 1u, 4u, 1u }, 6u, 8u }, 
 	{ { 2u, 1u, 3u }, 6u, 8u }, 
+	{ { 2u, 1u, 1u, 2u }, 6u, 8u }, 
 	{ { 2u, 3u, 1u }, 6u, 8u }, 
 	{ { 3u, 1u, 2u }, 6u, 8u }, 
 	{ { 3u, 2u, 1u }, 6u, 8u }, 
 	{ { 4u, 1u, 1u }, 6u, 8u }, 
+	{ { 2u, 2u, 1u, 1u }, 6u, 8u }, 
 	{ { 1u, 1u, 2u, 2u }, 6u, 8u }, 
+	{ { 2u, 1u, 2u, 1u }, 6u, 8u }, 
 	{ { 1u, 2u, 1u, 2u }, 6u, 8u }, 
 	{ { 1u, 2u, 2u, 1u }, 6u, 8u }, 
-	{ { 2u, 1u, 1u, 2u }, 6u, 8u }, 
-	{ { 2u, 1u, 2u, 1u }, 6u, 8u }, 
-	{ { 2u, 2u, 1u, 1u }, 6u, 8u }, 
-	{ { 1u, 1u, 1u, 3u }, 6u, 10u }, 
-	{ { 1u, 1u, 3u, 1u }, 6u, 10u }, 
+	{ { 1u, 1u, 1u, 1u, 1u }, 5u, 10u }, 
 	{ { 1u, 3u, 1u, 1u }, 6u, 10u }, 
+	{ { 1u, 1u, 3u, 1u }, 6u, 10u }, 
+	{ { 1u, 1u, 1u, 3u }, 6u, 10u }, 
 	{ { 3u, 1u, 1u, 1u }, 6u, 10u }, 
 	{ { 1u, 1u, 1u, 1u, 2u }, 6u, 10u }, 
 	{ { 1u, 1u, 1u, 2u, 1u }, 6u, 10u }, 
@@ -163,135 +166,61 @@ static std::vector<AND_topo> and_topos_lib_6_x1g_oriented = {
 	{ { 1u, 1u, 1u, 1u, 1u, 1u }, 6u, 12u }
 };
 
-/* smc-up-to-7 topos */
-static std::vector<AND_topo> and_topos_lib_7 = {
-	{ { 1u }, 1u, 2u }, 
-	{ { 2u }, 2u, 3u }, 
-	{ { 1u, 1u }, 2u, 4u }, 
-	{ { 3u }, 3u, 4u }, 
-	{ { 1u, 2u }, 3u, 5u }, 
-	{ { 2u, 1u }, 3u, 5u }, 
-	{ { 1u, 1u, 1u }, 3u, 6u }, 
-	{ { 4u }, 4u, 5u }, 
-	{ { 1u, 3u }, 4u, 6u }, 
-	{ { 2u, 2u }, 4u, 6u }, 
-	{ { 3u, 1u }, 4u, 6u }, 
-	{ { 1u, 1u, 2u }, 4u, 7u }, 
-	{ { 1u, 2u, 1u }, 4u, 7u }, 
-	{ { 2u, 1u, 1u }, 4u, 7u }, 
-	{ { 1u, 1u, 1u, 1u }, 4u, 8u }, 
-	{ { 5u }, 5u, 6u }, 
-	{ { 2u, 3u }, 5u, 7u }, 
-	{ { 3u, 2u }, 5u, 7u }, 
-	{ { 4u, 1u }, 5u, 7u }, 
-	{ { 1u, 4u }, 5u, 7u }, 
-	{ { 6u }, 6u, 7u }, 
-	{ { 1u, 1u, 3u }, 5u, 8u }, 
-	{ { 1u, 2u, 2u }, 5u, 8u }, 
-	{ { 1u, 3u, 1u }, 5u, 8u }, 
-	{ { 2u, 1u, 2u }, 5u, 8u }, 
-	{ { 2u, 2u, 1u }, 5u, 8u }, 
-	{ { 3u, 1u, 1u }, 5u, 8u }, 
-	{ { 1u, 5u }, 6u, 8u }, 
-	{ { 5u, 1u }, 6u, 8u }, 
-	{ { 4u, 2u }, 6u, 8u }, 
-	{ { 3u, 3u }, 6u, 8u }, 
-	{ { 2u, 4u }, 6u, 8u }, 
-	{ { 2u, 1u, 1u, 1u }, 5u, 9u }, 
-	{ { 1u, 2u, 1u, 1u }, 5u, 9u }, 
-	{ { 1u, 1u, 2u, 1u }, 5u, 9u }, 
-	{ { 1u, 1u, 1u, 2u }, 5u, 9u }, 
-	{ { 1u, 1u, 1u, 1u, 1u }, 5u, 10u }, 
-	{ { 1u, 2u, 3u }, 6u, 9u }, 
-	{ { 1u, 3u, 2u }, 6u, 9u }, 
-	{ { 1u, 4u, 1u }, 6u, 9u }, 
-	{ { 2u, 1u, 3u }, 6u, 9u }, 
-	{ { 2u, 2u, 2u }, 6u, 9u }, 
-	{ { 2u, 3u, 1u }, 6u, 9u }, 
-	{ { 1u, 1u, 4u }, 6u, 9u }, 
-	{ { 3u, 1u, 2u }, 6u, 9u }, 
-	{ { 3u, 2u, 1u }, 6u, 9u }, 
-	{ { 4u, 1u, 1u }, 6u, 9u }, 
-	{ { 1u, 1u, 1u, 3u }, 6u, 10u }, 
-	{ { 1u, 1u, 2u, 2u }, 6u, 10u }, 
-	{ { 1u, 1u, 3u, 1u }, 6u, 10u }, 
-	{ { 1u, 2u, 1u, 2u }, 6u, 10u }, 
-	{ { 1u, 2u, 2u, 1u }, 6u, 10u }, 
-	{ { 1u, 3u, 1u, 1u }, 6u, 10u }, 
-	{ { 2u, 1u, 1u, 2u }, 6u, 10u }, 
-	{ { 2u, 1u, 2u, 1u }, 6u, 10u }, 
-	{ { 2u, 2u, 1u, 1u }, 6u, 10u }, 
-	{ { 3u, 1u, 1u, 1u }, 6u, 10u }, 
-	{ { 1u, 1u, 1u, 1u, 2u }, 6u, 11u }, 
-	{ { 1u, 1u, 1u, 2u, 1u }, 6u, 11u }, 
-	{ { 1u, 1u, 2u, 1u, 1u }, 6u, 11u }, 
-	{ { 1u, 2u, 1u, 1u, 1u }, 6u, 11u }, 
-	{ { 2u, 1u, 1u, 1u, 1u }, 6u, 11u }, 
-	{ { 1u, 1u, 1u, 1u, 1u, 1u }, 6u, 12u }, 
-	{ { 7u }, 7u, 8u }, 
-	{ { 1u, 6u }, 7u, 9u }, 
-	{ { 2u, 5u }, 7u, 9u }, 
-	{ { 3u, 4u }, 7u, 9u }, 
-	{ { 4u, 3u }, 7u, 9u }, 
-	{ { 5u, 2u }, 7u, 9u }, 
-	{ { 6u, 1u }, 7u, 9u }, 
-	{ { 1u, 1u, 5u }, 7u, 10u }, 
-	{ { 1u, 2u, 4u }, 7u, 10u }, 
-	{ { 1u, 3u, 3u }, 7u, 10u }, 
-	{ { 1u, 4u, 2u }, 7u, 10u }, 
-	{ { 1u, 5u, 1u }, 7u, 10u }, 
-	{ { 2u, 1u, 4u }, 7u, 10u }, 
-	{ { 2u, 2u, 3u }, 7u, 10u }, 
-	{ { 2u, 3u, 2u }, 7u, 10u }, 
-	{ { 2u, 4u, 1u }, 7u, 10u }, 
-	{ { 3u, 1u, 3u }, 7u, 10u }, 
-	{ { 3u, 2u, 2u }, 7u, 10u }, 
-	{ { 3u, 3u, 1u }, 7u, 10u }, 
-	{ { 4u, 1u, 2u }, 7u, 10u }, 
-	{ { 4u, 2u, 1u }, 7u, 10u }, 
-	{ { 5u, 1u, 1u }, 7u, 10u }, 
-	{ { 1u, 1u, 1u, 4u }, 7u, 11u }, 
-	{ { 1u, 1u, 2u, 3u }, 7u, 11u }, 
-	{ { 1u, 1u, 3u, 2u }, 7u, 11u }, 
-	{ { 1u, 1u, 4u, 1u }, 7u, 11u }, 
-	{ { 1u, 2u, 1u, 3u }, 7u, 11u }, 
-	{ { 1u, 2u, 2u, 2u }, 7u, 11u }, 
-	{ { 1u, 2u, 3u, 1u }, 7u, 11u }, 
-	{ { 1u, 3u, 1u, 2u }, 7u, 11u }, 
-	{ { 1u, 3u, 2u, 1u }, 7u, 11u }, 
-	{ { 1u, 4u, 1u, 1u }, 7u, 11u }, 
-	{ { 2u, 1u, 1u, 3u }, 7u, 11u }, 
-	{ { 2u, 1u, 2u, 2u }, 7u, 11u }, 
-	{ { 2u, 1u, 3u, 1u }, 7u, 11u }, 
-	{ { 2u, 2u, 1u, 2u }, 7u, 11u }, 
-	{ { 2u, 2u, 2u, 1u }, 7u, 11u }, 
-	{ { 2u, 3u, 1u, 1u }, 7u, 11u }, 
-	{ { 3u, 1u, 1u, 2u }, 7u, 11u }, 
-	{ { 3u, 1u, 2u, 1u }, 7u, 11u }, 
-	{ { 3u, 2u, 1u, 1u }, 7u, 11u }, 
-	{ { 4u, 1u, 1u, 1u }, 7u, 11u }, 
-	{ { 1u, 1u, 1u, 1u, 3u }, 7u, 12u }, 
-	{ { 1u, 1u, 1u, 2u, 2u }, 7u, 12u }, 
-	{ { 1u, 1u, 1u, 3u, 1u }, 7u, 12u }, 
-	{ { 1u, 1u, 2u, 1u, 2u }, 7u, 12u }, 
-	{ { 1u, 1u, 2u, 2u, 1u }, 7u, 12u }, 
-	{ { 1u, 1u, 3u, 1u, 1u }, 7u, 12u }, 
-	{ { 1u, 2u, 1u, 1u, 2u }, 7u, 12u }, 
-	{ { 1u, 2u, 1u, 2u, 1u }, 7u, 12u }, 
-	{ { 1u, 2u, 2u, 1u, 1u }, 7u, 12u }, 
-	{ { 1u, 3u, 1u, 1u, 1u }, 7u, 12u }, 
-	{ { 2u, 1u, 1u, 1u, 2u }, 7u, 12u }, 
-	{ { 2u, 1u, 1u, 2u, 1u }, 7u, 12u }, 
-	{ { 2u, 1u, 2u, 1u, 1u }, 7u, 12u }, 
-	{ { 2u, 2u, 1u, 1u, 1u }, 7u, 12u }, 
-	{ { 3u, 1u, 1u, 1u, 1u }, 7u, 12u }, 
-	{ { 1u, 1u, 1u, 1u, 1u, 2u }, 7u, 13u }, 
-	{ { 1u, 1u, 1u, 1u, 2u, 1u }, 7u, 13u }, 
-	{ { 1u, 1u, 1u, 2u, 1u, 1u }, 7u, 13u }, 
-	{ { 1u, 1u, 2u, 1u, 1u, 1u }, 7u, 13u }, 
-	{ { 1u, 2u, 1u, 1u, 1u, 1u }, 7u, 13u }, 
-	{ { 2u, 1u, 1u, 1u, 1u, 1u }, 7u, 13u }, 
-	{ { 1u, 1u, 1u, 1u, 1u, 1u, 1u }, 7u, 14u }
+typedef struct represent
+{
+	std::string func;
+	uint32_t mc;
+} represent;
+
+static std::vector<represent> affine_represent_5 = {
+	{"00000000", 0}, 
+	{"80000000", 4}, 
+	{"80008000", 3}, 
+	{"00808080", 4}, 
+	{"80808080", 2}, 
+	{"08888000", 3}, 
+	{"aa2a2a80", 4}, 
+	{"88080808", 4}, 
+	{"2888a000", 3}, 
+	{"f7788000", 3}, 
+	{"a8202020", 3}, 
+	{"08880888", 3}, 
+	{"bd686868", 4}, 
+	{"aa808080", 4}, 
+	{"7e686868", 4}, 
+	{"2208a208", 4}, 
+	{"08888888", 4}, 
+	{"88888888", 1}, 
+	{"ea404040", 3}, 
+	{"2a802a80", 2}, 
+	{"73d28c88", 3}, 
+	{"ea808080", 3}, 
+	{"a28280a0", 3}, 
+	{"13284c88", 3}, 
+	{"a2220888", 3}, 
+	{"aae6da80", 4}, 
+	{"58d87888", 4}, 
+	{"8c88ac28", 4}, 
+	{"8880f880", 4}, 
+	{"9ee8e888", 4}, 
+	{"4268c268", 4}, 
+	{"16704c80", 4}, 
+	{"78888888", 3}, 
+	{"4966bac0", 4}, 
+	{"372840a0", 4}, 
+	{"5208d288", 3}, 
+	{"7ca00428", 4}, 
+	{"f8880888", 3}, 
+	{"2ec0ae40", 4}, 
+	{"f888f888", 3}, 
+	{"58362ec0", 4}, 
+	{"0eb8f6c0", 4}, 
+	{"567cea40", 4}, 
+	{"f8887888", 4}, 
+	{"78887888", 2}, 
+	{"e72890a0", 4}, 
+	{"268cea40", 3}, 
+	{"6248eac0", 4}
 };
 
 void count_and_size_rec( merge_view& xag, merge_view::node const& f, merge_view::node const& root )
@@ -1249,7 +1178,82 @@ void create_db_complete_x1g( std::string const& filename )
 	std::cout << "num_gc_new: " << num_gc_new << std::endl;
 }
 
-/* Generate db_gc for the the 147,998-entry 6-input db_mc */
+/* Generate X1G implementations for all the 48 5-input representatives */
+void x1g_affine_5_exact_synthesis()
+{
+	experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, uint32_t, float, bool> exp_res( "novel_x1g_affine_5", "function", "num_xor", "num_onehot", "num_variables", "num_clauses", "runtime[s]", "exact synth. suc." );
+
+	for ( auto const& benchmark: affine_represent_5 )
+	{
+		if ( benchmark.func == "00000000" )
+		{
+			exp_res( benchmark.func, 0u, 0u, 0u, 0u, 0., true );
+			continue;
+		}
+		std::cout << "[i] processing " << benchmark.func << "\n";
+		kitty::dynamic_truth_table tt( 5u );
+    kitty::create_from_hex_string( tt, benchmark.func );
+    auto num_vars = ( kitty::min_base_inplace( tt ) ).size();
+    uint32_t mc = benchmark.mc;
+  	kitty::dynamic_truth_table tt_min_base( num_vars );
+    kitty::create_from_hex_string( tt_min_base, benchmark.func.substr( 0, 1 << ( num_vars - 2 ) ) );
+
+    /* Look for the gc-optimal XAG implementation */
+    const clock_t begin_time = clock();
+    for ( auto i{ 0u }; i < and_topos_lib_6_x1g_oriented.size(); ++i )
+    {
+    	auto topo = and_topos_lib_6_x1g_oriented[i];
+
+    	if ( mc == 0u )
+    	{
+    		break;
+    	}
+
+    	if ( topo.mc < mc )
+      {
+        continue;
+      }
+
+      optimum_gc_synthesis_params ps;
+      //ps.verbose = true;
+      //ps.verify_solution = true;
+      optimum_gc_synthesis_stats st;
+
+      auto const p_x1g_gc_opt = optimum_gc_synthesis<x1g_network, bill::solvers::glucose_41>( tt_min_base, topo.num_ands, ps, &st );
+      if ( p_x1g_gc_opt )
+      {
+      	float time_sat = float( clock() - begin_time ) / CLOCKS_PER_SEC;
+      	x1g_network x1g = *p_x1g_gc_opt;
+      	uint32_t num_oh{ 0u };
+      	uint32_t num_xor{ 0u };
+      	x1g.foreach_gate( [&]( auto const& n ) {
+      		if ( x1g.is_onehot( n ) )
+      		{
+      			++num_oh;
+      		}
+      		else
+      		{
+      			++num_xor;
+      		}
+      	} );
+      	exp_res( benchmark.func, num_xor, num_oh, st.num_vars, st.num_clauses, time_sat, true );
+      	break;
+      }
+      else
+      {
+      	if ( i == and_topos_lib_6_x1g_oriented.size() - 1 )
+      	{
+      		exp_res( benchmark.func, 0u, 0u, 0u, 0u, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ), false );
+      	}
+      }
+    }
+	}
+	exp_res.save();
+	exp_res.table();
+}
+
+/* Generate db_gc for the the 147,998-entry 6-input db_mc             */
+/* Only functions with mc no more than 5 are taken into consideration */
 void create_db_practical_x1g( std::string const& filename )
 {
 	std::uint32_t num_entries{ 0u };
@@ -1264,7 +1268,17 @@ void create_db_practical_x1g( std::string const& filename )
 
 	while ( std::getline( db_mc, line ) )
 	{
-		std::cout << "[i] Working on the " << ++num_entries << "th representitive\n";
+		++num_entries;
+		if ( num_entries <= 5000u )
+		{
+			continue;
+		}
+		std::cout << "[i] working on the " << num_entries << "th representitive\n";
+		//if ( num_entries <= 75u )
+		//{
+		//	std::cout << "[i] skip, as it is already in the database\n";
+		//	continue;
+		//}
 		pos = static_cast<uint32_t>( line.find( '\t' ) );
     const auto name = line.substr( 0, pos );
     pos += 1u;
@@ -1273,6 +1287,180 @@ void create_db_practical_x1g( std::string const& filename )
     const auto repr_str = line.substr( pos, 16u );
     pos += 17u;
     uint32_t mc = std::stoul( line.substr( pos, 1u ) );
+    if ( mc <= 4u )
+    {
+    	std::cout << "[i] already in the database\n";
+    	continue;
+    }
+    if ( mc > 5u )
+    {
+    	std::cout << "[i] skip current representitive\n";
+    	continue;
+    }
+    pos += 2u;
+    line.erase( 0, pos );
+    const uint32_t num_vars = std::stoul( line.substr( 0, line.find( ' ' ) ) );
+    line.erase( 0, line.find( ' ' ) + 1 );
+
+    /* Reconstruct the mc-optimal XAG implementation */
+    xag_network xag_mc_opt;
+    std::vector<xag_network::signal> signals_mc_opt( num_vars );
+    std::generate( signals_mc_opt.begin(), signals_mc_opt.end(), [&]() { return xag_mc_opt.create_pi(); } );
+
+    while ( line.size() > 4 )
+  	{
+   		uint32_t signal_1, signal_2;
+    	signal_1 = std::stoul( line.substr( 0, line.find( ' ' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+    	signal_2 = std::stoul( line.substr( 0, line.find( ' ' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+
+    	xag_network::signal signal1, signal2;
+    	if ( signal_1 == 0u )
+    	{
+				signal1 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_1 == 1u )
+    	{
+				signal1 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal1 = signals_mc_opt[signal_1 / 2 - 1] ^ ( signal_1 % 2 != 0 );
+    	}
+    	if ( signal_2 == 0u )
+    	{
+				signal2 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_2 == 1u )
+    	{
+				signal2 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal2 = signals_mc_opt[signal_2 / 2 - 1] ^ ( signal_2 % 2 != 0 );
+    	}
+
+    	if ( signal_1 > signal_2 )
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_xor( signal1, signal2 ) );
+    	}
+    	else
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_and( signal1, signal2 ) );
+    	}
+    	line.erase( 0, line.find( ' ' ) + 1 );
+  	}
+
+  	const uint32_t signal_po = std::stoul( line );
+  	xag_mc_opt.create_po( signals_mc_opt[signal_po / 2 - 1] ^ ( signal_po % 2 != 0 ) );
+
+  	x1g_network x1g_mc_opt = mockturtle::map_xag2x1g( xag_mc_opt );
+  	auto gc{ 0u };
+  	x1g_mc_opt.foreach_gate( [&]( auto const& n ) {
+  		if ( x1g_mc_opt.is_onehot( n ) )
+  		{
+  			++gc;
+  		}
+  	} );
+  	gc *= 2u;
+  	num_gc_old += gc;
+
+    x1g_network x1g_gc_opt{ x1g_mc_opt };
+
+  	kitty::dynamic_truth_table tt_min_base( num_vars );
+  	assert( num_vars >= 2u );
+    kitty::create_from_hex_string( tt_min_base, tt_str.substr( 0, 1 << ( num_vars - 2 ) ) );
+
+    /* Look for the gc-optimal XAG implementation */
+    for ( auto const& topo: and_topos_lib_6_x1g_oriented )
+    {
+    	if ( mc == 0u )
+    	{
+    		break;
+    	}
+
+    	if ( topo.mc < mc )
+      {
+        continue;
+      }
+
+      if ( topo.gc >= gc )
+      {
+        break;
+      }
+
+      optimum_gc_synthesis_params ps;
+      //ps.verbose = true;
+      //ps.verify_solution = true;
+
+      auto const p_x1g_gc_opt = optimum_gc_synthesis<x1g_network, bill::solvers::glucose_41>( tt_min_base, topo.num_ands, ps, nullptr );
+      if ( p_x1g_gc_opt )
+      {
+      	std::cout << "[i] Find " << ++num_cases_impr << " better implementations\n";
+      	mc = topo.mc;
+      	gc = topo.gc;
+      	x1g_gc_opt = *p_x1g_gc_opt;
+      	break;
+      }
+    }
+
+    num_gc_new += gc;
+
+    /* Record the gc-optimal X1G implementation */
+    std::ofstream db_gc;
+    db_gc.open( "db_gc_practical_x1g_6_5000", std::ios::app );
+    db_gc << "0x" << repr_str << " ";
+    db_gc << "0x" << tt_str << " ";
+    //db_gc << mc << " ";
+    db_gc << num_vars << " ";
+    db_gc << gc << " ";
+    x1g_gc_opt.foreach_gate( [&]( auto const& f ) {
+    	x1g_gc_opt.foreach_fanin( f, [&]( auto const& fi ) {
+    		db_gc << static_cast<uint32_t>( ( fi.index << 1 ) + fi.complement ) << " ";
+    	} );
+    } );
+    x1g_network::signal po = x1g_gc_opt.po_at( 0 );
+    db_gc << static_cast<uint32_t>( ( po.index << 1 ) + po.complement ) << "\n";
+    db_gc.close();
+	}
+	db_mc.close();
+	std::cout << "num_gc_old: " << num_gc_old << std::endl;
+	std::cout << "num_gc_new: " << num_gc_new << std::endl;
+}
+
+/* Generate db_gc for the the 147,998-entry 6-input db_mc             */
+/* Only functions with mc no more than 5 are taken into consideration */
+void create_db_complete_x1g_6( std::string const& filename )
+{
+	std::uint32_t num_entries{ 0u };
+	std::uint32_t num_cases_impr{ 0u };
+	std::uint32_t num_gc_old{ 0u };
+	std::uint32_t num_gc_new{ 0u };
+
+	std::ifstream db_mc;
+	db_mc.open( filename, std::ios::in );
+	std::string line;
+	uint32_t pos{ 0u };
+
+	while ( std::getline( db_mc, line ) )
+	{
+		std::cout << "[i] working on the " << ++num_entries << "th representitive\n";
+
+		pos = static_cast<uint32_t>( line.find( '\t' ) );
+    const auto name = line.substr( 0, pos );
+    pos += 1u;
+    auto tt_str = line.substr( pos, 16u );
+    pos += 17u;
+    const auto repr_str = line.substr( pos, 16u );
+    pos += 17u;
+    uint32_t mc = std::stoul( line.substr( pos, 1u ) );
+    if ( mc <= 4u )
+    {
+    	std::cout << "[i] skip, as it is already in the database ( db_gc_practical_x1g_6 )\n";
+    	continue;
+    }
+
     pos += 2u;
     line.erase( 0, pos );
     const uint32_t num_vars = std::stoul( line.substr( 0, line.find( ' ' ) ) );
@@ -1387,7 +1575,7 @@ void create_db_practical_x1g( std::string const& filename )
 
     /* Record the gc-optimal X1G implementation */
     std::ofstream db_gc;
-    db_gc.open( "db_gc_practical_x1g_6", std::ios::app );
+    db_gc.open( "db_gc_complete_x1g_6", std::ios::app );
     db_gc << "0x" << repr_str << " ";
     db_gc << "0x" << tt_str << " ";
     //db_gc << mc << " ";
@@ -1417,5 +1605,8 @@ int main()
 	//mockturtle::create_db_complete( "../experiments/db_mc_5" );
 	//mockturtle::create_db_complete_x1g( "../experiments/db_mc_5" );
 	mockturtle::create_db_practical_x1g( "../experiments/db_mc" );
+	//mockturtle::create_db_complete_x1g_6( "../experiments/db_mc" );
+	//mockturtle::x1g_affine_5_exact_synthesis();
+
 	return 0;
 }

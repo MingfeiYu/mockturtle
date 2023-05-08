@@ -25,7 +25,7 @@ uint32_t garbling_cost_calculator( xag_network const& xag )
 
 	/* create ANDs and XORs */
 	xag.foreach_node( [&]( auto n ) {
-		if ( xag.is_constant( n ) || xag.os_pi( n ) )
+		if ( xag.is_constant( n ) || xag.is_pi( n ) )
 		{
 			return;
 		}

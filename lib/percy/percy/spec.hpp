@@ -11,7 +11,7 @@
 
 namespace percy
 {
-    const int MAX_STEPS = 20; /// The maximum number of steps we'll synthesize
+    const int MAX_STEPS = 15; /// The maximum number of steps we'll synthesize
     const int MAX_FANIN =  5; /// The maximum number of fanins per step we'll synthesize
 
     /// The various methods types of synthesis supported by percy.

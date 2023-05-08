@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <fmt/format.h>
 #include <fstream>
@@ -62,7 +63,8 @@ public:
 		: ps_( ps ),
 			pst_( pst ),
 			pfunc_gc_( std::make_shared<decltype( pfunc_gc_ )::element_type>() ),
-      pclassify_cache_( std::make_shared<decltype( pclassify_cache_ )::element_type>() )
+      pclassify_cache_( std::make_shared<decltype( pclassify_cache_ )::element_type>() ), 
+      pblacklist_cache_( std::make_shared<decltype( pblacklist_cache_ )::element_type>() )
 	{
 		build_db( dbname );
 	}
@@ -130,9 +132,9 @@ public:
 	{
 		stopwatch t_total( pst_->time_total );
 
-		const auto func_ext = kitty::extend_to<5u>( func );
+		const auto func_ext = kitty::extend_to<6u>( func );
 		std::vector<kitty::detail::spectral_operation> trans;
-		kitty::static_truth_table<5u> real_repr;
+		kitty::static_truth_table<6u> real_repr;
 
 		const auto cache_it = pclassify_cache_->find( func_ext );
 		if ( cache_it != pclassify_cache_->end() )
@@ -147,6 +149,16 @@ public:
 		}
 		else
 		{
+			if ( pblacklist_cache_->size() > 0u )
+			{
+				const auto blacklist_it = std::find( pblacklist_cache_->begin(), pblacklist_cache_->end(), func_ext );
+				if ( blacklist_it != pblacklist_cache_->end() )
+				{
+					pst_->classify_abort++;
+					return;
+				}
+			}
+
 			pst_->cache_miss++;
 			const auto spectral = call_with_stopwatch( pst_->time_classify, [&]() {
 					return kitty::exact_spectral_canonization_limit( func_ext, 100000, [&trans]( auto const& ops ) {
@@ -159,6 +171,7 @@ public:
 
 			if ( !spectral.second )
 			{
+				pblacklist_cache_->emplace_back( func_ext );
 				pst_->classify_abort++;
 				return;
 			}
@@ -171,7 +184,7 @@ public:
 			std::string db_repr_str = std::get<0>( search->second );
 			po_db_repr = std::get<1>( search->second );
 
-			kitty::static_truth_table<5u> db_repr;
+			kitty::static_truth_table<6u> db_repr;
 			kitty::create_from_hex_string( db_repr, db_repr_str );
 
 			call_with_stopwatch( pst_->time_classify, [&]() {
@@ -192,7 +205,7 @@ public:
 
 		bool po_inv{ false };
 		std::vector<x1g_network::signal> po_xors;
-		std::vector<x1g_network::signal> pis( 5u, x1g.get_constant( false ) );
+		std::vector<x1g_network::signal> pis( 6u, x1g.get_constant( false ) );
 		std::copy( begin, end, pis.begin() );
 		stopwatch t_construct( pst_->time_construct );
 
@@ -261,7 +274,7 @@ private:
 		stopwatch t_total( pst_->time_total );
 		stopwatch t_parse_db( pst_->time_parse_db );
 
-		db_pis_.resize( 5u );
+		db_pis_.resize( 6u );
 		std::generate( db_pis_.begin(), db_pis_.end(), [&]() { return db_.create_pi(); } );
 
 		std::ifstream db_gc;
@@ -272,12 +285,12 @@ private:
 		while ( std::getline( db_gc, line ) )
 		{
 			pos = static_cast<uint32_t>( line.find( 'x' ) );
-			const std::string repr_real_str = line.substr( ++pos, 8u );
-			pos += 9u;
+			const std::string repr_real_str = line.substr( ++pos, 16u );
+			pos += 17u;
 			line.erase( 0, pos );
 			pos = line.find( 'x' );
-			std::string repr_db_str = line.substr( ++pos, 8u );
-			pos += 9u;
+			std::string repr_db_str = line.substr( ++pos, 16u );
+			pos += 17u;
 			line.erase( 0, pos );
 			pos = line.find( ' ' );
 			const uint32_t num_vars = std::stoul( line.substr( 0, pos++ ) );
@@ -331,11 +344,11 @@ private:
 			if ( ps_.verify_database )
 			{
 				cut_view<x1g_network> db_partial{ db_, db_pis_, signal_po };
-				kitty::static_truth_table<5u> repr_real, repr_db;
+				kitty::static_truth_table<6u> repr_real, repr_db;
 				kitty::create_from_hex_string( repr_real, repr_real_str );
 				kitty::create_from_hex_string( repr_db, repr_db_str );
 
-				auto result = simulate<kitty::static_truth_table<5u>>( db_partial )[0];
+				auto result = simulate<kitty::static_truth_table<6u>>( db_partial )[0];
 				if ( result != repr_db )
 				{
 					std::cerr << "[w] incorrect implementation for " << repr_db_str << "; "
@@ -359,7 +372,8 @@ private:
 	x1g_network db_;
 	std::vector<x1g_network::signal> db_pis_;
 	std::shared_ptr<std::unordered_map<std::string, std::tuple<std::string, x1g_network::signal>>> pfunc_gc_;
-	std::shared_ptr<std::unordered_map<kitty::static_truth_table<5u>, std::tuple<bool, kitty::static_truth_table<5u>, std::vector<kitty::detail::spectral_operation>>, kitty::hash<kitty::static_truth_table<5u>>>> pclassify_cache_;
+	std::shared_ptr<std::unordered_map<kitty::static_truth_table<6u>, std::tuple<bool, kitty::static_truth_table<6u>, std::vector<kitty::detail::spectral_operation>>, kitty::hash<kitty::static_truth_table<6u>>>> pclassify_cache_;
+	std::shared_ptr<std::vector<kitty::static_truth_table<6u>>> pblacklist_cache_;
 
 	x1g_mingc_rewrite_params const& ps_;
 	x1g_mingc_rewrite_stats* pst_{ nullptr };

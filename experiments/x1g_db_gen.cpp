@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <string>
 #include <array>
 #include <iostream>
@@ -17,6 +18,20 @@
 
 #include <experiments.hpp>
 
+typedef struct represent
+{
+	std::string func;
+	uint32_t mc;
+} represent;
+
+static const std::string affine_5_input[] = {
+	"00000000", "80000000", "80008000", "00808080", "80808080", "08888000", "aa2a2a80", "88080808", 
+	"2888a000", "f7788000", "a8202020", "08880888", "bd686868", "aa808080", "7e686868", "2208a208", 
+	"08888888", "88888888", "ea404040", "2a802a80", "73d28c88", "ea808080", "a28280a0", "13284c88", 
+	"a2220888", "aae6da80", "58d87888", "8c88ac28", "8880f880", "9ee8e888", "4268c268", "16704c80", 
+	"78888888", "4966bac0", "372840a0", "5208d288", "7ca00428", "f8880888", "2ec0ae40", "f888f888", 
+	"58362ec0", "0eb8f6c0", "567cea40", "f8887888", "78887888", "e72890a0", "268cea40", "6248eac0"};
+
 static const std::string npn_4_input[] = {
   "0000", "0001", "0003", "0006", "0007", "000f", "0016", "0017", "0018", "0019", "001b", "001e", "001f", "003c", 
 	"003d", "003f", "0069", "006b", "006f", "007e", "007f", "00ff", "0116", "0117", "0118", "0119", "011a", "011b", 
@@ -35,6 +50,57 @@ static const std::string npn_4_input[] = {
 	"1698", "1699", "169a", "169b", "169e", "16a9", "16ac", "16ad", "16bc", "16e9", "177e", "178e", "1796", "1798", 
 	"179a", "17ac", "17e8", "18e7", "19e1", "19e3", "19e6", "1bd8", "1be4", "1ee1", "3cc3", "6996"};
 
+static std::vector<represent> affine_represent_5 = {
+	{"00000000", 0}, 
+	{"80000000", 4}, 
+	{"80008000", 3}, 
+	{"00808080", 4}, 
+	{"80808080", 2}, 
+	{"08888000", 3}, 
+	{"aa2a2a80", 4}, 
+	{"88080808", 4}, 
+	{"2888a000", 3}, 
+	{"f7788000", 3}, 
+	{"a8202020", 3}, 
+	{"08880888", 3}, 
+	{"bd686868", 4}, 
+	{"aa808080", 4}, 
+	{"7e686868", 4}, 
+	{"2208a208", 4}, 
+	{"08888888", 4}, 
+	{"88888888", 1}, 
+	{"ea404040", 3}, 
+	{"2a802a80", 2}, 
+	{"73d28c88", 3}, 
+	{"ea808080", 3}, 
+	{"a28280a0", 3}, 
+	{"13284c88", 3}, 
+	{"a2220888", 3}, 
+	{"aae6da80", 4}, 
+	{"58d87888", 4}, 
+	{"8c88ac28", 4}, 
+	{"8880f880", 4}, 
+	{"9ee8e888", 4}, 
+	{"4268c268", 4}, 
+	{"16704c80", 4}, 
+	{"78888888", 3}, 
+	{"4966bac0", 4}, 
+	{"372840a0", 4}, 
+	{"5208d288", 3}, 
+	{"7ca00428", 4}, 
+	{"f8880888", 3}, 
+	{"2ec0ae40", 4}, 
+	{"f888f888", 3}, 
+	{"58362ec0", 4}, 
+	{"0eb8f6c0", 4}, 
+	{"567cea40", 4}, 
+	{"f8887888", 4}, 
+	{"78887888", 2}, 
+	{"e72890a0", 4}, 
+	{"268cea40", 3}, 
+	{"6248eac0", 4}
+};
+
 std::vector<std::string> npn_4()
 {
 	std::vector<std::string> result;
@@ -46,9 +112,19 @@ std::vector<std::string> npn_4()
 	return result;
 }
 
+std::vector<std::string> affine_5()
+{
+	std::vector<std::string> result;
+	for ( auto i{ 0u }; i < 48u; ++i )
+	{
+		result.emplace_back( affine_5_input[i] );
+	}
+
+	return result;
+}
+
 void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & valid_mc )
 {
-	/* Solution 2: forget about database */
 	const auto tt_lookup = tt.num_vars() < 5u ? kitty::extend_to( tt, 5u ) : tt;
 	mc = kitty::get_spectral_mc( tt_lookup );
 	valid_mc = true;
@@ -665,9 +741,336 @@ void x1g_db_gen()
 	exp_res.table();
 }
 
+void x1g_affine_5_exact_synthesis()
+{
+	experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, uint32_t, float, bool> exp_res( "x1g_affine_5", "function", "num_xor", "num_onehot", "num_variables", "num_clauses", "runtime[s]", "exact synth. suc." );
+	//auto const benchmarks = affine_5();
+	//std::vector<uint32_t> affine_5_mc;
+	//std::ofstream fout( "x1g_affine_5.txt" );
+	//fout << "inline static const uint16_t subgraphs[]\n{\n\t";
+	//std::cout << "std::vector<std::pair<std::string, mockturtle::x1g_network::signal>> representitives = {\n";
+
+	mockturtle::x1g_network x1g;
+	x1g.get_constant( false );
+	for ( auto i{ 0u }; i < 5u; ++i )
+	{
+		x1g.create_pi();	
+	}
+
+	for ( auto const& benchmark: affine_represent_5 )
+	{
+		std::cout << "[i] processing " << benchmark.func << std::endl;
+		kitty::dynamic_truth_table function( 5u );
+		kitty::create_from_hex_string( function, benchmark.func );
+
+		uint32_t mc = benchmark.mc;
+		uint32_t num_oh{ 0u };
+		float time_sat{ 0.0 };
+		assert( function.num_vars() == 5u );
+		bool const normal = kitty::is_normal( function );
+
+		percy::spec_minmc spec;
+		spec.nr_in = function.num_vars();
+		spec.fanin_size = 3u;
+		spec.verbosity = 0u;
+		spec.conflict_limit = 1000000u;
+		spec.set_output( normal ? function : ~function );
+
+		if ( int triv = spec.check_triv(); triv >= 0 )
+		{
+			if ( triv == 0 )
+			{
+				x1g.create_po( normal ? x1g.get_constant( false ) : x1g.get_constant( true ) );
+			}
+			else
+			{
+				x1g.create_po( normal ? x1g.make_signal( x1g.pi_at( triv - 1 ) ) : !x1g.make_signal( x1g.pi_at( triv - 1 ) ) );
+			}
+
+			exp_res( benchmark.func, 0u, 0u, 0u, 0u, 0., true );
+			//affine_5_mc.emplace_back( 0u );
+			continue;
+		}
+
+		kitty::dynamic_truth_table const0{ 3 };
+		kitty::dynamic_truth_table a{ 3 };
+		kitty::dynamic_truth_table b{ 3 };
+		kitty::dynamic_truth_table c{ 3 };
+		kitty::create_nth_var( a, 0 );
+		kitty::create_nth_var( b, 1 );
+		kitty::create_nth_var( c, 2 );
+		spec.add_free_primitive( const0 );													        // 00
+		spec.add_free_primitive( a );													              // aa
+		spec.add_free_primitive( b );													              // cc
+		spec.add_free_primitive( c );													              // f0
+
+		spec.add_primitive(  kitty::ternary_onehot(  a,  b,  c ) );         // 16
+		spec.add_primitive( ~kitty::ternary_onehot( ~a,  b,  c ) );         // d6
+		spec.add_primitive( ~kitty::ternary_onehot(  a, ~b,  c ) );         // b6
+		spec.add_primitive( ~kitty::ternary_onehot(  a, b,  ~c ) );         // 9e
+		spec.add_primitive(  kitty::ternary_onehot( ~a, ~b,  c ) );         // 86
+		spec.add_primitive(  kitty::ternary_onehot(  a, ~b, ~c ) );         // 94
+		spec.add_primitive(  kitty::ternary_onehot( ~a,  b, ~c ) );         // 92
+		spec.add_primitive(  kitty::ternary_onehot( ~a, ~b, ~c ) );         // 68
+		spec.add_primitive( ~kitty::ternary_onehot( ~const0,  b,  c ) );    // fc
+		spec.add_primitive(  kitty::ternary_onehot( ~const0, ~b,  c ) );    // 0c
+		spec.add_primitive(  kitty::ternary_onehot( ~const0,  b, ~c ) );    // 30
+		spec.add_primitive(  kitty::ternary_onehot( ~const0, ~b, ~c ) );    // c0
+		spec.add_primitive( ~kitty::ternary_onehot(  a, ~const0,  c ) );    // fa
+		spec.add_primitive(  kitty::ternary_onehot( ~a, ~const0,  c ) );    // 0a
+		spec.add_primitive(  kitty::ternary_onehot(  a, ~const0, ~c ) );    // 50
+		spec.add_primitive(  kitty::ternary_onehot( ~a, ~const0, ~c ) );    // a0
+		spec.add_primitive( ~kitty::ternary_onehot(  a,  b, ~const0 ) );    // ee
+		spec.add_primitive(  kitty::ternary_onehot( ~a,  b, ~const0 ) );    // 22
+		spec.add_primitive(  kitty::ternary_onehot(  a, ~b, ~const0 ) );    // 44
+		spec.add_primitive(  kitty::ternary_onehot( ~a, ~b, ~const0 ) );    // 88
+
+		spec.add_free_primitive( a ^ b ^ c);                                // 96
+		spec.add_free_primitive( a ^ b );                                   // 66
+		spec.add_free_primitive( b ^ c );                                   // 3c
+		spec.add_free_primitive( a ^ c );                                   // 5a
+
+		//bool valid_mc{ false };
+		//look_up_mc( function, mc, valid_mc );
+		//assert( valid_mc );
+		//affine_5_mc.emplace_back( mc );
+
+		uint32_t upper_bound_oh = mc;
+		uint32_t lower_bound_oh = ( mc + 1 ) / 2;
+
+		const clock_t begin_time = clock();
+		percy::chain_minmc chain;
+		for ( uint32_t bound_nfree = lower_bound_oh; bound_nfree <= upper_bound_oh; ++bound_nfree )
+		{
+			spec.set_nfree( bound_nfree );
+			percy::synth_stats synth_st;
+
+			if ( const auto result = percy::std_synthesize_minmc( spec, chain, &synth_st );
+					 result == percy::success )
+			{
+				num_oh = bound_nfree;
+				uint32_t num_xor{ 0u };
+
+				std::vector<mockturtle::x1g_network::signal> signals;
+				signals.emplace_back( x1g.make_signal( x1g.pi_at( 0 ) ) );
+				signals.emplace_back( x1g.make_signal( x1g.pi_at( 1 ) ) );
+				signals.emplace_back( x1g.make_signal( x1g.pi_at( 2 ) ) );
+				signals.emplace_back( x1g.make_signal( x1g.pi_at( 3 ) ) );
+				signals.emplace_back( x1g.make_signal( x1g.pi_at( 4 ) ) );
+
+				for ( uint32_t i = 0u; i < static_cast<uint32_t> ( chain.get_nr_steps() ); ++i )
+				{
+					auto const c1 = signals[chain.get_step( i )[0]];
+					auto const c2 = signals[chain.get_step( i )[1]];
+					auto const c3 = signals[chain.get_step( i )[2]];
+
+					switch ( chain.get_operator( i )._bits[0] )
+					{
+					case 0x00:
+						signals.emplace_back( x1g.get_constant( false ) );
+						break;
+					case 0xaa:
+						signals.emplace_back( c1 );
+						break;
+					case 0xcc:
+						signals.emplace_back( c2 );
+						break;
+					case 0xf0:
+						signals.emplace_back( c3 );
+						break;
+					case 0x16:
+						signals.emplace_back(  x1g.create_onehot(  c1,  c2,  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0xd6:
+						signals.emplace_back( !x1g.create_onehot( !c1,  c2,  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0xb6:
+						signals.emplace_back( !x1g.create_onehot(  c1, !c2,  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0x9e:
+						signals.emplace_back( !x1g.create_onehot(  c1,  c2, !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0x86:
+						signals.emplace_back(  x1g.create_onehot( !c1, !c2,  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0x94:
+						signals.emplace_back(  x1g.create_onehot(  c1, !c2, !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0x92:
+						signals.emplace_back(  x1g.create_onehot( !c1,  c2, !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0x68:
+						signals.emplace_back(  x1g.create_onehot( !c1, !c2, !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0xfc:
+						signals.emplace_back( !x1g.create_onehot(  x1g.get_constant( true ),  c2,  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0x0c:
+						signals.emplace_back(  x1g.create_onehot(  x1g.get_constant( true ), !c2,  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0x30:
+						signals.emplace_back(  x1g.create_onehot(  x1g.get_constant( true ),  c2, !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0xc0:
+						signals.emplace_back(  x1g.create_onehot(  x1g.get_constant( true ), !c2, !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( true ).data << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0xfa:
+						signals.emplace_back( !x1g.create_onehot(  c1,  x1g.get_constant( true ),  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0x0a:
+						signals.emplace_back(  x1g.create_onehot( !c1,  x1g.get_constant( true ),  c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						break;
+					case 0x50:
+						signals.emplace_back(  x1g.create_onehot(  c1,  x1g.get_constant( true ), !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0xa0:
+						signals.emplace_back(  x1g.create_onehot( !c1,  x1g.get_constant( true ), !c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 1 ) << ",";
+						break;
+					case 0xee:
+						signals.emplace_back( !x1g.create_onehot(  c1,  c2,  x1g.get_constant( true ) ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						break;
+					case 0x22:
+						signals.emplace_back(  x1g.create_onehot( !c1,  c2,  x1g.get_constant( true ) ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						break;
+					case 0x44:
+						signals.emplace_back(  x1g.create_onehot(  c1, !c2,  x1g.get_constant( true ) ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						break;
+					case 0x88:
+						signals.emplace_back(  x1g.create_onehot( !c1, !c2,  x1g.get_constant( true ) ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 1 ) << 1 ) ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( true ).data << ",";
+						break;
+					case 0x3c:
+						signals.emplace_back( x1g.create_xor( c2, c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( x1g.get_constant( false ).data << 1 ) ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_xor;
+						break;
+					case 0x5a:
+						signals.emplace_back( x1g.create_xor( c1, c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( false ).data << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_xor;
+						break;
+					case 0x66:
+						signals.emplace_back( x1g.create_xor( c1, c2 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << x1g.get_constant( false ).data << ",";
+						++num_xor;
+						break;
+					case 0x96:
+						signals.emplace_back( x1g.create_xor3( c1, c2, c3 ) );
+						//fout << "0x" << std::setbase( 16 ) << ( ( ( c1.data ^ 0 ) << 1 ) ^ 1 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c2.data ^ 0 ) << ",";
+						//fout << "0x" << std::setbase( 16 ) << ( c3.data ^ 0 ) << ",";
+						++num_xor;
+						break;
+					default:
+						std::cerr << "[e] unsupported operation " << kitty::to_hex( chain.get_operator( i ) ) << std::endl;
+						assert( false );
+						break;
+					}
+				}
+
+				auto const output_signal = signals.back();
+				x1g.create_po( normal ? output_signal : !output_signal );
+
+				time_sat = ( float( clock() - begin_time ) / CLOCKS_PER_SEC );
+				//std::cout << "{" << benchmark << ", " 
+				//					<< ( ( !normal ^ x1g.is_complemented( output_signal ) ) ? "!" : "" ) << x1g.get_node( output_signal ) 
+				//					<< "}, \n";
+
+				exp_res( benchmark.func, num_xor, num_oh, static_cast<uint32_t> ( synth_st.nr_vars ), static_cast<uint32_t> ( synth_st.nr_clauses ), time_sat, true );
+				break;
+			}
+			else
+			{
+				if ( bound_nfree == upper_bound_oh )
+				{
+					exp_res( benchmark.func, 0u, 0u, 0u, 0u, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ), false );
+				}
+			}
+		}
+	}
+	//fout << "\n};";
+	//fout.close();
+	//std::cout << "};\n\n";
+	//assert( benchmarks.size() == affine_5_mc.size() );
+	//std::cout << "std::vector<represent> affine_represent_5 = {\n";
+	//for ( auto i{ 0u }; i < benchmarks.size(); ++i )
+	//{
+	//	std::cout << "{" << benchmarks[i] << ", " << affine_5_mc[i] << "}, \n";
+	//}
+	//std::cout << "};\n";
+	exp_res.save();
+	exp_res.table();
+}
+
 int main()
 {	
-	x1g_db_gen();
+	//x1g_db_gen();
+	x1g_affine_5_exact_synthesis();
 
 	return 0;
 }

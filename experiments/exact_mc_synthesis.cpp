@@ -33,6 +33,8 @@
 #include <kitty/constructors.hpp>
 #include <kitty/dynamic_truth_table.hpp>
 #include <kitty/print.hpp>
+#include <kitty/spectral.hpp>
+#include <kitty/static_truth_table.hpp>
 #include <mockturtle/algorithms/detail/minmc_xags.hpp>
 #include <mockturtle/algorithms/exact_mc_synthesis.hpp>
 #include <mockturtle/algorithms/xag_optimization.hpp>
@@ -232,6 +234,8 @@ int main()
       kitty::dynamic_truth_table tt( 6u );
       kitty::create_from_words( tt, &functions[i], &functions[i] + 1 );
 
+      kitty::static_truth_table
+
       if ( kitty::get_bit( tt, 0u ) )
       {
         tt = ~tt;
@@ -277,19 +281,19 @@ int main()
     exp( name, xor_gates, and_gates, to_seconds( time ) );
   };
 
-  all_spectral( 4u, false, false, false );
-  all_spectral( 4u, true, false, false );
-  all_spectral( 4u, true, true, false );
-  all_spectral( 4u, true, true, true );
-  all_spectral( 5u, false, false, false );
-  all_spectral( 5u, true, false, false );
-  all_spectral( 5u, true, true, false );
-  all_spectral( 5u, true, true, true );
+  //all_spectral( 4u, false, false, false );
+  //all_spectral( 4u, true, false, false );
+  //all_spectral( 4u, true, true, false );
+  //all_spectral( 4u, true, true, true );
+  //all_spectral( 5u, false, false, false );
+  //all_spectral( 5u, true, false, false );
+  //all_spectral( 5u, true, true, false );
+  //all_spectral( 5u, true, true, true );
 
   practical6( false, false, false );
-  practical6( true, false, false );
-  practical6( true, true, false );
-  practical6( true, true, true );
+  //practical6( true, false, false );
+  //practical6( true, true, false );
+  //practical6( true, true, true );
 
   exp.save();
   exp.table();

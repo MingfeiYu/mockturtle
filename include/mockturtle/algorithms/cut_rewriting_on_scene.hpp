@@ -1,7 +1,7 @@
 #pragma once
 
 #include <mockturtle/algorithms/cut_rewriting.hpp>
-#include <mockturtle/views/topo_view.hpp>
+//#include <mockturtle/views/topo_view.hpp>
 
 namespace mockturtle
 {
@@ -62,14 +62,24 @@ uint32_t compute_cost( Ntk const& ntk )
 }
 
 template<typename Ntk, class NtkCostFn>
-uint32_t mffc_cost( Ntk const& ntk, node<Ntk> const& n, uint32_t cost_bfr )
+int32_t mffc_cost( Ntk const& ntk, node<Ntk> const& n, uint32_t cost_bfr )
 {
+	//std::cout << "[m] before deref: ";
+  //ntk.foreach_gate( [&]( auto const& n ) {
+	//	std::cout << "node " << n << "(" << ntk.value( n ) << ") "; 
+	//} );
+	//std::cout << "\n";
   recursive_deref_no_value<Ntk>( ntk, n );
-  auto value_n = ntk.value( n );
-  ntk.set_value( n, 0u );
+  //auto value_n = ntk.value( n );
+  //ntk.set_value( n, 0u );
   uint32_t cost_new = compute_cost<Ntk, NtkCostFn>( ntk );
-  ntk.set_value( n, value_n );
+  //ntk.set_value( n, value_n );
   recursive_ref_no_value<Ntk>( ntk, n );
+  //std::cout << "[m] after ref: ";
+  //ntk.foreach_gate( [&]( auto const& n ) {
+	//	std::cout << "node " << n << "(" << ntk.value( n ) << ") "; 
+	//} );
+	//std::cout << "\n";
   return cost_bfr - cost_new;
 }
 
@@ -90,10 +100,14 @@ struct cut_rewriting_on_scene_impl
 
 		/* compute the original cost */
 		initialize_values_with_fanout( ntk_ );
-		ntk_.foreach_po( [&]( auto const& f ) {
-			ntk_.incr_value( f.index );
-		} );
+		//std::cout << "[m] ntk originally consists of: ";
+		//ntk_.foreach_gate( [&]( auto const& n ) {
+		//	std::cout << "node " << n << "(" << ntk_.value( n ) << ") "; 
+		//} );
+		//std::cout << "\n";
+		//std::cout << "[i] computing original cost\n";
 		const auto cost_bfr = compute_cost<Ntk, NtkCostFn>( ntk_ );
+		//std::cout << "[i] original cost = " << cost_bfr << "\n";
 
 		/* cut enumeration */
 		const auto cuts = call_with_stopwatch( st_.time_cuts, [&]() {
@@ -116,46 +130,16 @@ struct cut_rewriting_on_scene_impl
 		ntk_.foreach_gate( [&]( auto const& n, auto i ) {
 			pbar( i, i );
 
-			int32_t gain_best = -1;
-			uint32_t cost_mffc = mffc_cost<Ntk, NtkCostFn>( ntk_, n, cost_bfr );
+			//std::cout << "\n[m] ntk consists of: ";
+			//ntk_.foreach_gate( [&]( auto const& n ) {
+			//	std::cout << "node " << n << " ";
+			//} );
+			//std::cout << "\n";
+			//std::cout << "[m] computing mffc of node " << n << "\n";
+
+			int32_t cost_mffc = mffc_cost<Ntk, NtkCostFn>( ntk_, n, cost_bfr );
 			//std::cout << "[m] mffc of node " << n << " is " << cost_mffc << "\n";
-			signal<Ntk> signal_best;
-
-			for ( auto& cut: cuts.cuts( ntk_.node_to_index( n ) ) )
-			{
-				if ( cut->size() == 1 || cut->size() < ps_.min_cand_cut_size )
-				{
-					continue;
-				}
-
-				const auto tt = cuts.truth_table( *cut );
-				assert( cut->size() == static_cast<unsigned> ( tt.num_vars() ) );
-
-				std::vector<signal<Ntk>> children;
-				for ( auto child: *cut )
-				{
-					children.emplace_back( ntk_.make_signal( ntk_.index_to_node( child ) ) );
-				}
-
-				const auto on_signal = [&]( auto const& f_new, uint32_t cost_cut ) {
-					int32_t gain = cost_mffc - cost_cut;
-
-					if ( ( gain > 0 || ( ps_.allow_zero_gain && gain == 0 ) ) && gain > gain_best )
-					{
-						gain_best = gain;
-						signal_best = f_new;
-					}
-
-					//std::cout << "[m] cost of current cut of node " << n << " is " << cost_cut << "\n";
-
-					return true;
-				};
-
-				stopwatch<> t_rewriting( st_.time_rewriting );
-				rewriting_fn_( dest, cuts.truth_table( *cut ), children.begin(), children.end(), on_signal );
-			}
-
-			if ( gain_best == -1 )
+			if ( cost_mffc <= 1 )
 			{
 				std::vector<signal<Ntk>> children;
 				ntk_.foreach_fanin( n, [&]( auto const& f ) {
@@ -166,27 +150,226 @@ struct cut_rewriting_on_scene_impl
 			}
 			else
 			{
-				old2new[n] = signal_best;
+				int32_t gain_best = -1;
+				signal<Ntk> signal_best;
+
+				for ( auto& cut: cuts.cuts( ntk_.node_to_index( n ) ) )
+				{
+					if ( cut->size() == 1 || cut->size() < ps_.min_cand_cut_size )
+					{
+						continue;
+					}
+
+					const auto tt = cuts.truth_table( *cut );
+					assert( cut->size() == static_cast<unsigned> ( tt.num_vars() ) );
+
+					std::vector<signal<Ntk>> children;
+					for ( auto child: *cut )
+					{
+						children.emplace_back( ntk_.make_signal( ntk_.index_to_node( child ) ) );
+					}
+
+					const auto on_signal = [&]( auto const& f_new ) {
+						Ntk dest_tmp = dest.clone();
+						dest_tmp.create_po( f_new );
+						//std::cout << "[m] in this solution, dest_tmp consists of: ";
+						//dest_tmp.foreach_gate( [&]( auto const& n ) {
+						//	std::cout << "node " << n << "(" << dest_tmp.value( n ) << ") ";
+						//} );
+						//std::cout << "\n";
+						//std::cout << "[m] before undoing pos, pos of dest_tmp is: ";
+						//dest_tmp.foreach_po( [&]( auto const& f ) {
+						//	std::cout << "node " << dest_tmp.get_node( f ) << " ";
+						//} );
+						//std::cout << "\n";
+						
+						//std::vector<uint32_t> nodes_unpo;
+						//for ( auto po_index{ 0u }; po_index < dest_tmp._storage->outputs.size(); ++po_index )
+						//{
+						//	if ( dest_tmp.value( dest_tmp.get_node( dest_tmp._storage->outputs[po_index] ) ) > 1u )
+						//	{
+						//		nodes_unpo.emplace_back( dest_tmp.get_node( dest_tmp._storage->outputs[po_index] ) );
+						//	}
+						//}
+						/* undo 'create_po()' */
+						//for ( auto node_unpo: nodes_unpo )
+						//{
+						//	for ( auto po_index{ 0u }; po_index < dest_tmp._storage->outputs.size(); ++po_index )
+						//	{
+						//		if ( dest_tmp.get_node( dest_tmp._storage->outputs[po_index] ) == node_unpo )
+						//		{
+									//std::cout << "[m] undo 'create_po' on node " << node_unpo << "\n";
+						//			--dest_tmp._storage->nodes[node_unpo].data[0].h1;
+						//			dest_tmp.decr_value( node_unpo );
+						//			dest_tmp._storage->outputs.erase( dest_tmp._storage->outputs.begin() + po_index );
+						//			break;
+						//		}
+						//	}
+						//}
+
+						dest_tmp.incr_value( dest_tmp.get_node( f_new ) );
+						recursive_ref_no_value<Ntk>( dest_tmp, dest_tmp.get_node( f_new ) );
+						//std::cout << "[m] then, dest_tmp becomes: ";
+						//dest_tmp.foreach_gate( [&]( auto const& n ) {
+						//	std::cout << "node " << n << "(" << dest_tmp.value( n ) << ") ";
+						//} );
+						//std::cout << "\n";
+						uint32_t cost_tmp = compute_cost<Ntk, NtkCostFn>( dest_tmp );
+
+						recursive_deref_no_value<Ntk>( dest_tmp, dest_tmp.get_node( f_new ) );
+						uint32_t cost_last = compute_cost<Ntk, NtkCostFn>( dest_tmp );
+
+						int32_t gain = cost_mffc - ( cost_tmp - cost_last );
+						/* TO CHECK: These two data are constantly 0 */
+						//std::cout << "[m] cost_last is " << cost_last << ", cost_tmp is " << cost_tmp << "\n";
+						//std::cout << "[m] cost of current cut is " << ( cost_tmp - cost_last ) << "\n";
+
+						if ( ( gain > 0 || ( ps_.allow_zero_gain && gain == 0 ) ) && gain > gain_best )
+						{
+							gain_best = gain;
+							signal_best = f_new;
+						}
+
+						return true;
+					};
+
+					stopwatch<> t_rewriting( st_.time_rewriting );
+					rewriting_fn_( dest, tt, children.begin(), children.end(), on_signal );
+				}
+
+				if ( gain_best == -1 )
+				{
+					std::vector<signal<Ntk>> children;
+					ntk_.foreach_fanin( n, [&]( auto const& f ) {
+						children.emplace_back( ntk_.is_complemented( f ) ? dest.create_not( old2new[f] ) : old2new[f] );
+					} );
+
+					old2new[n] = dest.clone_node( ntk_, n, children );
+				}
+				else
+				{
+					old2new[n] = signal_best;
+				}
 			}
 
+			//std::cout << "[m] computing GC of current dest\n";
+
 			recursive_ref_no_value<Ntk>( dest, dest.get_node( old2new[n] ) );
+			//dest.create_po( old2new[n] );
+			
+
+			//std::vector<uint32_t> nodes_unpo;
+			//for ( auto po_index{ 0u }; po_index < dest._storage->outputs.size(); ++po_index )
+			//{
+			//	if ( dest.value( dest.get_node( dest._storage->outputs[po_index] ) ) > 1u )
+			//	{
+			//		nodes_unpo.emplace_back( dest.get_node( dest._storage->outputs[po_index] ) );
+			//	}
+			//}
+			/* undo 'create_po()' */
+			//for ( auto node_unpo: nodes_unpo )
+			//{
+			//	for ( auto po_index{ 0u }; po_index < dest._storage->outputs.size(); ++po_index )
+			//	{
+			//		if ( dest.get_node( dest._storage->outputs[po_index] ) == node_unpo )
+			//		{
+			//			//std::cout << "[m] undo 'create_po' on node " << node_unpo << "\n";
+			//			--dest._storage->nodes[node_unpo].data[0].h1;
+			//			dest.decr_value( node_unpo );
+			//			dest._storage->outputs.erase( dest._storage->outputs.begin() + po_index );
+			//			break;
+			//		}
+			//	}
+			//}
+			//dest.incr_value( dest.get_node( old2new[n] ) );
+
+			//std::cout << "[m] n is " << n << ", "<< "dest consists of: ";
+			//dest.foreach_gate( [&]( auto const& n ) {
+			//	if ( dest.value( n ) )
+			//	{
+			//		std::cout << "node " << n << "(" << dest.value( n ) << ") ";
+			//		if ( dest.is_and( n ) )
+			//		{
+			//			std::cout << "(AND)";
+			//		}
+			//		else
+			//		{
+			//			std::cout << "(XOR)";
+			//		}
+			//		std::cout << " ";
+			//	}
+			//} );
+			//std::cout << "\n";
+			//cost_last = compute_cost<Ntk, NtkCostFn>( dest );
+			//std::cout << "[m] current cost of dest = " << cost_last << "\n";
 		} );
+
+		/* undo all the remaining 'po's */
+		//dest.foreach_po( [&]( auto const& f ) {
+		//	--dest._storage->nodes[dest.get_node( f )].data[0].h1;
+		//} );
+		//dest._storage->outputs.resize( 0 );
 
 		/* generate pos */
 		ntk_.foreach_po( [&]( auto const& f ) {
 			dest.create_po( ntk_.is_complemented( f ) ? dest.create_not( old2new[f] ) : old2new[f] );
 		} );
 
-		dest = cleanup_dangling<Ntk>( dest );
+		//dest = cleanup_dangling<Ntk>( dest );
 
 		initialize_values_with_fanout( dest );
-		dest.foreach_po( [&]( auto const& f ) {
-			dest.incr_value( f.index );
-		} );
 		uint32_t cost_aft = compute_cost<Ntk, NtkCostFn>( dest );
 		dest.clear_values();
 		ntk_.clear_values();
 		std::cout << "\toptimized cost = " << cost_aft << "\n";
+		//if ( cost_last != cost_aft )
+		//{
+		//	std::cout << "\tcurrent network cost = " << cost_last << "\n";
+		//}
+		//assert( cost_last == cost_aft );
+		//std::cout << "[i] resulted network consists of: \n";
+		//dest.foreach_gate( [&]( auto const& n ) {
+		//	std::cout << "node " << n << "(" << ( dest.is_and( n ) ? "AND" : "XOR" ) << "): ";
+		//	dest.foreach_fanin( n, [&]( auto const& ni ) {
+		//		std::cout << ( ni.complement ? "!" : "" ) << "node " << ni.index << " ";
+		//	} );
+		//	std::cout << "\n";
+		//} );
+		//std::cout << "[i] pos are: ";
+		//dest.foreach_po( [&]( auto const& f ) {
+		//	std::cout << ( dest.is_complemented( f ) ? "!" : "" ) << "node" << f.index << " ";
+		//} );
+		//std::cout << "\n";
+		//if ( cost_aft > cost_bfr )
+		//{
+		//	std::cout << "[i] did not find a better solution, return the input network\n";
+		//}
+		//std::cout << "[i] The correspondence between two networks: \n";
+		//ntk_.foreach_gate( [&]( auto const& n ) {
+		//	std::cout << "OLD: node " << n << " " 
+		//						<< "NEW: sig. " << ( dest.is_complemented( old2new[n] ) ? "!" : "" ) << "node" << dest.get_node( old2new[n] ) 
+		//						<< "\n";
+		//} );
+
+		uint32_t num_pos{ 0u };
+		std::cout << "[i] The POs in old network are: \n";
+		ntk_.foreach_po( [&]( auto const& f ) {
+			++num_pos;
+			std::cout << ( ntk_.is_complemented( f ) ? "!" : "" ) << "node " << ntk_.get_node( f ) 
+								<< "(" << ( dest.is_complemented( old2new[ntk_.get_node( f )] ) ? "!" : "" ) 
+								<< "node " <<  dest.get_node( old2new[ntk_.get_node( f )] ) << ") ";
+		} );
+		std::cout << "\n";
+		std::cout << "[i] " << num_pos << " POs in old network\n";
+
+		num_pos = 0u;
+		std::cout << "[i] The POs in new network are: \n";
+		dest.foreach_po( [&]( auto const& f ) {
+			++num_pos;
+			std::cout << ( dest.is_complemented( f ) ? "!" : "" ) << "node " << dest.get_node( f ) << " ";
+		} );
+		std::cout << "\n";
+		std::cout << "[i] " << num_pos << " POs in new network\n";
 		return cost_aft > cost_bfr ? ntk_ : dest;
 	}
 

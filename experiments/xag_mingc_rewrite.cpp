@@ -189,6 +189,32 @@ bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const&
 		result += buffer.data();
 	}
 
+	//std::cout << result << "\n"; 
+
+	return result.size() >= 23 && result.substr( 0u, 23u ) == "Networks are equivalent";
+}
+
+template<class Ntk>
+bool abc_cec( Ntk const& ntk )
+{
+	mockturtle::write_bench( ntk, "/tmp/test.bench" );
+	std::string abc_path = "/Users/myu/Documents/GitHub/abc/";
+	std::string command = fmt::format( "{}abc -q \"cec -n {} /tmp/test.bench\"", abc_path, "../experiments/epfl_opt/toy.v" );
+
+	std::array<char, 128> buffer;
+	std::string result;
+	std::unique_ptr<FILE, decltype( &pclose )> pipe( popen( command.c_str(), "r" ), pclose );
+
+	if ( !pipe )
+	{
+		throw std::runtime_error( "popen() failed" );
+	}
+
+	while ( fgets( buffer.data(), buffer.size(), pipe.get() ) != nullptr )
+	{
+		result += buffer.data();
+	}
+
 	return result.size() >= 23 && result.substr( 0u, 23u ) == "Networks are equivalent";
 }
 
@@ -272,7 +298,7 @@ struct count_gc_approx
 	}
 };
 
-using merge_view = mockturtle::topo_view<mockturtle::xag_network>;
+using merge_view = mockturtle::fanout_view<mockturtle::topo_view<mockturtle::xag_network>>;
 
 void count_and_size_rec( merge_view& xag, merge_view::node const& f, merge_view::node const& root )
 {
@@ -333,33 +359,57 @@ uint32_t count_gc( merge_view& xag )
 	return gc;
 }
 
-void recursive_gc_cost( merge_view const& xag_merge, merge_view::node const& n, merge_view::node const& root )
+void recursive_gc_cost( merge_view const& xag_merge, merge_view::node const& n, merge_view::node const& root, std::vector<std::uint32_t>& counted )
 {
-	if ( xag_merge.value( n ) && !xag_merge.visited( n ) ) 
+	if ( xag_merge.value( n ) && !counted[n - 1] ) 
 	{
 		if ( n != root )
 		{
-			if ( xag_merge.fanout_size( n ) == 1u )
+			bool fanout_size_is_1 = ( xag_merge.fanout_size( n ) == 1u );
+			if ( !fanout_size_is_1 )
+			{
+				uint32_t fanout_size{ 0u };
+				//std::cout << "[e] fanouts of node " << n << " are: ";
+				xag_merge.foreach_fanout( n, [&]( auto const& no ) {
+					if ( xag_merge.value( no ) )
+					{
+						++fanout_size;
+						//std::cout << "node " << n << " ";
+					}
+				} );
+				//std::cout << "\n";
+				fanout_size_is_1 = ( fanout_size == 1u );
+			}
+			if ( fanout_size_is_1 )
+			//if ( xag_merge.fanout_size( n ) == 1u )
 			{
 				/* remark this node as traversed */
-				xag_merge.set_visited( n, ( xag_merge.visited( n ) + 1 ) );
+				counted[n - 1] = 1u;
 				/* update the size of this AND clique */
-				xag_merge.set_visited( root, ( xag_merge.visited( root ) + 1 ) );
+				counted[root - 1] += 1u;
 			}
+			//else
+			//{
+			//	std::cout << "[m] meet the border at node " << n << ", which has more than one fanout\n";
+			//}
 		}
 		else
 		{
-			xag_merge.set_visited( n, 2u );
+			counted[n - 1] = 2u;
 		}
 
 		/* recursively trace its fanin */
 		xag_merge.foreach_fanin( n, [&]( auto const& ni ) {
 			auto const child = xag_merge.get_node( ni );
-			if ( xag_merge.is_and( child ) && !xag_merge.is_complemented( ni ) )
-			//if ( xag.value( child ) && xag_merge.is_and( child ) && !xag_merge.is_complemented( ni ) )
+			if ( xag_merge.value( child ) && xag_merge.is_and( child ) && !xag_merge.is_complemented( ni ) )
 			{
-				recursive_gc_cost( xag_merge, child, root );
+				//std::cout << "[e] proceed from node " << n << " to its fanin node " << child << "\n";
+				recursive_gc_cost( xag_merge, child, root, counted );
 			}
+			//else
+			//{
+			//	std::cout << "[m] meet the border at node " << child << ", which is not AND or inactive\n";
+			//}
 		} );
 	}
 }
@@ -369,22 +419,72 @@ struct gc_cost
   uint32_t operator()( mockturtle::xag_network const& xag ) const
   {
     uint32_t gc{ 0u };
-    merge_view xag_merge{ xag };
-    xag_merge.clear_visited();
+    /* const-0 is not taken into consideration */
+    std::vector<uint32_t> counted( xag._storage->nodes.size() - 1 );
+    mockturtle::topo_view<mockturtle::xag_network> xag_topo{ xag };
+    merge_view xag_merge{ xag_topo };
+    //std::cout << "[m] There are " << xag_merge.num_gates() << " nodes in network: ";
+    //xag_merge.foreach_gate( [&] ( auto const& n ) {
+    //	std::cout << "node " << n << "(" << xag_merge.value( n ) << ") ";
+    //} );
+    //std::cout << "\n";
 
     xag_merge.foreach_gate_reverse( [&]( auto const& n ) {
-    	if ( xag_merge.value( n ) && xag_merge.is_and( n ) && !xag_merge.visited( n ) )
+    	//std::cout << "[m] working on node " << n << "\n";
+    	//if ( counted[n - 1] )
+    	//{
+    	//	std::cout << "[m] node " << n << " is already traversed. \n";
+    	//}
+    	//if ( !xag_merge.value( n ) )
+    	//{
+    	//	std::cout << "[m] node " << n << " is inactivated. \n";
+    	//}
+    	if ( xag_merge.value( n ) && xag_merge.is_and( n ) && !counted[n - 1] )
     	{
-    		recursive_gc_cost( xag_merge, n, n );
-    		gc += xag_merge.visited( n );
+    		//std::cout << "[m] node " << n << " is a root. \n";
+    		recursive_gc_cost( xag_merge, n, n, counted );
+    		gc += counted[n - 1];
     	}
     } );
-
-		xag_merge.clear_visited();
 
     return gc;
   }
 };
+
+template<typename Ntk>
+void profile_ntk( Ntk const& ntk )
+{
+	uint32_t num_pis{ 0u };
+	uint32_t num_pos{ 0u };
+
+	ntk.foreach_pi( [&]( auto const& n ) {
+		++num_pis;
+	} );
+	ntk.foreach_po( [&]( auto const& f ) {
+		++num_pos;
+	} );
+
+	std::cout << num_pis << " PIs, and " << num_pos << " POs\n";
+}
+
+template<typename Ntk = mockturtle::xag_network>
+void print_ntk( Ntk const& ntk )
+{
+	ntk.foreach_gate( [&]( auto const& n ) {
+		std::cout << "Node " << n << " = " 
+							<< ( ntk.is_and( n ) ? "AND( " : "XOR( " );
+		ntk.foreach_fanin( n, [&]( auto const& ni ) {
+			std::cout << ( ntk.is_complemented( ni ) ? "!" : "" ) 
+								<< ntk.get_node( ni ) << " ";
+		} );
+		std::cout << ")\n";
+	} );
+	std::cout << "POs are: ";
+	ntk.foreach_po( [&]( auto const& f ) {
+		std::cout << ( ntk.is_complemented( f ) ? "!" : "" ) << "node " << ntk.get_node( f ) << " ";
+	} );
+	std::cout << "\n";
+}
 
 } /* namespace detail */
 
@@ -409,7 +509,7 @@ int main()
 		ps_cut_rewrite.progress = true;
 		ps_cut_rewrite.min_cand_cut_size = 2u;
 
-		for ( auto i{ 3u }; i <= 3u; ++i )
+		for ( auto i{ 11u }; i <= 11u; ++i )
 		{
 			auto const benchmark = benchmarks[i];
 			if ( best_scores[i] == 0u )
@@ -421,6 +521,8 @@ int main()
 			std::cout << "[i] processing " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
 			mockturtle::xag_network xag;
+
+			if ( true ) {
 			auto const read_result = lorina::read_verilog( benchmark_path( benchmark_type, benchmark, opt ), mockturtle::verilog_reader( xag ) );
 			assert( read_result == lorina::return_code::success );
 			( void )read_result;
@@ -432,10 +534,25 @@ int main()
 			else
 			{
 				std::cout << "[i] failed to read " << benchmark << std::endl;
-			}
+			}}
 
-			::detail::merge_view xag_merge{ xag };
-			uint32_t gc_before = ::detail::count_gc( xag_merge );
+			if ( false ) {
+			std::vector<decltype( xag.get_constant( false ) )> pis;
+			for ( auto pi{ 0u }; pi < 3u; ++pi )
+			{
+				pis.emplace_back( xag.create_pi() );
+			}
+			auto signal_ =  xag.create_xor( pis[0], pis[1] );
+			xag.create_po( xag.create_xor( signal_, pis[2] ) );
+			signal_ = xag.create_and( signal_, !pis[2] );
+			xag.create_po( !xag.create_and( !xag.create_and( !pis[0], !pis[1] ), !signal_ ) );
+		}
+
+			mockturtle::xag_network xag_ori = xag.clone();
+
+			mockturtle::topo_view<mockturtle::xag_network> xag_topo{ xag };
+			detail::merge_view xag_merge{ xag_topo };
+			uint32_t gc_before = detail::count_gc( xag_merge );
 
 			if ( gc_before == 0u )
 			{
@@ -456,7 +573,8 @@ int main()
 
 			clock_t begin_time = clock();
 
-			while ( gc_before > gc_after )
+			while ( ite_cnt == 0u )
+			//while ( gc_before > gc_after )
 			{
 				if ( ite_cnt > 0u )
 				{
@@ -464,15 +582,24 @@ int main()
 				}
 				++ite_cnt;
 
-				xag = mockturtle::cut_rewriting_on_scene<mockturtle::xag_network, decltype( xag_rewrite ), ::detail::gc_cost>( xag, xag_rewrite, ps_cut_rewrite );
+				xag = mockturtle::cut_rewriting_on_scene<mockturtle::xag_network, decltype( xag_rewrite ), detail::gc_cost>( xag, xag_rewrite, ps_cut_rewrite );
 				//cut_rewriting_with_compatibility_graph( xag, xag_rewrite, ps_cut_rewrite, nullptr, ::detail::num_and<>() );
-				//xag = mockturtle::cleanup_dangling( xag );
+				xag = mockturtle::cleanup_dangling( xag );
 
-				::detail::merge_view xag_merge_tmp{ xag };
-				gc_after = ::detail::count_gc( xag_merge_tmp );
+				detail::merge_view xag_merge_tmp{ xag };
+				gc_after = detail::count_gc( xag_merge_tmp );
 			}
 
-			mockturtle::write_bench( xag, "/Users/myu/Documents/GitHub/abc/bench" );
+			//mockturtle::write_bench( xag, "/Users/myu/Documents/GitHub/abc/bench" );
+
+			//std::cout << "[i] The original circuit has "; 
+			//detail::profile_ntk( xag_ori );
+			//std::cout << "[i] The optimized circuit has "; 
+			//detail::profile_ntk( xag );
+
+			//std::cout << "Print the optimized network: \n";
+			//detail::print_ntk( xag );
+			//const auto cec = abc_cec( xag );
 
 			const auto cec = abc_cec( xag, benchmark_type, benchmark, opt );
 			assert( cec );

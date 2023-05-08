@@ -239,7 +239,7 @@ struct num_onehot
 
 int main()
 {
-	for ( auto benchmark_type_each{ 1u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "x1g_mingc_" + std::to_string( benchmark_type_each );
 		experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "gc_before", "gc_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
@@ -252,7 +252,7 @@ int main()
 		std::vector<uint32_t> const best_scores  = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_host23() : mpc_host23() ) : epfl_host23();
 
 		mockturtle::cut_rewriting_params ps_cut_rewrite;
-		ps_cut_rewrite.cut_enumeration_ps.cut_size = 5u;
+		ps_cut_rewrite.cut_enumeration_ps.cut_size = 6u;
 		ps_cut_rewrite.cut_enumeration_ps.cut_limit = 12u;
 		ps_cut_rewrite.verbose = false;
 		ps_cut_rewrite.progress = true;
@@ -302,11 +302,11 @@ int main()
 			uint32_t ite_cnt = 0u;
 
 			mockturtle::x1g_mingc_rewrite_params ps;
-			ps.verbose = true;
+			//ps.verbose = true;
 			//ps.verify_database = true;
 			mockturtle::x1g_mingc_rewrite_stats st;
 			mockturtle::x1g_mingc_rewrite_stats* pst = &st;
-			mockturtle::x1g_mingc_rewrite x1g_rewrite( "db_gc_complete_x1g_5", ps, pst );
+			mockturtle::x1g_mingc_rewrite x1g_rewrite( "db_gc_practical_x1g_6_mc4", ps, pst );
 
 			clock_t begin_time = clock();
 			while ( num_oh > num_oh_aft )
@@ -330,15 +330,15 @@ int main()
 
 			std::cout << "[i] before post optimization, gc cost is: " << num_oh_aft * 2 << "\n";
 
-			x1g = mockturtle::x1g_merge_optimization( x1g );
-			num_oh_aft = 0u;
-			x1g.foreach_gate( [&]( auto const& n ) {
-				if ( x1g.is_onehot( n ) )
-				{
-					++num_oh_aft;
-				}
-			} );
-			std::cout << "[i] after operating merging, gc cost is: " << num_oh_aft * 2 << "\n";
+			//x1g = mockturtle::x1g_merge_optimization( x1g );
+			//num_oh_aft = 0u;
+			//x1g.foreach_gate( [&]( auto const& n ) {
+			//	if ( x1g.is_onehot( n ) )
+			//	{
+			//		++num_oh_aft;
+			//	}
+			//} );
+			//std::cout << "[i] after operating merging, gc cost is: " << num_oh_aft * 2 << "\n";
 
 			if ( best_score < 15000u && !( ( i == 7u ) && ( benchmark_type_each == 0u ) ) && !( ( i == 1u ) && ( benchmark_type_each == 1u ) ) )
 			{
@@ -360,7 +360,7 @@ int main()
 			//mockturtle::write_bench( x1g, "/Users/myu/Documents/GitHub/abc/bench" );
 
 			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
-			//assert( cec );
+			assert( cec );
 			float improve = ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_aft * 2 ) ) / static_cast<float>( best_score ) ) * 100;
 			exp_res( benchmark, best_score, num_oh_aft * 2, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
 		}
