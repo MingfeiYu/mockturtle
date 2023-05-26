@@ -1,0 +1,106 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 16.76287078857422,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 10240,
+        "gc_before": 10240,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 21.15839195251465,
+        "benchmark": "AES-non-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 12800,
+        "gc_before": 12800,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 17.567203521728516,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 13192,
+        "gc_before": 13144,
+        "improvement %": -0.3651856482028961,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 16.316492080688477,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 13008,
+        "gc_before": 12984,
+        "improvement %": -0.18484288454055786,
+        "iterations": 4
+      },
+      {
+        "avg. runtime [s]": 0.7913336753845215,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "gc_after": 130,
+        "gc_before": 130,
+        "improvement %": 0.0,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 0.6994433403015137,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "gc_after": 140,
+        "gc_before": 140,
+        "improvement %": 0.0,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 0.7906983494758606,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "gc_after": 130,
+        "gc_before": 130,
+        "improvement %": 0.0,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 0.7094020247459412,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "gc_after": 140,
+        "gc_before": 140,
+        "improvement %": 0.0,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 9.966773986816406,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "gc_after": 18734,
+        "gc_before": 18734,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 13.153203964233398,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "gc_after": 22688,
+        "gc_before": 22688,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 23.64063835144043,
+        "benchmark": "sha-256_untilsat",
+        "equivalent": true,
+        "gc_after": 50560,
+        "gc_before": 50540,
+        "improvement %": -0.039572615176439285,
+        "iterations": 4
+      }
+    ],
+    "version": "4084831"
+  }
+]

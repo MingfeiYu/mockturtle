@@ -239,10 +239,11 @@ struct num_onehot
 
 int main()
 {
-	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each{ 2u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
-		std::string json_name = "x1g_mingc_" + std::to_string( benchmark_type_each );
-		experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "gc_before", "gc_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
+		std::string json_name = "x1g_mingc_5cut_" + std::to_string( benchmark_type_each );
+		experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, float, uint32_t, float, float, bool> exp_res( json_name, "benchmark", "gc_before", "gc_after", "gc_after_dc", "improvement %", "iterations", "avg. runtime [s]", "runtime with dc [s]", "equivalent" );
+		//experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "gc_before", "gc_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
 		uint32_t benchmark_type = benchmark_type_each;
 		/* 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 */
 		uint8_t opt = 2u;
@@ -292,7 +293,8 @@ int main()
 			} );
 			if ( num_oh == 0u )
 			{
-				exp_res( benchmark, 0u, 0u, 0., 0u, 0., true );
+				//exp_res( benchmark, 0u, 0u, 0., 0u, 0., true );
+				exp_res( benchmark, 0u, 0u, 0u, 0., 0u, 0., 0., true );
 				continue;
 			}
 
@@ -306,7 +308,7 @@ int main()
 			//ps.verify_database = true;
 			mockturtle::x1g_mingc_rewrite_stats st;
 			mockturtle::x1g_mingc_rewrite_stats* pst = &st;
-			mockturtle::x1g_mingc_rewrite x1g_rewrite( "db_gc_practical_x1g_6_mc4", ps, pst );
+			mockturtle::x1g_mingc_rewrite x1g_rewrite( "db_x1g_experiment", ps, pst );
 
 			clock_t begin_time = clock();
 			while ( num_oh > num_oh_aft )
@@ -328,7 +330,7 @@ int main()
 				} );
 			}
 
-			std::cout << "[i] before post optimization, gc cost is: " << num_oh_aft * 2 << "\n";
+			//std::cout << "[i] before post optimization, gc cost is: " << num_oh_aft * 2 << "\n";
 
 			//x1g = mockturtle::x1g_merge_optimization( x1g );
 			//num_oh_aft = 0u;
@@ -340,29 +342,35 @@ int main()
 			//} );
 			//std::cout << "[i] after operating merging, gc cost is: " << num_oh_aft * 2 << "\n";
 
-			if ( best_score < 15000u && !( ( i == 7u ) && ( benchmark_type_each == 0u ) ) && !( ( i == 1u ) && ( benchmark_type_each == 1u ) ) )
+			float t1 = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt;
+			float t2 = t1;
+
+			//if ( best_score < 20000u && !( ( i == 7u ) && ( benchmark_type_each == 0u ) ) && !( ( i == 1u ) && ( benchmark_type_each == 1u ) ) )
+			uint32_t num_oh_aft_dc = 0u;
+			if ( true )
 			{
 				x1g = mockturtle::x1g_dont_cares_optimization( x1g );
-				num_oh_aft = 0u;
 				x1g.foreach_gate( [&]( auto const& n ) {
 					if ( x1g.is_onehot( n ) )
 					{
-						++num_oh_aft;
+						++num_oh_aft_dc;
 					}
 				} );
-				std::cout << "[i] after using don't cares, gc cost is: " << num_oh_aft * 2 << "\n";
+				t2 = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt;
+				//std::cout << "[i] after using don't cares, gc cost is: " << num_oh_aft * 2 << "\n";
 			}
-			else
-			{
-				std::cout << "[i] skip using don't cares, as the circuit is too large\n";
-			}
+			//else
+			//{
+			//	std::cout << "[i] skip using don't cares, as the circuit is too large\n";
+			//}
 
 			//mockturtle::write_bench( x1g, "/Users/myu/Documents/GitHub/abc/bench" );
 
 			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
 			assert( cec );
 			float improve = ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_aft * 2 ) ) / static_cast<float>( best_score ) ) * 100;
-			exp_res( benchmark, best_score, num_oh_aft * 2, improve, ite_cnt, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt, cec );
+			exp_res( benchmark, best_score, num_oh_aft * 2, num_oh_aft_dc * 2, improve, ite_cnt, t1, t2, cec );
+			//exp_res( benchmark, best_score, num_oh_aft * 2, improve, ite_cnt, t1, cec );
 		}
 
 		exp_res.save();

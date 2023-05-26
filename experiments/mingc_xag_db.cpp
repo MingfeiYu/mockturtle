@@ -343,6 +343,24 @@ uint32_t count_gc_verbose( merge_view& xag, std::unordered_map<merge_view::node,
 	return gc;
 }
 
+uint32_t count_gc_report( merge_view& xag, std::vector<uint32_t>& topo )
+{
+	uint32_t gc{ 0u };
+	xag.clear_values();
+
+	xag.foreach_gate_reverse( [&]( auto const& f ) {
+		if ( xag.is_and( f ) && xag.value( f ) == 0u )
+		{
+			count_and_size_rec( xag, f, f );
+			topo.emplace_back( xag.value( f ) - 1 );
+			gc += xag.value( f );
+		}
+	} );
+	xag.clear_values();
+
+	return gc;
+}
+
 /* For debugging */
 void test()
 {
@@ -449,6 +467,339 @@ void test()
       break;
     }
   }
+}
+
+/* to find a toy example illustrating that for the same function, its GC-optimal */
+/* X1G and compact XAG implementations can be structurally different             */
+void experiment( std::string const& filename )
+{
+	bool found{ false };
+	std::map<std::vector<uint32_t>, uint32_t> and_topos_xag;
+	for ( auto topo_each: and_topos_lib )
+	{
+		and_topos_xag.insert( std::make_pair( topo_each.num_ands, topo_each.gc ) );
+	}
+	uint32_t num_entries{ 0u };
+	std::ifstream db_mc;
+	db_mc.open( filename, std::ios::in );
+	std::string line;
+	uint32_t pos{ 0u };
+
+	while ( std::getline( db_mc, line ) )
+	{
+		std::cout << "[i] Working on the " << ++num_entries << "th representitive\n";
+
+		pos = static_cast<uint32_t>( line.find( 'x' ) );
+    auto tt_str = line.substr( ++pos, 8u );
+    //if ( tt_str != "2888a000" )
+    //{
+    //	continue;
+    //}
+    pos += 9u;
+    line.erase( 0, pos );
+    kitty::static_truth_table<5u> tt_static;
+    kitty::create_from_hex_string( tt_static, tt_str );
+		auto repr = kitty::exact_spectral_canonization( tt_static );
+    std::string repr_str = kitty::to_hex( repr );
+
+    kitty::dynamic_truth_table tt( 5u );
+    kitty::create_from_hex_string( tt, tt_str );
+    auto num_vars = ( kitty::min_base_inplace( tt ) ).size();
+    uint32_t mc = kitty::get_spectral_mc( tt );
+    std::cout << "[i] its FMC is " << mc << "\n";
+
+    /* Reconstruct the mc-optimal XAG implementation */
+    xag_network xag_mc_opt;
+    std::vector<xag_network::signal> signals_mc_opt( num_vars );
+    std::generate( signals_mc_opt.begin(), signals_mc_opt.end(), [&]() { return xag_mc_opt.create_pi(); } );
+
+    while ( line.size() > 3 )
+  	{
+   		uint32_t signal_1, signal_2;
+    	signal_1 = std::stoul( line.substr( 0, line.find( ',' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+    	signal_2 = std::stoul( line.substr( 0, line.find( ',' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+
+    	xag_network::signal signal1, signal2;
+    	if ( signal_1 == 0u )
+    	{
+				signal1 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_1 == 1u )
+    	{
+				signal1 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal1 = signals_mc_opt[signal_1 / 2 - 1] ^ ( signal_1 % 2 != 0 );
+    	}
+    	if ( signal_2 == 0u )
+    	{
+				signal2 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_2 == 1u )
+    	{
+				signal2 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal2 = signals_mc_opt[signal_2 / 2 - 1] ^ ( signal_2 % 2 != 0 );
+    	}
+
+    	if ( signal_1 > signal_2 )
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_xor( signal1, signal2 ) );
+    	}
+    	else
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_and( signal1, signal2 ) );
+    	}
+  	}
+
+  	const uint32_t signal_po = std::stoul( line );
+  	xag_mc_opt.create_po( signals_mc_opt[signal_po / 2 - 1] ^ ( signal_po % 2 != 0 ) );
+
+    mockturtle::topo_view<mockturtle::xag_network> xag_mc_opt_topo{ xag_mc_opt };
+    merge_view xag_mc_opt_merge{ xag_mc_opt_topo };
+    std::vector<uint32_t> topo1;
+    uint32_t gc1;
+  	auto gc = count_gc_report( xag_mc_opt_merge, topo1 );
+  	gc1 = gc;
+  	std::cout << "[i] its gc is " << gc << "\n";
+
+  	kitty::dynamic_truth_table tt_min_base( num_vars );
+  	assert( num_vars >= 2u );
+    kitty::create_from_hex_string( tt_min_base, tt_str.substr( 0, 1 << ( num_vars - 2 ) ) );
+
+    /* Look for the gc-optimal XAG implementation */
+    for ( auto const& topo: and_topos_lib )
+    {
+    	if ( mc == 0u )
+    	{
+    		break;
+    	}
+
+    	if ( topo.mc < mc )
+      {
+        continue;
+      }
+
+      if ( topo.gc >= gc )
+      {
+        break;
+      }
+
+      optimum_gc_synthesis_params ps;
+      //ps.verify_solution = true;
+
+      auto const p_xag_gc_opt = optimum_gc_synthesis( tt_min_base, topo.num_ands, ps, nullptr );
+      if ( p_xag_gc_opt )
+      {
+      	topo1 = topo.num_ands;
+      	gc1 = topo.gc;
+      	//std::cout << "[i] print topo on the scece: ";
+      	//for ( auto topo_element: topo.num_ands )
+      	//{
+      	//	std::cout << topo_element << " ";
+      	//}
+      	//std::cout << "\n";
+      	break;
+      }
+    }
+
+    x1g_network x1g_mc_opt = mockturtle::map_xag2x1g( xag_mc_opt );
+  	gc = 0u;
+  	x1g_mc_opt.foreach_gate( [&]( auto const& n ) {
+  		if ( x1g_mc_opt.is_onehot( n ) )
+  		{
+  			++gc;
+  		}
+  	} );
+  	gc *= 2u;
+  	std::vector<uint32_t> topo2;
+  	std::sort( topo1.begin(), topo1.end() );
+
+    for ( auto const& topo: and_topos_lib_6_x1g_oriented )
+    {
+    	if ( topo.mc < mc )
+      {
+        continue;
+      }
+
+      if ( topo.gc >= gc )
+      {
+        break;
+      }
+      optimum_gc_synthesis_params ps;
+      auto const p_xag_gc_opt = optimum_gc_synthesis( tt_min_base, topo.num_ands, ps, nullptr );
+      if ( p_xag_gc_opt )
+      {
+      	topo2 = topo.num_ands;
+      	std::sort( topo2.begin(), topo2.end() );
+      	if ( topo1 != topo2 )
+      	{
+      		//std::cout << "[i] print topo on the scece: ";
+      		//for ( auto topo_element: topo.num_ands )
+      		//{
+      		//	std::cout << topo_element << " ";
+      		//}
+      		//std::cout << "\n";
+      		auto const search = and_topos_xag.find( topo2 );
+      		if ( search != and_topos_xag.end() && search->second > gc1 )
+      		{	
+      			found = true;
+      			std::cout << "[i] 0x" << tt_str << " is the function\n";
+
+      			std::cout << "[i] the AND distribution of its GC-optimal compact XAG: ";
+      			for ( auto topo_element: topo1 )
+      			{
+      				std::cout << topo_element << " ";
+      			}
+      			std::cout << "\n";
+      			std::cout << "[i] the AND distribution of its GC-optimal X1G: ";
+      			for ( auto topo_element: topo2 )
+      			{
+      				std::cout << topo_element << " ";
+      			}
+      			std::cout << "\n";
+      		}
+      	}
+      	break;
+      }
+    }
+    if ( found )
+    {
+    	break;
+    }
+
+	}
+	db_mc.close();  
+}
+
+/* to find a GC-optimal compact XAG implementation for #2888a000                 */
+void experiment2( std::string const& filename )
+{
+	std::ifstream db_mc;
+	db_mc.open( filename, std::ios::in );
+	std::string line;
+	uint32_t pos{ 0u };
+
+	while ( std::getline( db_mc, line ) )
+	{
+		pos = static_cast<uint32_t>( line.find( 'x' ) );
+    auto tt_str = line.substr( ++pos, 8u );
+    if ( tt_str != "2888a000" )
+    {
+    	continue;
+    }
+    else
+    {
+    	std::cout << "[i] working on 2888a000\n";
+    }
+    pos += 9u;
+    line.erase( 0, pos );
+    kitty::static_truth_table<5u> tt_static;
+    kitty::create_from_hex_string( tt_static, tt_str );
+		auto repr = kitty::exact_spectral_canonization( tt_static );
+    std::string repr_str = kitty::to_hex( repr );
+
+    kitty::dynamic_truth_table tt( 5u );
+    kitty::create_from_hex_string( tt, tt_str );
+    auto num_vars = ( kitty::min_base_inplace( tt ) ).size();
+    uint32_t mc = kitty::get_spectral_mc( tt );
+    std::cout << "[i] its FMC is " << mc << "\n";
+
+    /* Reconstruct the mc-optimal XAG implementation */
+    xag_network xag_mc_opt;
+    std::vector<xag_network::signal> signals_mc_opt( num_vars );
+    std::generate( signals_mc_opt.begin(), signals_mc_opt.end(), [&]() { return xag_mc_opt.create_pi(); } );
+
+    while ( line.size() > 3 )
+  	{
+   		uint32_t signal_1, signal_2;
+    	signal_1 = std::stoul( line.substr( 0, line.find( ',' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+    	signal_2 = std::stoul( line.substr( 0, line.find( ',' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+
+    	xag_network::signal signal1, signal2;
+    	if ( signal_1 == 0u )
+    	{
+				signal1 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_1 == 1u )
+    	{
+				signal1 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal1 = signals_mc_opt[signal_1 / 2 - 1] ^ ( signal_1 % 2 != 0 );
+    	}
+    	if ( signal_2 == 0u )
+    	{
+				signal2 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_2 == 1u )
+    	{
+				signal2 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal2 = signals_mc_opt[signal_2 / 2 - 1] ^ ( signal_2 % 2 != 0 );
+    	}
+
+    	if ( signal_1 > signal_2 )
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_xor( signal1, signal2 ) );
+    	}
+    	else
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_and( signal1, signal2 ) );
+    	}
+  	}
+
+  	const uint32_t signal_po = std::stoul( line );
+  	xag_mc_opt.create_po( signals_mc_opt[signal_po / 2 - 1] ^ ( signal_po % 2 != 0 ) );
+
+    mockturtle::topo_view<mockturtle::xag_network> xag_mc_opt_topo{ xag_mc_opt };
+    merge_view xag_mc_opt_merge{ xag_mc_opt_topo };
+  	auto gc = count_gc( xag_mc_opt_merge );
+
+  	kitty::dynamic_truth_table tt_min_base( num_vars );
+  	assert( num_vars >= 2u );
+    kitty::create_from_hex_string( tt_min_base, tt_str.substr( 0, 1 << ( num_vars - 2 ) ) );
+
+    /* Look for the gc-optimal XAG implementation */
+    for ( auto const& topo: and_topos_lib_6_x1g_oriented )
+    {
+    	if ( mc == 0u )
+    	{
+    		break;
+    	}
+
+    	if ( topo.mc < mc )
+      {
+        continue;
+      }
+
+      if ( topo.gc >= gc )
+      {
+        break;
+      }
+
+      optimum_gc_synthesis_params ps;
+      ps.verify_solution = true;
+
+      auto const p_xag_gc_opt = optimum_gc_synthesis( tt_min_base, topo.num_ands, ps, nullptr );
+      if ( p_xag_gc_opt )
+      {
+      	std::cout << "[i] find a implementation whose gc is " << topo.gc << "\n";
+      	break;
+      }
+    }
+	}
+	db_mc.close();  
 }
 
 /* Generate db_gc for the 38 5-input representatives in the 147,998-entry db_mc */
@@ -1269,11 +1620,19 @@ void create_db_practical_x1g( std::string const& filename )
 	while ( std::getline( db_mc, line ) )
 	{
 		++num_entries;
-		if ( num_entries <= 5000u )
+		if ( num_entries < 146384u )
 		{
 			continue;
 		}
+		if ( num_entries == 147000u )
+		{
+			break;
+		}
 		std::cout << "[i] working on the " << num_entries << "th representitive\n";
+		//if ( num_entries == 10000u )
+		//{
+		//	break;
+		//}
 		//if ( num_entries <= 75u )
 		//{
 		//	std::cout << "[i] skip, as it is already in the database\n";
@@ -1294,8 +1653,8 @@ void create_db_practical_x1g( std::string const& filename )
     }
     if ( mc > 5u )
     {
-    	std::cout << "[i] skip current representitive\n";
-    	continue;
+    	std::cout << "[i] encounter a challenge...\n";
+    	//continue;
     }
     pos += 2u;
     line.erase( 0, pos );
@@ -1409,7 +1768,7 @@ void create_db_practical_x1g( std::string const& filename )
 
     /* Record the gc-optimal X1G implementation */
     std::ofstream db_gc;
-    db_gc.open( "db_gc_practical_x1g_6_5000", std::ios::app );
+    db_gc.open( "db_gc_practical_x1g_6_145000", std::ios::app );
     db_gc << "0x" << repr_str << " ";
     db_gc << "0x" << tt_str << " ";
     //db_gc << mc << " ";
@@ -1595,6 +1954,169 @@ void create_db_complete_x1g_6( std::string const& filename )
 	std::cout << "num_gc_new: " << num_gc_new << std::endl;
 }
 
+void create_db_complete_x1g_6_epfl()
+{
+	std::uint32_t num_entries{ 0u };
+	std::uint32_t num_cases_impr{ 0u };
+	std::uint32_t num_gc_old{ 0u };
+	std::uint32_t num_gc_new{ 0u };
+
+	std::ifstream db_mc;
+	db_mc.open( "collected_funcs_epfl", std::ios::in );
+	std::string line;
+	uint32_t pos{ 0u };
+
+	while ( std::getline( db_mc, line ) )
+	{
+		std::cout << "[i] working on the " << ++num_entries << "th representitive\n";
+
+		pos = static_cast<uint32_t>( line.find( '\t' ) );
+    const auto name = line.substr( 0, pos );
+    pos += 1u;
+    auto tt_str = line.substr( pos, 16u );
+    pos += 17u;
+    const auto repr_str = line.substr( pos, 16u );
+    pos += 17u;
+    uint32_t mc = std::stoul( line.substr( pos, 1u ) );
+    if ( mc <= 4u )
+    {
+    	std::cout << "[i] skip, as it is already in the database ( db_gc_practical_x1g_6 )\n";
+    	continue;
+    }
+
+    pos += 2u;
+    line.erase( 0, pos );
+    const uint32_t num_vars = std::stoul( line.substr( 0, line.find( ' ' ) ) );
+    line.erase( 0, line.find( ' ' ) + 1 );
+
+    /* Reconstruct the mc-optimal XAG implementation */
+    xag_network xag_mc_opt;
+    std::vector<xag_network::signal> signals_mc_opt( num_vars );
+    std::generate( signals_mc_opt.begin(), signals_mc_opt.end(), [&]() { return xag_mc_opt.create_pi(); } );
+
+    while ( line.size() > 4 )
+  	{
+   		uint32_t signal_1, signal_2;
+    	signal_1 = std::stoul( line.substr( 0, line.find( ' ' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+    	signal_2 = std::stoul( line.substr( 0, line.find( ' ' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+
+    	xag_network::signal signal1, signal2;
+    	if ( signal_1 == 0u )
+    	{
+				signal1 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_1 == 1u )
+    	{
+				signal1 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal1 = signals_mc_opt[signal_1 / 2 - 1] ^ ( signal_1 % 2 != 0 );
+    	}
+    	if ( signal_2 == 0u )
+    	{
+				signal2 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_2 == 1u )
+    	{
+				signal2 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal2 = signals_mc_opt[signal_2 / 2 - 1] ^ ( signal_2 % 2 != 0 );
+    	}
+
+    	if ( signal_1 > signal_2 )
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_xor( signal1, signal2 ) );
+    	}
+    	else
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_and( signal1, signal2 ) );
+    	}
+    	line.erase( 0, line.find( ' ' ) + 1 );
+  	}
+
+  	const uint32_t signal_po = std::stoul( line );
+  	xag_mc_opt.create_po( signals_mc_opt[signal_po / 2 - 1] ^ ( signal_po % 2 != 0 ) );
+
+  	x1g_network x1g_mc_opt = mockturtle::map_xag2x1g( xag_mc_opt );
+  	auto gc{ 0u };
+  	x1g_mc_opt.foreach_gate( [&]( auto const& n ) {
+  		if ( x1g_mc_opt.is_onehot( n ) )
+  		{
+  			++gc;
+  		}
+  	} );
+  	gc *= 2u;
+  	num_gc_old += gc;
+
+    xag_network xag_gc_opt{ xag_mc_opt };
+    x1g_network x1g_gc_opt{ x1g_mc_opt };
+
+  	kitty::dynamic_truth_table tt_min_base( num_vars );
+  	assert( num_vars >= 2u );
+    kitty::create_from_hex_string( tt_min_base, tt_str.substr( 0, 1 << ( num_vars - 2 ) ) );
+
+    /* Look for the gc-optimal XAG implementation */
+    for ( auto const& topo: and_topos_lib_6_x1g_oriented )
+    {
+    	if ( mc == 0u )
+    	{
+    		break;
+    	}
+
+    	if ( topo.mc < mc )
+      {
+        continue;
+      }
+
+      if ( topo.gc >= gc )
+      {
+        break;
+      }
+
+      optimum_gc_synthesis_params ps;
+      ps.verbose = true;
+      ps.verify_solution = true;
+
+      auto const p_x1g_gc_opt = optimum_gc_synthesis<x1g_network, bill::solvers::glucose_41>( tt_min_base, topo.num_ands, ps, nullptr );
+      if ( p_x1g_gc_opt )
+      {
+      	std::cout << "[i] Find " << ++num_cases_impr << " better implementations\n";
+      	mc = topo.mc;
+      	gc = topo.gc;
+      	x1g_gc_opt = *p_x1g_gc_opt;
+      	break;
+      }
+    }
+
+    num_gc_new += gc;
+
+    /* Record the gc-optimal X1G implementation */
+    std::ofstream db_gc;
+    db_gc.open( "db_gc_complete_x1g_6_epfl", std::ios::app );
+    db_gc << "0x" << repr_str << " ";
+    db_gc << "0x" << tt_str << " ";
+    //db_gc << mc << " ";
+    db_gc << num_vars << " ";
+    db_gc << gc << " ";
+    x1g_gc_opt.foreach_gate( [&]( auto const& f ) {
+    	x1g_gc_opt.foreach_fanin( f, [&]( auto const& fi ) {
+    		db_gc << static_cast<uint32_t>( ( fi.index << 1 ) + fi.complement ) << " ";
+    	} );
+    } );
+    x1g_network::signal po = x1g_gc_opt.po_at( 0 );
+    db_gc << static_cast<uint32_t>( ( po.index << 1 ) + po.complement ) << "\n";
+    db_gc.close();
+	}
+	db_mc.close();
+	std::cout << "num_gc_old: " << num_gc_old << std::endl;
+	std::cout << "num_gc_new: " << num_gc_new << std::endl;
+}
+
 } /* namespace mockturtle */
 
 int main()
@@ -1604,9 +2126,12 @@ int main()
 	//mockturtle::create_db_practical( "../experiments/db_mc" );
 	//mockturtle::create_db_complete( "../experiments/db_mc_5" );
 	//mockturtle::create_db_complete_x1g( "../experiments/db_mc_5" );
-	mockturtle::create_db_practical_x1g( "../experiments/db_mc" );
+	//mockturtle::create_db_practical_x1g( "../experiments/db_mc" );
 	//mockturtle::create_db_complete_x1g_6( "../experiments/db_mc" );
-	//mockturtle::x1g_affine_5_exact_synthesis();
+	mockturtle::x1g_affine_5_exact_synthesis();
+	//mockturtle::create_db_complete_x1g_6_epfl();
+	//mockturtle::experiment( "../experiments/db_mc_5" );
+	//mockturtle::experiment2( "../experiments/db_mc_5" );
 
 	return 0;
 }

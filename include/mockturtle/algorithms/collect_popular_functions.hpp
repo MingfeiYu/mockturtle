@@ -81,6 +81,11 @@ std::string benchmark_path( uint32_t benchmark_type, std::string const& benchmar
 namespace mockturtle
 {
 
+struct cut_enumeration_cut_rewriting_cut
+{
+  int32_t gain{ -1 };
+};
+
 bool sortPopularity( std::pair<std::string, uint32_t> const& func1, std::pair<std::string, uint32_t> const& func2 )
 {
 	return func1.second > func2.second;
@@ -130,6 +135,7 @@ private:
 		auto const benchmarks = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_benchmarks() : mpc_benchmarks() ) : epfl_benchmarks();
 		std::unordered_map<std::string, uint32_t> func_counter_;
 		for ( auto i{ 0u }; i < benchmarks.size(); ++i )
+		//for ( auto i{ 0u }; i <= 0u; ++i )
 		{
 			auto const benchmark = benchmarks[i];
 			mockturtle::x1g_network x1g;
@@ -142,9 +148,16 @@ private:
 			cut_enumeration_params cut_enumeration_ps_{};
 			cut_enumeration_ps_.cut_size = 6;
 			cut_enumeration_ps_.cut_limit = 12;
-			cut_enumeration_ps_.minimize_truth_table = true;
+			//cut_enumeration_ps_.minimize_truth_table = true;
 
-			const auto cuts = cut_enumeration<x1g_network, true, empty_cut_data>( x1g, cut_enumeration_ps_ );
+			//uint32_t num_gates{ 0u };
+			//x1g.foreach_gate( [&]( auto const& n ) 
+			//{
+			//	++num_gates;
+			//} );
+			//std::cout << "[i] " << num_gates << " gates in x1g\n";
+
+			const auto cuts = cut_enumeration<x1g_network, true, cut_enumeration_cut_rewriting_cut>( x1g, cut_enumeration_ps_ );
 			x1g.foreach_gate( [&]( auto const& n ) {
 				for ( auto& cut: cuts.cuts( x1g.node_to_index( n ) ) )
 				{
@@ -157,17 +170,23 @@ private:
 						const auto search = func_counter_.find( cano_str );
 						if ( search != func_counter_.end() )
 						{
+							//std::cout << "[m] found 0x" << cano_str << "\n";
 							++( search->second );
 						}
 						else
 						{
 							func_counter_.insert( std::make_pair( cano_str, 0u ) );
+							//std::cout << "[m] insert 0x" << cano_str << "\n";
 						}
 					}
+					//else
+					//{
+					//	std::cout << "[e] classification failed\n";
+					//}
 				}
 			} );
 		}
-		std::cout << "[i] Finished collecting popular functions\n";
+		std::cout << "[i] Finished collecting popular functions; There are " << func_counter_.size() << " functions\n";
 
 		std::vector<std::pair<std::string, uint32_t>> func_counter_vec_;
 		for ( auto const& func: func_counter_ )

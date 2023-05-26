@@ -1,0 +1,439 @@
+[
+  {
+    "entries": [
+      {
+        "exact synth. suc.": true,
+        "function": "00000000",
+        "num_clauses": 0,
+        "num_onehot": 0,
+        "num_variables": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.0
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "80000000",
+        "num_clauses": 17394,
+        "num_onehot": 4,
+        "num_variables": 289,
+        "num_xor": 0,
+        "runtime[s]": 39.25554656982422
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "80008000",
+        "num_clauses": 17404,
+        "num_onehot": 2,
+        "num_variables": 283,
+        "num_xor": 2,
+        "runtime[s]": 0.16697099804878235
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "00808080",
+        "num_clauses": 35145,
+        "num_onehot": 2,
+        "num_variables": 408,
+        "num_xor": 3,
+        "runtime[s]": 10.925552368164063
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "80808080",
+        "num_clauses": 7669,
+        "num_onehot": 1,
+        "num_variables": 184,
+        "num_xor": 2,
+        "runtime[s]": 0.03211899846792221
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "08888000",
+        "num_clauses": 35145,
+        "num_onehot": 2,
+        "num_variables": 408,
+        "num_xor": 3,
+        "runtime[s]": 21.223119735717773
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "aa2a2a80",
+        "num_clauses": 7664,
+        "num_onehot": 3,
+        "num_variables": 188,
+        "num_xor": 0,
+        "runtime[s]": 23.277917861938477
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "88080808",
+        "num_clauses": 35145,
+        "num_onehot": 2,
+        "num_variables": 408,
+        "num_xor": 3,
+        "runtime[s]": 12.433504104614258
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "2888a000",
+        "num_clauses": 35145,
+        "num_onehot": 2,
+        "num_variables": 408,
+        "num_xor": 3,
+        "runtime[s]": 11.043209075927734
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "f7788000",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 25.333154678344727
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "a8202020",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 26.94928741455078
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "08880888",
+        "num_clauses": 7669,
+        "num_onehot": 2,
+        "num_variables": 186,
+        "num_xor": 1,
+        "runtime[s]": 0.026441000401973724
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "bd686868",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 28.599937438964844
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "aa808080",
+        "num_clauses": 35145,
+        "num_onehot": 2,
+        "num_variables": 408,
+        "num_xor": 3,
+        "runtime[s]": 20.424936294555664
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "7e686868",
+        "num_clauses": 35153,
+        "num_onehot": 4,
+        "num_variables": 416,
+        "num_xor": 1,
+        "runtime[s]": 47.38869857788086
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "2208a208",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 26.800172805786133
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "08888888",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 26.081256866455078
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "88888888",
+        "num_clauses": 764,
+        "num_onehot": 1,
+        "num_variables": 49,
+        "num_xor": 0,
+        "runtime[s]": 0.00036899998667649925
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "ea404040",
+        "num_clauses": 35145,
+        "num_onehot": 2,
+        "num_variables": 408,
+        "num_xor": 3,
+        "runtime[s]": 7.486525058746338
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "2a802a80",
+        "num_clauses": 7669,
+        "num_onehot": 2,
+        "num_variables": 186,
+        "num_xor": 1,
+        "runtime[s]": 19.002033233642578
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "73d28c88",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 28.254535675048828
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "ea808080",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 56.13288116455078
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "a28280a0",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 24.11797523498535
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "13284c88",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 26.223148345947266
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "a2220888",
+        "num_clauses": 17404,
+        "num_onehot": 2,
+        "num_variables": 283,
+        "num_xor": 2,
+        "runtime[s]": 0.07533600181341171
+      },
+      {
+        "exact synth. suc.": false,
+        "function": "aae6da80",
+        "num_clauses": 0,
+        "num_onehot": 0,
+        "num_variables": 0,
+        "num_xor": 0,
+        "runtime[s]": 66.74483489990234
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "58d87888",
+        "num_clauses": 35153,
+        "num_onehot": 4,
+        "num_variables": 416,
+        "num_xor": 2,
+        "runtime[s]": 53.602638244628906
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "8c88ac28",
+        "num_clauses": 35153,
+        "num_onehot": 4,
+        "num_variables": 416,
+        "num_xor": 1,
+        "runtime[s]": 51.691585540771484
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "8880f880",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 28.345247268676758
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "9ee8e888",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 23.915319442749023
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "4268c268",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 42.04435348510742
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "16704c80",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 36.87717819213867
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "78888888",
+        "num_clauses": 17404,
+        "num_onehot": 2,
+        "num_variables": 283,
+        "num_xor": 2,
+        "runtime[s]": 0.12448400259017944
+      },
+      {
+        "exact synth. suc.": false,
+        "function": "4966bac0",
+        "num_clauses": 0,
+        "num_onehot": 0,
+        "num_variables": 0,
+        "num_xor": 0,
+        "runtime[s]": 67.1762466430664
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "372840a0",
+        "num_clauses": 35153,
+        "num_onehot": 4,
+        "num_variables": 416,
+        "num_xor": 1,
+        "runtime[s]": 70.68624114990234
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "5208d288",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 29.630435943603516
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "7ca00428",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 23.577638626098633
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "f8880888",
+        "num_clauses": 17404,
+        "num_onehot": 2,
+        "num_variables": 283,
+        "num_xor": 2,
+        "runtime[s]": 4.5693678855896
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "2ec0ae40",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 24.41673469543457
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "f888f888",
+        "num_clauses": 7669,
+        "num_onehot": 2,
+        "num_variables": 186,
+        "num_xor": 1,
+        "runtime[s]": 0.007712999824434519
+      },
+      {
+        "exact synth. suc.": false,
+        "function": "58362ec0",
+        "num_clauses": 0,
+        "num_onehot": 0,
+        "num_variables": 0,
+        "num_xor": 0,
+        "runtime[s]": 68.62631225585938
+      },
+      {
+        "exact synth. suc.": false,
+        "function": "0eb8f6c0",
+        "num_clauses": 0,
+        "num_onehot": 0,
+        "num_variables": 0,
+        "num_xor": 0,
+        "runtime[s]": 67.08708190917969
+      },
+      {
+        "exact synth. suc.": false,
+        "function": "567cea40",
+        "num_clauses": 0,
+        "num_onehot": 0,
+        "num_variables": 0,
+        "num_xor": 0,
+        "runtime[s]": 66.76861572265625
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "f8887888",
+        "num_clauses": 17406,
+        "num_onehot": 3,
+        "num_variables": 286,
+        "num_xor": 1,
+        "runtime[s]": 26.136978149414063
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "78887888",
+        "num_clauses": 7669,
+        "num_onehot": 2,
+        "num_variables": 186,
+        "num_xor": 1,
+        "runtime[s]": 20.213207244873047
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "e72890a0",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 35.31694793701172
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "268cea40",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 27.611576080322266
+      },
+      {
+        "exact synth. suc.": true,
+        "function": "6248eac0",
+        "num_clauses": 35149,
+        "num_onehot": 3,
+        "num_variables": 412,
+        "num_xor": 2,
+        "runtime[s]": 38.1400032043457
+      }
+    ],
+    "version": "4084831"
+  }
+]

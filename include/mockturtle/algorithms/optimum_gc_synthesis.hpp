@@ -31,7 +31,7 @@ struct optimum_gc_synthesis_params
   bool multilevel_subset_relation{ false };
   bool forbid_po_xor{ false };
   //std::optional<uint32_t> heuristic_xor_bound{};
-  uint32_t conflict_limit{ 50000u };
+  uint32_t conflict_limit{ 100000u };
   std::optional<std::string> write_dimacs{};
   bool verbose{ false };
   bool verify_solution{ false };
@@ -461,25 +461,31 @@ private:
         if ( pntk.model_value( ltfi_vars[j] ) )
         {
           ltfi.emplace_back( nodes[j] );
+          //std::cout << ( nodes[j].complement ? "!" : "" ) << nodes[j].index << " ";
         }
       }
+      //std::cout << "\n";
       return ntk.create_nary_xor( ltfi );
     };
 
     uint32_t fanin_index{ 0u };
 
+    uint32_t and_ind{ 0u };
     for ( auto num_and: num_ands_ )
     {
+      //std::cout << "[m] AND in the " << ++and_ind << " step is " << num_and + 1 << "-input\n";
       std::vector<signal<Ntk>> abstract_xors;
 
       for ( auto i_sub{ 0u }; i_sub <= num_and; ++i_sub )
       {
+        //std::cout << "[m] its " << ( i_sub + 1 ) << " fanin is the XORed result of nodes: ";
         abstract_xors.emplace_back( extract_ltfi( ltfi_vars_[fanin_index++] ) );
       }
 
       nodes.emplace_back( ntk.create_nary_and( abstract_xors ) );
     }
 
+    //std::cout << "[m] po is the XORed result of nodes: ";
     const auto po = extract_ltfi( ltfi_vars_.back() );
     ntk.create_po( invert_ ? ntk.create_not( po ) : po );
 

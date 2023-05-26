@@ -1,0 +1,97 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 921.168701171875,
+        "benchmark": "arbiter",
+        "equivalent": true,
+        "gc_after": 2360,
+        "gc_before": 2348,
+        "improvement %": -0.5110732913017273,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 198.2241668701172,
+        "benchmark": "cavlc",
+        "equivalent": true,
+        "gc_after": 790,
+        "gc_before": 788,
+        "improvement %": -0.25380709767341614,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 6.930539131164551,
+        "benchmark": "ctrl",
+        "equivalent": true,
+        "gc_after": 90,
+        "gc_before": 90,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 104.40404510498047,
+        "benchmark": "dec",
+        "equivalent": true,
+        "gc_after": 656,
+        "gc_before": 656,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 199.07904052734375,
+        "benchmark": "i2c",
+        "equivalent": true,
+        "gc_after": 1118,
+        "gc_before": 1114,
+        "improvement %": -0.3590664267539978,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 17.817338943481445,
+        "benchmark": "int2float",
+        "equivalent": true,
+        "gc_after": 170,
+        "gc_before": 170,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 16042.685546875,
+        "benchmark": "mem_ctrl",
+        "equivalent": true,
+        "gc_after": 9538,
+        "gc_before": 9390,
+        "improvement %": -1.576144814491272,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 103.49297332763672,
+        "benchmark": "priority",
+        "equivalent": true,
+        "gc_after": 658,
+        "gc_before": 646,
+        "improvement %": -1.857585072517395,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 20.54163932800293,
+        "benchmark": "router",
+        "equivalent": true,
+        "gc_after": 188,
+        "gc_before": 186,
+        "improvement %": -1.0752688646316528,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 14363.099609375,
+        "benchmark": "voter",
+        "equivalent": true,
+        "gc_after": 8588,
+        "gc_before": 8514,
+        "improvement %": -0.8691567182540894,
+        "iterations": 1
+      }
+    ],
+    "version": "077cbda"
+  }
+]

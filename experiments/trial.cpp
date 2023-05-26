@@ -13,14 +13,15 @@ void look_up_mc( kitty::dynamic_truth_table const& tt, uint32_t & mc, bool & val
 
 int main()
 {
-	std::string func = "10000000";
-	kitty::dynamic_truth_table tt( 3u );
-	kitty::create_from_binary_string( tt, func );
+	std::string func = "2888a000";
+	kitty::dynamic_truth_table tt( 5u );
+	//kitty::create_from_binary_string( tt, func );
 	//tt._bits[0] = 32768u;
+	kitty::create_from_hex_string( tt, func );
 	kitty::dynamic_truth_table dont_cares = tt.construct();
 
 	percy::spec_minmc spec;
-	spec.fanin_size = 2u;
+	spec.fanin_size = 3u;
 	spec.verbosity = 1u;
 	spec.use_contribution_clauses = true;
 	spec.conflict_limit = 0u;
@@ -31,12 +32,12 @@ int main()
 		spec.set_dont_care( dont_cares );
 	}
 
-  uint32_t mc{ 0u };
-	bool valid_mc{ false };
-	look_up_mc( tt, mc, valid_mc );
-	assert( valid_mc );
+  //uint32_t mc{ 0u };
+	//bool valid_mc{ false };
+	//look_up_mc( tt, mc, valid_mc );
+	//assert( valid_mc );
 
-	/* XOR3 - Onehot - gragh
+	// XOR3 - Onehot - gragh
 	kitty::dynamic_truth_table const0{ 3 };
 	kitty::dynamic_truth_table a{ 3 };
 	kitty::dynamic_truth_table b{ 3 };
@@ -78,7 +79,7 @@ int main()
 	spec.add_free_primitive( a ^ b );                                   // 66
 	spec.add_free_primitive( b ^ c );                                   // 3c
 	spec.add_free_primitive( a ^ c );                                   // 5a
-	*/
+	//
 
 	/* XOR3 - AND3 - gragh
 	kitty::dynamic_truth_table const0{ 3 };
@@ -123,7 +124,7 @@ int main()
 	spec.add_free_primitive( a ^ c );                                   // 5a
 	*/
 
-	// XOR2 - AND2 - graph
+	/* XOR2 - AND2 - graph
 	kitty::dynamic_truth_table const0{ 2 };
 	kitty::dynamic_truth_table a{ 2 };
 	kitty::dynamic_truth_table b{ 2 };
@@ -139,9 +140,9 @@ int main()
 	spec.add_primitive( ~kitty::binary_and( ~a, ~b ) );                 // e
 
 	spec.add_free_primitive( a ^ b );                                   // 6
-	//
+	*/
 
-	//uint32_t mc = 1u;
+	uint32_t mc = 2u;
 	spec.set_nfree( mc );
 	percy::synth_stats synth_st;
 	percy::chain_minmc chain;

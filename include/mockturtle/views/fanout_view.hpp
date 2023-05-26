@@ -145,7 +145,7 @@ public:
   template<typename Fn>
   void foreach_fanout( node const& n, Fn&& fn ) const
   {
-    assert( n < this->size() );
+    //assert( n < this->size() );
     detail::foreach_element( _fanout[n].begin(), _fanout[n].end(), fn );
   }
 

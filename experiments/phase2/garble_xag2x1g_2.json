@@ -1,0 +1,207 @@
+[
+  {
+    "entries": [
+      {
+        "SOTA": 194,
+        "avg. runtime [s]": 0.006113999988883734,
+        "benchmark": "auction_N_2_W_16",
+        "equivalent": true,
+        "gc_after": 194,
+        "gc_before": 194,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 386,
+        "avg. runtime [s]": 0.019533000886440277,
+        "benchmark": "auction_N_2_W_32",
+        "equivalent": true,
+        "gc_after": 386,
+        "gc_before": 386,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 460,
+        "avg. runtime [s]": 0.025040000677108765,
+        "benchmark": "auction_N_3_W_16",
+        "equivalent": true,
+        "gc_after": 464,
+        "gc_before": 464,
+        "improvement ( SOTA ) %": -0.8695651888847351,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 908,
+        "avg. runtime [s]": 0.09105899930000305,
+        "benchmark": "auction_N_3_W_32",
+        "equivalent": true,
+        "gc_after": 912,
+        "gc_before": 912,
+        "improvement ( SOTA ) %": -0.44052863121032715,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 986,
+        "avg. runtime [s]": 0.10180199891328812,
+        "benchmark": "auction_N_4_W_16",
+        "equivalent": true,
+        "gc_after": 990,
+        "gc_before": 990,
+        "improvement ( SOTA ) %": -0.40567949414253235,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 1946,
+        "avg. runtime [s]": 0.392863005399704,
+        "benchmark": "auction_N_4_W_32",
+        "equivalent": true,
+        "gc_after": 1950,
+        "gc_before": 1950,
+        "improvement ( SOTA ) %": -0.20554985105991364,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 1104,
+        "avg. runtime [s]": 0.20830899477005005,
+        "benchmark": "knn_comb_K_1_N_8",
+        "equivalent": true,
+        "gc_after": 1108,
+        "gc_before": 1108,
+        "improvement ( SOTA ) %": -0.36231884360313416,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 2312,
+        "avg. runtime [s]": 0.8331130146980286,
+        "benchmark": "knn_comb_K_1_N_16",
+        "equivalent": true,
+        "gc_after": 2324,
+        "gc_before": 2324,
+        "improvement ( SOTA ) %": -0.5190311670303345,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 1698,
+        "avg. runtime [s]": 0.5024200081825256,
+        "benchmark": "knn_comb_K_2_N_8",
+        "equivalent": true,
+        "gc_after": 1726,
+        "gc_before": 1739,
+        "improvement ( SOTA ) %": -1.6489988565444946,
+        "improvement ( before ) %": 0.7475560307502747
+      },
+      {
+        "SOTA": 3692,
+        "avg. runtime [s]": 2.2050158977508545,
+        "benchmark": "knn_comb_K_2_N_16",
+        "equivalent": true,
+        "gc_after": 3754,
+        "gc_before": 3783,
+        "improvement ( SOTA ) %": -1.6793066263198853,
+        "improvement ( before ) %": 0.7665873765945435
+      },
+      {
+        "SOTA": 2092,
+        "avg. runtime [s]": 0.8260980248451233,
+        "benchmark": "knn_comb_K_3_N_8",
+        "equivalent": true,
+        "gc_after": 2108,
+        "gc_before": 2114,
+        "improvement ( SOTA ) %": -0.7648183703422546,
+        "improvement ( before ) %": 0.2838221490383148
+      },
+      {
+        "SOTA": 4724,
+        "avg. runtime [s]": 3.971342086791992,
+        "benchmark": "knn_comb_K_3_N_16",
+        "equivalent": true,
+        "gc_after": 4760,
+        "gc_before": 4774,
+        "improvement ( SOTA ) %": -0.7620660662651062,
+        "improvement ( before ) %": 0.29325512051582336
+      },
+      {
+        "SOTA": 14,
+        "avg. runtime [s]": 0.0006009999779053032,
+        "benchmark": "voting_N_1_M_3",
+        "equivalent": true,
+        "gc_after": 14,
+        "gc_before": 14,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 28,
+        "avg. runtime [s]": 0.0009950000094249845,
+        "benchmark": "voting_N_1_M_4",
+        "equivalent": true,
+        "gc_after": 28,
+        "gc_before": 29,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 3.4482758045196533
+      },
+      {
+        "SOTA": 40,
+        "avg. runtime [s]": 0.0009399999980814755,
+        "benchmark": "voting_N_2_M_2",
+        "equivalent": true,
+        "gc_after": 40,
+        "gc_before": 41,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 2.4390242099761963
+      },
+      {
+        "SOTA": 110,
+        "avg. runtime [s]": 0.0031620000954717398,
+        "benchmark": "voting_N_2_M_3",
+        "equivalent": true,
+        "gc_after": 110,
+        "gc_before": 110,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 208,
+        "avg. runtime [s]": 0.009212999604642391,
+        "benchmark": "voting_N_2_M_4",
+        "equivalent": true,
+        "gc_after": 208,
+        "gc_before": 208,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 546,
+        "avg. runtime [s]": 0.03670499846339226,
+        "benchmark": "voting_N_3_M_4",
+        "equivalent": true,
+        "gc_after": 550,
+        "gc_before": 550,
+        "improvement ( SOTA ) %": -0.732600748538971,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 28284,
+        "avg. runtime [s]": 27.21820831298828,
+        "benchmark": "stable_matching_comb_Ks_4_S_8",
+        "equivalent": true,
+        "gc_after": 29416,
+        "gc_before": 30040,
+        "improvement ( SOTA ) %": -4.002262592315674,
+        "improvement ( before ) %": 2.077230453491211
+      },
+      {
+        "SOTA": 105890,
+        "avg. runtime [s]": 349.327880859375,
+        "benchmark": "stable_matching_comb_Ks_8_S_8",
+        "equivalent": true,
+        "gc_after": 108320,
+        "gc_before": 109836,
+        "improvement ( SOTA ) %": -2.2948343753814697,
+        "improvement ( before ) %": 1.3802396059036255
+      }
+    ],
+    "version": "077cbda"
+  }
+]

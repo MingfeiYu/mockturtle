@@ -1,0 +1,30 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.20646099746227264,
+        "benchmark": "adder",
+        "equivalent": true,
+        "gc_after": 256,
+        "gc_before": 256,
+        "improvement %": 0.0,
+        "iterations": 1
+      }
+    ],
+    "version": "077cbda"
+  },
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.0019379999721422791,
+        "benchmark": "ctrl",
+        "equivalent": true,
+        "gc_after": 2,
+        "gc_before": 6,
+        "improvement %": 66.66667175292969,
+        "iterations": 2
+      }
+    ],
+    "version": "672bc3c"
+  }
+]

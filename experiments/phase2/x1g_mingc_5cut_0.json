@@ -1,0 +1,178 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.01600099913775921,
+        "benchmark": "adder",
+        "equivalent": true,
+        "gc_after": 256,
+        "gc_before": 256,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 0.06174200028181076,
+        "benchmark": "bar",
+        "equivalent": true,
+        "gc_after": 1664,
+        "gc_before": 1664,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 9.044450759887695,
+        "benchmark": "div",
+        "equivalent": true,
+        "gc_after": 9732,
+        "gc_before": 9728,
+        "improvement %": -0.04111842066049576,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 22.650516510009766,
+        "benchmark": "log2",
+        "equivalent": true,
+        "gc_after": 16356,
+        "gc_before": 16358,
+        "improvement %": 0.012226433493196964,
+        "iterations": 5
+      },
+      {
+        "avg. runtime [s]": 1.0398575067520142,
+        "benchmark": "max",
+        "equivalent": true,
+        "gc_after": 1656,
+        "gc_before": 1656,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 21.298826217651367,
+        "benchmark": "multiplier",
+        "equivalent": true,
+        "gc_after": 14902,
+        "gc_before": 14902,
+        "improvement %": 0.0,
+        "iterations": 4
+      },
+      {
+        "avg. runtime [s]": 5.4474101066589355,
+        "benchmark": "sin",
+        "equivalent": true,
+        "gc_after": 3488,
+        "gc_before": 3480,
+        "improvement %": -0.2298850566148758,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 5.004359722137451,
+        "benchmark": "sqrt",
+        "equivalent": true,
+        "gc_after": 9942,
+        "gc_before": 9942,
+        "improvement %": 0.0,
+        "iterations": 5
+      },
+      {
+        "avg. runtime [s]": 12.62247371673584,
+        "benchmark": "square",
+        "equivalent": true,
+        "gc_after": 8890,
+        "gc_before": 8890,
+        "improvement %": 0.0,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 7.894428253173828,
+        "benchmark": "arbiter",
+        "equivalent": true,
+        "gc_after": 1522,
+        "gc_before": 1658,
+        "improvement %": 8.202653884887695,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 3.8292620182037354,
+        "benchmark": "cavlc",
+        "equivalent": true,
+        "gc_after": 556,
+        "gc_before": 556,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 0.25707051157951355,
+        "benchmark": "ctrl",
+        "equivalent": true,
+        "gc_after": 76,
+        "gc_before": 76,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 0.005690999794751406,
+        "benchmark": "dec",
+        "equivalent": true,
+        "gc_after": 656,
+        "gc_before": 656,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "avg. runtime [s]": 2.68377947807312,
+        "benchmark": "i2c",
+        "equivalent": true,
+        "gc_after": 940,
+        "gc_before": 942,
+        "improvement %": 0.21231423318386078,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 0.7964364886283875,
+        "benchmark": "int2float",
+        "equivalent": true,
+        "gc_after": 140,
+        "gc_before": 140,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 20.146156311035156,
+        "benchmark": "mem_ctrl",
+        "equivalent": true,
+        "gc_after": 7548,
+        "gc_before": 7578,
+        "improvement %": 0.39588281512260437,
+        "iterations": 5
+      },
+      {
+        "avg. runtime [s]": 2.513159990310669,
+        "benchmark": "priority",
+        "equivalent": true,
+        "gc_after": 544,
+        "gc_before": 544,
+        "improvement %": 0.0,
+        "iterations": 2
+      },
+      {
+        "avg. runtime [s]": 0.9790360331535339,
+        "benchmark": "router",
+        "equivalent": true,
+        "gc_after": 120,
+        "gc_before": 120,
+        "improvement %": 0.0,
+        "iterations": 3
+      },
+      {
+        "avg. runtime [s]": 11.328194618225098,
+        "benchmark": "voter",
+        "equivalent": true,
+        "gc_after": 7184,
+        "gc_before": 7186,
+        "improvement %": 0.027831893414258957,
+        "iterations": 4
+      }
+    ],
+    "version": "4084831"
+  }
+]

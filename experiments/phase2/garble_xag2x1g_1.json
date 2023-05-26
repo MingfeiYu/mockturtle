@@ -1,0 +1,117 @@
+[
+  {
+    "entries": [
+      {
+        "SOTA": 10240,
+        "avg. runtime [s]": 27.488319396972656,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 10240,
+        "gc_before": 10560,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 3.0303030014038086
+      },
+      {
+        "SOTA": 12800,
+        "avg. runtime [s]": 38.972747802734375,
+        "benchmark": "AES-non-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 12800,
+        "gc_before": 13200,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 3.0303030014038086
+      },
+      {
+        "SOTA": 13144,
+        "avg. runtime [s]": 19.58230972290039,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 13346,
+        "gc_before": 13479,
+        "improvement ( SOTA ) %": -1.5368229150772095,
+        "improvement ( before ) %": 0.986720085144043
+      },
+      {
+        "SOTA": 12984,
+        "avg. runtime [s]": 18.093090057373047,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "gc_after": 13194,
+        "gc_before": 13340,
+        "improvement ( SOTA ) %": -1.6173752546310425,
+        "improvement ( before ) %": 1.0944527387619019
+      },
+      {
+        "SOTA": 130,
+        "avg. runtime [s]": 0.0033179998863488436,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "gc_after": 138,
+        "gc_before": 149,
+        "improvement ( SOTA ) %": -6.153846263885498,
+        "improvement ( before ) %": 7.382550239562988
+      },
+      {
+        "SOTA": 140,
+        "avg. runtime [s]": 0.0033400000538676977,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "gc_after": 152,
+        "gc_before": 159,
+        "improvement ( SOTA ) %": -8.571429252624512,
+        "improvement ( before ) %": 4.402515888214111
+      },
+      {
+        "SOTA": 130,
+        "avg. runtime [s]": 0.0032510000746697187,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "gc_after": 138,
+        "gc_before": 149,
+        "improvement ( SOTA ) %": -6.153846263885498,
+        "improvement ( before ) %": 7.382550239562988
+      },
+      {
+        "SOTA": 140,
+        "avg. runtime [s]": 0.0033970000222325325,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "gc_after": 152,
+        "gc_before": 159,
+        "improvement ( SOTA ) %": -8.571429252624512,
+        "improvement ( before ) %": 4.402515888214111
+      },
+      {
+        "SOTA": 18734,
+        "avg. runtime [s]": 54.8221435546875,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "gc_after": 18734,
+        "gc_before": 18734,
+        "improvement ( SOTA ) %": 0.0,
+        "improvement ( before ) %": 0.0
+      },
+      {
+        "SOTA": 22688,
+        "avg. runtime [s]": 115.29997253417969,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "gc_after": 22834,
+        "gc_before": 22873,
+        "improvement ( SOTA ) %": -0.6435120105743408,
+        "improvement ( before ) %": 0.17050671577453613
+      },
+      {
+        "SOTA": 50540,
+        "avg. runtime [s]": 507.9233703613281,
+        "benchmark": "sha-256_untilsat",
+        "equivalent": true,
+        "gc_after": 51832,
+        "gc_before": 52128,
+        "improvement ( SOTA ) %": -2.5563910007476807,
+        "improvement ( before ) %": 0.5678330063819885
+      }
+    ],
+    "version": "077cbda"
+  }
+]

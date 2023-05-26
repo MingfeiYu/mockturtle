@@ -1,0 +1,207 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.00026199998683296144,
+        "benchmark": "auction_N_2_W_16",
+        "garble_cost_after": 194,
+        "garble_cost_before": 194,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 97,
+        "num_and_before": 97
+      },
+      {
+        "avg. runtime [s]": 0.0003020000003743917,
+        "benchmark": "auction_N_2_W_32",
+        "garble_cost_after": 386,
+        "garble_cost_before": 386,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 193,
+        "num_and_before": 193
+      },
+      {
+        "avg. runtime [s]": 0.0002969999914057553,
+        "benchmark": "auction_N_3_W_16",
+        "garble_cost_after": 464,
+        "garble_cost_before": 464,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 232,
+        "num_and_before": 232
+      },
+      {
+        "avg. runtime [s]": 0.0010479999473318458,
+        "benchmark": "auction_N_3_W_32",
+        "garble_cost_after": 912,
+        "garble_cost_before": 912,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 456,
+        "num_and_before": 456
+      },
+      {
+        "avg. runtime [s]": 0.0009869999485090375,
+        "benchmark": "auction_N_4_W_16",
+        "garble_cost_after": 990,
+        "garble_cost_before": 990,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 495,
+        "num_and_before": 495
+      },
+      {
+        "avg. runtime [s]": 0.0033050000201910734,
+        "benchmark": "auction_N_4_W_32",
+        "garble_cost_after": 1950,
+        "garble_cost_before": 1950,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 975,
+        "num_and_before": 975
+      },
+      {
+        "avg. runtime [s]": 0.0018370000179857016,
+        "benchmark": "knn_comb_K_1_N_8",
+        "garble_cost_after": 1108,
+        "garble_cost_before": 1108,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 554,
+        "num_and_before": 554
+      },
+      {
+        "avg. runtime [s]": 0.007290999870747328,
+        "benchmark": "knn_comb_K_1_N_16",
+        "garble_cost_after": 2324,
+        "garble_cost_before": 2324,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 1162,
+        "num_and_before": 1162
+      },
+      {
+        "avg. runtime [s]": 0.003720999928191304,
+        "benchmark": "knn_comb_K_2_N_8",
+        "garble_cost_after": 1739,
+        "garble_cost_before": 1762,
+        "improvement %": 1.3053348064422607,
+        "maximum fanin size": 4,
+        "num_and_after": 858,
+        "num_and_before": 881
+      },
+      {
+        "avg. runtime [s]": 0.01655600033700466,
+        "benchmark": "knn_comb_K_2_N_16",
+        "garble_cost_after": 3783,
+        "garble_cost_before": 3838,
+        "improvement %": 1.4330381155014038,
+        "maximum fanin size": 4,
+        "num_and_after": 1864,
+        "num_and_before": 1919
+      },
+      {
+        "avg. runtime [s]": 0.005421000067144632,
+        "benchmark": "knn_comb_K_3_N_8",
+        "garble_cost_after": 2114,
+        "garble_cost_before": 2120,
+        "improvement %": 0.28301888704299927,
+        "maximum fanin size": 3,
+        "num_and_after": 1054,
+        "num_and_before": 1060
+      },
+      {
+        "avg. runtime [s]": 0.031235000118613243,
+        "benchmark": "knn_comb_K_3_N_16",
+        "garble_cost_after": 4774,
+        "garble_cost_before": 4788,
+        "improvement %": 0.292397677898407,
+        "maximum fanin size": 3,
+        "num_and_after": 2380,
+        "num_and_before": 2394
+      },
+      {
+        "avg. runtime [s]": 9.999999747378752e-06,
+        "benchmark": "voting_N_1_M_3",
+        "garble_cost_after": 14,
+        "garble_cost_before": 14,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 7,
+        "num_and_before": 7
+      },
+      {
+        "avg. runtime [s]": 2.099999983329326e-05,
+        "benchmark": "voting_N_1_M_4",
+        "garble_cost_after": 29,
+        "garble_cost_before": 30,
+        "improvement %": 3.3333334922790527,
+        "maximum fanin size": 3,
+        "num_and_after": 14,
+        "num_and_before": 15
+      },
+      {
+        "avg. runtime [s]": 1.8999999156221747e-05,
+        "benchmark": "voting_N_2_M_2",
+        "garble_cost_after": 41,
+        "garble_cost_before": 42,
+        "improvement %": 2.3809523582458496,
+        "maximum fanin size": 3,
+        "num_and_after": 20,
+        "num_and_before": 21
+      },
+      {
+        "avg. runtime [s]": 5.2999999752501026e-05,
+        "benchmark": "voting_N_2_M_3",
+        "garble_cost_after": 110,
+        "garble_cost_before": 110,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 55,
+        "num_and_before": 55
+      },
+      {
+        "avg. runtime [s]": 0.00012099999730708078,
+        "benchmark": "voting_N_2_M_4",
+        "garble_cost_after": 208,
+        "garble_cost_before": 208,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 104,
+        "num_and_before": 104
+      },
+      {
+        "avg. runtime [s]": 0.00037299998803064227,
+        "benchmark": "voting_N_3_M_4",
+        "garble_cost_after": 550,
+        "garble_cost_before": 550,
+        "improvement %": 0.0,
+        "maximum fanin size": 2,
+        "num_and_after": 275,
+        "num_and_before": 275
+      },
+      {
+        "avg. runtime [s]": 0.24025100469589233,
+        "benchmark": "stable_matching_comb_Ks_4_S_8",
+        "garble_cost_after": 30040,
+        "garble_cost_before": 32002,
+        "improvement %": 6.130866527557373,
+        "maximum fanin size": 13,
+        "num_and_after": 14039,
+        "num_and_before": 16001
+      },
+      {
+        "avg. runtime [s]": 3.261596918106079,
+        "benchmark": "stable_matching_comb_Ks_8_S_8",
+        "garble_cost_after": 109836,
+        "garble_cost_before": 117446,
+        "improvement %": 6.4795732498168945,
+        "maximum fanin size": 19,
+        "num_and_after": 51113,
+        "num_and_before": 58723
+      }
+    ],
+    "version": "23ba0cd"
+  }
+]

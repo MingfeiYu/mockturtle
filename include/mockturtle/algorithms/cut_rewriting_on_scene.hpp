@@ -13,7 +13,7 @@ template<typename Ntk, typename TermCond>
 void recursive_deref_no_value( Ntk const& ntk, node<Ntk> const& n, TermCond const& terminate )
 {
   if ( terminate( n ) )
-    return 0;
+    return;
 
   /* recursively collect nodes */
   ntk.foreach_fanin( n, [&]( auto const& f ) {
@@ -28,7 +28,7 @@ template<typename Ntk, typename TermCond>
 void recursive_ref_no_value( Ntk const& ntk, node<Ntk> const& n, TermCond const& terminate )
 {
   if ( terminate( n ) )
-    return 0;
+    return;
 
   /* recursively collect nodes */
   ntk.foreach_fanin( n, [&]( auto const& f ) {

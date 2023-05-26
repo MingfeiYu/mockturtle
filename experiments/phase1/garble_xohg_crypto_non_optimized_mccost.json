@@ -1,0 +1,147 @@
+[
+  {
+    "entries": [
+      {
+        "avg. runtime [s]": 0.0652879998087883,
+        "benchmark": "adder_32bit_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_oh_after": 32,
+        "optimized": false,
+        "previous_best": 32
+      },
+      {
+        "avg. runtime [s]": 0.06857600063085556,
+        "benchmark": "adder_64bit_untilsat",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "num_oh_after": 64,
+        "optimized": false,
+        "previous_best": 64
+      },
+      {
+        "avg. runtime [s]": 0.7591689825057983,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": -10.29411792755127,
+        "iterations": 1,
+        "num_oh_after": 6000,
+        "optimized": false,
+        "previous_best": 5440
+      },
+      {
+        "avg. runtime [s]": 1.0061039924621582,
+        "benchmark": "AES-non-expanded_unstilsat",
+        "equivalent": true,
+        "improvement %": -10.926470756530762,
+        "iterations": 1,
+        "num_oh_after": 7543,
+        "optimized": false,
+        "previous_best": 6800
+      },
+      {
+        "avg. runtime [s]": 0.06550867110490799,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "improvement %": 11.956521987915039,
+        "iterations": 3,
+        "num_oh_after": 81,
+        "optimized": false,
+        "previous_best": 92
+      },
+      {
+        "avg. runtime [s]": 0.06480766832828522,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 8.69565200805664,
+        "iterations": 3,
+        "num_oh_after": 84,
+        "optimized": false,
+        "previous_best": 92
+      },
+      {
+        "avg. runtime [s]": 0.06515133380889893,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "improvement %": 11.956521987915039,
+        "iterations": 3,
+        "num_oh_after": 81,
+        "optimized": false,
+        "previous_best": 92
+      },
+      {
+        "avg. runtime [s]": 0.06463900208473206,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "improvement %": 8.69565200805664,
+        "iterations": 3,
+        "num_oh_after": 84,
+        "optimized": false,
+        "previous_best": 92
+      },
+      {
+        "avg. runtime [s]": 0.5355989933013916,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": -25.703420639038086,
+        "iterations": 5,
+        "num_oh_after": 11571,
+        "optimized": false,
+        "previous_best": 9205
+      },
+      {
+        "avg. runtime [s]": 0.4726981222629547,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "improvement %": -27.707778930664063,
+        "iterations": 8,
+        "num_oh_after": 11555,
+        "optimized": false,
+        "previous_best": 9048
+      },
+      {
+        "avg. runtime [s]": 1.2492220401763916,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "improvement %": -0.4804099500179291,
+        "iterations": 1,
+        "num_oh_after": 9412,
+        "optimized": false,
+        "previous_best": 9367
+      },
+      {
+        "avg. runtime [s]": 0.1746223419904709,
+        "benchmark": "mult_32x32_untilsat",
+        "equivalent": true,
+        "improvement %": -83.4221420288086,
+        "iterations": 3,
+        "num_oh_after": 3098,
+        "optimized": false,
+        "previous_best": 1689
+      },
+      {
+        "avg. runtime [s]": 1.1072267293930054,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "improvement %": -0.4168475866317749,
+        "iterations": 3,
+        "num_oh_after": 11563,
+        "optimized": false,
+        "previous_best": 11515
+      },
+      {
+        "avg. runtime [s]": 1.9704712629318237,
+        "benchmark": "sha-256_untilsat",
+        "equivalent": true,
+        "improvement %": -2.299921751022339,
+        "iterations": 7,
+        "num_oh_after": 27444,
+        "optimized": false,
+        "previous_best": 26827
+      }
+    ],
+    "version": "b83cc8a"
+  }
+]
