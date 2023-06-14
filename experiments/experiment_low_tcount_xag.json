@@ -435,5 +435,442 @@
       }
     ],
     "version": "05dbea8"
+  },
+  {
+    "entries": [
+      {
+        "T-count": 0,
+        "T-count-old": 0,
+        "function": "00000000",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.0,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "80000000",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 1.2000000424450263e-05,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 10,
+        "function": "80008000",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 9.999999974752427e-07,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "00808080",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 1.9999999949504854e-06,
+        "suc.": true
+      },
+      {
+        "T-count": 6,
+        "T-count-old": 6,
+        "function": "80808080",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.0,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 10,
+        "function": "08888000",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 1.9999999949504854e-06,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "aa2a2a80",
+        "num_and": 4,
+        "num_xor": 12,
+        "runtime[s]": 0.7361879944801331,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 14,
+        "function": "88080808",
+        "num_and": 4,
+        "num_xor": 8,
+        "runtime[s]": 0.01670300029218197,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "2888a000",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.23205700516700745,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "f7788000",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.1981009989976883,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "a8202020",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.09818299859762192,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 10,
+        "function": "08880888",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 1.9999999949504854e-06,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "bd686868",
+        "num_and": 4,
+        "num_xor": 11,
+        "runtime[s]": 0.030703000724315643,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 16,
+        "function": "aa808080",
+        "num_and": 4,
+        "num_xor": 4,
+        "runtime[s]": 0.015313999727368355,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "7e686868",
+        "num_and": 4,
+        "num_xor": 18,
+        "runtime[s]": 0.0622670017182827,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "2208a208",
+        "num_and": 4,
+        "num_xor": 16,
+        "runtime[s]": 0.30713599920272827,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 14,
+        "function": "08888888",
+        "num_and": 4,
+        "num_xor": 8,
+        "runtime[s]": 0.0022879999596625566,
+        "suc.": true
+      },
+      {
+        "T-count": 4,
+        "T-count-old": 4,
+        "function": "88888888",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 9.999999974752427e-07,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "ea404040",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.06730999797582626,
+        "suc.": true
+      },
+      {
+        "T-count": 8,
+        "T-count-old": 8,
+        "function": "2a802a80",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.0001630000042496249,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "73d28c88",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.04921700060367584,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "ea808080",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.06986500322818756,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "a28280a0",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.08478700369596481,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "13284c88",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.08392500132322311,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 10,
+        "function": "a2220888",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.0,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "aae6da80",
+        "num_and": 4,
+        "num_xor": 12,
+        "runtime[s]": 0.11515100300312042,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "58d87888",
+        "num_and": 4,
+        "num_xor": 12,
+        "runtime[s]": 0.15318000316619873,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "8c88ac28",
+        "num_and": 4,
+        "num_xor": 15,
+        "runtime[s]": 0.18905599415302277,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "8880f880",
+        "num_and": 4,
+        "num_xor": 22,
+        "runtime[s]": 0.23967400193214417,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "9ee8e888",
+        "num_and": 4,
+        "num_xor": 19,
+        "runtime[s]": 0.13148799538612366,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "4268c268",
+        "num_and": 4,
+        "num_xor": 12,
+        "runtime[s]": 0.03699199855327606,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "16704c80",
+        "num_and": 4,
+        "num_xor": 8,
+        "runtime[s]": 0.19437000155448914,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 10,
+        "function": "78888888",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 9.999999974752427e-07,
+        "suc.": true
+      },
+      {
+        "T-count": 16,
+        "T-count-old": 16,
+        "function": "4966bac0",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 60.8279914855957,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "372840a0",
+        "num_and": 4,
+        "num_xor": 24,
+        "runtime[s]": 0.4561919867992401,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "5208d288",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.13619400560855865,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "7ca00428",
+        "num_and": 4,
+        "num_xor": 13,
+        "runtime[s]": 0.17741799354553223,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 16,
+        "function": "f8880888",
+        "num_and": 3,
+        "num_xor": 8,
+        "runtime[s]": 0.0030429998878389597,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "2ec0ae40",
+        "num_and": 4,
+        "num_xor": 17,
+        "runtime[s]": 0.11639700084924698,
+        "suc.": true
+      },
+      {
+        "T-count": 10,
+        "T-count-old": 12,
+        "function": "f888f888",
+        "num_and": 3,
+        "num_xor": 9,
+        "runtime[s]": 0.0009360000258311629,
+        "suc.": true
+      },
+      {
+        "T-count": 16,
+        "T-count-old": 16,
+        "function": "58362ec0",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 56.76050567626953,
+        "suc.": true
+      },
+      {
+        "T-count": 16,
+        "T-count-old": 16,
+        "function": "0eb8f6c0",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 59.96260070800781,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "567cea40",
+        "num_and": 4,
+        "num_xor": 12,
+        "runtime[s]": 0.13740399479866028,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 14,
+        "function": "f8887888",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.01281999982893467,
+        "suc.": true
+      },
+      {
+        "T-count": 8,
+        "T-count-old": 8,
+        "function": "78887888",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.00021899999410379678,
+        "suc.": true
+      },
+      {
+        "T-count": 16,
+        "T-count-old": 16,
+        "function": "e72890a0",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 61.30187225341797,
+        "suc.": true
+      },
+      {
+        "T-count": 12,
+        "T-count-old": 12,
+        "function": "268cea40",
+        "num_and": 0,
+        "num_xor": 0,
+        "runtime[s]": 0.060196999460458755,
+        "suc.": true
+      },
+      {
+        "T-count": 14,
+        "T-count-old": 16,
+        "function": "6248eac0",
+        "num_and": 4,
+        "num_xor": 12,
+        "runtime[s]": 0.09608600288629532,
+        "suc.": true
+      }
+    ],
+    "version": "a2ed0d4"
   }
 ]

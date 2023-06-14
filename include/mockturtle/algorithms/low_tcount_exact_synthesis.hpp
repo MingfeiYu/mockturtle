@@ -25,7 +25,7 @@ struct low_tcount_exact_synthesis_params
   bool no_constant_linear_fanin{ false };
   bool break_commutativity{ false };
   bool break_symmetric_variables{ false };
-  bool use_all_gates_variables{ false };
+  bool use_all_gates_variables{ true };
   bool no_subset_linear_fanin{ false };
   bool multilevel_subset_relation{ false };
   bool forbid_po_xor{ false };

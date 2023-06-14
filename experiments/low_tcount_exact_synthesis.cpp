@@ -19,42 +19,22 @@ typedef struct AND_fence
 	uint32_t t_count;
 } AND_fence;
 
-static const std::vector<AND_fence> and_fences_lib_for_5_input = {
+static const std::vector<AND_fence> and_fences_lib = {
 	{ { 1u }, 1u, 4u }, 
 	{ { 2u }, 2u, 6u }, 
 	{ { 1u, 1u }, 2u, 8u }, 
+	{ { 3u }, 3u, 10u }, 
 	{ { 1u, 2u }, 3u, 10u }, 
 	{ { 2u, 1u }, 3u, 10u }, 
 	{ { 1u, 1u, 1u }, 3u, 12u }, 
+	{ { 4u }, 4u, 12u }, 
 	{ { 2u, 2u }, 4u, 12u }, 
+	{ { 1u, 3u }, 4u, 14u }, 
+	{ { 3u, 1u }, 4u, 14u }, 
 	{ { 1u, 1u, 2u }, 4u, 14u }, 
 	{ { 1u, 2u, 1u }, 4u, 14u }, 
 	{ { 2u, 1u, 1u }, 4u, 14u }, 
 	{ { 1u, 1u, 1u, 1u }, 4u, 16u }, 
-	{ { 1u, 2u, 2u }, 5u, 16u }, 
-	{ { 2u, 1u, 2u }, 5u, 16u }, 
-	{ { 2u, 2u, 1u }, 5u, 16u }, 
-	{ { 1u, 1u, 1u, 2u }, 5u, 18u }, 
-	{ { 1u, 1u, 2u, 1u }, 5u, 18u }, 
-	{ { 1u, 2u, 1u, 1u }, 5u, 18u }, 
-	{ { 2u, 1u, 1u, 1u }, 5u, 18u }, 
-	{ { 2u, 2u, 2u }, 6u, 18u }, 
-	{ { 1u, 1u, 1u, 1u, 1u }, 5u, 20u }, 
-	{ { 1u, 1u, 2u, 2u }, 6u, 20u }, 
-	{ { 1u, 2u, 1u, 2u }, 6u, 20u }, 
-	{ { 1u, 2u, 2u, 1u }, 6u, 20u }, 
-	{ { 2u, 1u, 1u, 2u }, 6u, 20u }, 
-	{ { 2u, 1u, 2u, 1u }, 6u, 20u }, 
-	{ { 2u, 2u, 1u, 1u }, 6u, 20u }, 
-	{ { 1u, 1u, 1u, 1u, 2u }, 6u, 22u }, 
-	{ { 1u, 1u, 1u, 2u, 1u }, 6u, 22u }, 
-	{ { 1u, 1u, 2u, 1u, 1u }, 6u, 22u }, 
-	{ { 1u, 2u, 1u, 1u, 1u }, 6u, 22u }, 
-	{ { 2u, 1u, 1u, 1u, 1u }, 6u, 22u }, 
-	{ { 1u, 2u, 2u, 2u }, 7u, 22u }, 
-	{ { 2u, 1u, 2u, 2u }, 7u, 22u }, 
-	{ { 2u, 2u, 1u, 2u }, 7u, 22u }, 
-	{ { 2u, 2u, 2u, 1u }, 7u, 22u }, 
 };
 
 typedef struct represent
@@ -248,6 +228,7 @@ void low_tcount_exact_synthesis_affine_5()
       if ( topo.t_count >= benchmark.t_count_old )
       {
       	exp_res( benchmark.func, 0u, 0u, benchmark.t_count_old, topo.t_count, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ), true );
+      	//abort();
       	break;
       }
 
@@ -283,12 +264,12 @@ void low_tcount_exact_synthesis_affine_5()
       		++cases_impr_more_ands;
       	}
       	++cases_impr;
-      	if ( benchmark.func == "aa808080" )
-      	{
-      		std::cout << "[i] The T-count-minimal XAG implementation of aa808080: \n";
-      		print_xag( xag );
-      		return;
-      	}
+      	//if ( benchmark.func == "aa808080" )
+      	//{
+      	//	std::cout << "[i] The T-count-minimal XAG implementation of aa808080: \n";
+      	//	print_xag( xag );
+      	//	return;
+      	//}
       	break;
       }
       else
@@ -412,7 +393,7 @@ void low_tcount_exact_synthesis_affine_5_gendb()
       	mc = fence.mc;
       	t_count = fence.t_count;
       	xag_tcount_opt = *p_xag_tcount_opt;
-      	if ( true ) {
+      	if ( false ) {
 
 		    std::ofstream db_tcount;
 		    db_tcount.open( "db_tcount_5_only_better", std::ios::app );
@@ -433,13 +414,15 @@ void low_tcount_exact_synthesis_affine_5_gendb()
     }
 
     
-    if ( false ) {
+    if ( true ) {
     std::ofstream db_tcount;
-    db_tcount.open( "db_tcount_5", std::ios::app );
+    //db_tcount.open( "db_tcount_5", std::ios::app );
+    db_tcount.open( "db_tcount_5_mc", std::ios::app );
     db_tcount << "0x" << repr_str << " ";
     db_tcount << "0x" << tt_str << " ";
     db_tcount << num_vars << " ";
-    db_tcount << t_count << " ";
+    //db_tcount << t_count << " ";
+    db_tcount << mc << " ";
     xag_tcount_opt.foreach_gate( [&]( auto const& f ) {
     	xag_tcount_opt.foreach_fanin( f, [&]( auto const& fi ) {
     		db_tcount << static_cast<uint32_t>( ( fi.index << 1 ) + fi.complement ) << " ";

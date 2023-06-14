@@ -126,9 +126,9 @@ public:
 		}
 	}
 
-	template<typename LeavesIterator, typename Fn>
-	void operator()( xag_network& xag, kitty::dynamic_truth_table const& func,
-									 LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
+	template<class TT, typename LeavesIterator, typename Fn>
+	void operator()( xag_network& xag, TT const& func,
+									 LeavesIterator begin, LeavesIterator end, Fn&& fn, bool rewrite = true ) const
 	{
 		stopwatch t_total( pst_->time_total );
 
@@ -181,6 +181,11 @@ public:
 		{
 			std::string db_repr_str = std::get<0>( search->second );
 			tcount = std::get<1>( search->second );
+			if ( !rewrite )
+			{
+				fn( xag.get_constant( false ), tcount );
+				return;
+			}
 			po_db_repr = std::get<2>( search->second );
 
 			kitty::static_truth_table<5u> db_repr;
@@ -346,8 +351,8 @@ public:
 		}
 
 		//std::cout << "[m] cost of current cut is " << tcount << "\n";
-		//fn( ( po_inv ? !po : po ), tcount );
-		fn( po_inv ? !po : po );
+		fn( ( po_inv ? !po : po ), tcount );
+		//fn( po_inv ? !po : po );
 	}
 
 private:

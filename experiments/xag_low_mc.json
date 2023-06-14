@@ -174,5 +174,181 @@
       }
     ],
     "version": "05dbea8"
+  },
+  {
+    "entries": [
+      {
+        "T-count_after": 512,
+        "T-count_before": 512,
+        "avg. runtime [s]": 0.0229250006377697,
+        "benchmark": "adder",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 3328,
+        "T-count_before": 3328,
+        "avg. runtime [s]": 0.05384200066328049,
+        "benchmark": "bar",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 20138,
+        "T-count_before": 20144,
+        "avg. runtime [s]": 12.541215896606445,
+        "benchmark": "div",
+        "equivalent": true,
+        "improvement %": 0.02978554368019104,
+        "iterations": 2
+      },
+      {
+        "T-count_after": 34532,
+        "T-count_before": 34532,
+        "avg. runtime [s]": 29.01711654663086,
+        "benchmark": "log2",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 3406,
+        "T-count_before": 3406,
+        "avg. runtime [s]": 1.1127480268478394,
+        "benchmark": "max",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 30194,
+        "T-count_before": 30194,
+        "avg. runtime [s]": 21.50525665283203,
+        "benchmark": "multiplier",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 7634,
+        "T-count_before": 7642,
+        "avg. runtime [s]": 5.97401762008667,
+        "benchmark": "sin",
+        "equivalent": true,
+        "improvement %": 0.10468463599681854,
+        "iterations": 3
+      },
+      {
+        "T-count_after": 20610,
+        "T-count_before": 20610,
+        "avg. runtime [s]": 8.499388694763184,
+        "benchmark": "sqrt",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 18202,
+        "T-count_before": 18244,
+        "avg. runtime [s]": 13.738900184631348,
+        "benchmark": "square",
+        "equivalent": true,
+        "improvement %": 0.23021267354488373,
+        "iterations": 2
+      },
+      {
+        "T-count_after": 4608,
+        "T-count_before": 4608,
+        "avg. runtime [s]": 14.605841636657715,
+        "benchmark": "arbiter",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 1444,
+        "T-count_before": 1444,
+        "avg. runtime [s]": 4.750259876251221,
+        "benchmark": "cavlc",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 172,
+        "T-count_before": 172,
+        "avg. runtime [s]": 0.40365898609161377,
+        "benchmark": "ctrl",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 1312,
+        "T-count_before": 1312,
+        "avg. runtime [s]": 0.0053900000639259815,
+        "benchmark": "dec",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 2106,
+        "T-count_before": 2118,
+        "avg. runtime [s]": 2.9010350704193115,
+        "benchmark": "i2c",
+        "equivalent": true,
+        "improvement %": 0.5665722489356995,
+        "iterations": 2
+      },
+      {
+        "T-count_after": 314,
+        "T-count_before": 314,
+        "avg. runtime [s]": 0.9043689966201782,
+        "benchmark": "int2float",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      },
+      {
+        "T-count_after": 17670,
+        "T-count_before": 17690,
+        "avg. runtime [s]": 28.245939254760742,
+        "benchmark": "mem_ctrl",
+        "equivalent": true,
+        "improvement %": 0.11305823177099228,
+        "iterations": 3
+      },
+      {
+        "T-count_after": 1176,
+        "T-count_before": 1238,
+        "avg. runtime [s]": 2.2918620109558105,
+        "benchmark": "priority",
+        "equivalent": true,
+        "improvement %": 5.008077621459961,
+        "iterations": 3
+      },
+      {
+        "T-count_after": 308,
+        "T-count_before": 312,
+        "avg. runtime [s]": 1.1352665424346924,
+        "benchmark": "router",
+        "equivalent": true,
+        "improvement %": 1.2820513248443604,
+        "iterations": 2
+      },
+      {
+        "T-count_after": 16362,
+        "T-count_before": 16362,
+        "avg. runtime [s]": 15.829447746276855,
+        "benchmark": "voter",
+        "equivalent": true,
+        "improvement %": 0.0,
+        "iterations": 1
+      }
+    ],
+    "version": "a2ed0d4"
   }
 ]

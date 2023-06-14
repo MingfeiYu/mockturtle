@@ -2,6 +2,7 @@
 #include <mockturtle/algorithms/cut_rewriting_on_scene.hpp>
 #include <mockturtle/algorithms/merge_split_xag.hpp>
 #include <mockturtle/algorithms/node_resynthesis/xag_low_tcount_rewrite.hpp>
+#include <mockturtle/algorithms/rewriting.hpp>
 #include <mockturtle/io/verilog_reader.hpp>
 #include <mockturtle/io/write_bench.hpp>
 #include <mockturtle/views/fanout_view.hpp>
@@ -172,7 +173,7 @@ struct num_and
 
 int main()
 {
-	std::string json_name = "xag_low_mc";
+	std::string json_name = "xag_low_tcount";
 	experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "T-count_before", "T-count_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
 	/* 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 */
 	uint8_t opt = 2u;
@@ -180,7 +181,8 @@ int main()
 	auto const benchmarks = epfl_benchmarks();
 	std::vector<uint32_t> const best_scores  = epfl_tcad22();
 
-	mockturtle::cut_rewriting_params ps_cut_rewrite;
+	//mockturtle::cut_rewriting_params ps_cut_rewrite;
+	mockturtle::rewrite_params ps_cut_rewrite;
 	ps_cut_rewrite.cut_enumeration_ps.cut_size = 5u;
 	ps_cut_rewrite.cut_enumeration_ps.cut_limit = 12u;
 	ps_cut_rewrite.verbose = false;
@@ -235,7 +237,7 @@ int main()
 		//ps.verify_database = true;
 		mockturtle::xag_low_tcount_rewrite_stats st;
 		mockturtle::xag_low_tcount_rewrite_stats* pst = &st;
-		mockturtle::xag_low_tcount_rewrite xag_rewrite( "db_tcount_5", ps, pst );
+		mockturtle::xag_low_tcount_rewrite xag_rewrite( "db_tcount_5_mc", ps, pst );
 
 		clock_t begin_time = clock();
 
@@ -248,8 +250,10 @@ int main()
 			++ite_cnt;
 
 			//xag = mockturtle::cut_rewriting_on_scene<mockturtle::xag_network, decltype( xag_rewrite ), detail::t_count_cal>( xag, xag_rewrite, ps_cut_rewrite );
-			xag = mockturtle::cut_rewriting<mockturtle::xag_network, decltype( xag_rewrite ), detail::num_and>( xag, xag_rewrite, ps_cut_rewrite );
-			xag = mockturtle::cleanup_dangling( xag );
+			//xag = mockturtle::cut_rewriting<mockturtle::xag_network, decltype( xag_rewrite ), detail::num_and>( xag, xag_rewrite, ps_cut_rewrite );
+			//xag = mockturtle::cleanup_dangling( xag );
+			xag = mockturtle::rewrite<mockturtle::xag_network, decltype( xag_rewrite ), detail::num_and>( xag, xag_rewrite, ps_cut_rewrite );
+
 
 			t_count_after = mockturtle::merge_split_xag( xag );
 			//std::cout << "[i] After " << ite_cnt << " round, T count is " << t_count_before << "\n";
