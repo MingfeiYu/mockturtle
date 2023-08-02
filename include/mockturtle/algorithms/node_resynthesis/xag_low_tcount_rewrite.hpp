@@ -19,6 +19,7 @@
 #include <mockturtle/networks/xag.hpp>
 #include <mockturtle/utils/stopwatch.hpp>
 #include <mockturtle/views/cut_view.hpp>
+#include <mockturtle/views/fanout_view.hpp>
 
 namespace mockturtle
 {
@@ -353,6 +354,139 @@ public:
 		//std::cout << "[m] cost of current cut is " << tcount << "\n";
 		fn( ( po_inv ? !po : po ), tcount );
 		//fn( po_inv ? !po : po );
+	}
+
+	template<class TT, typename LeavesIterator, typename Fn>
+	void profile_block_situation( TT const& func, LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
+	{
+		stopwatch t_total( pst_->time_total );
+
+		const auto func_ext = kitty::extend_to<5u>( func );
+		std::vector<kitty::detail::spectral_operation> trans;
+		kitty::static_truth_table<5u> real_repr;
+		uint32_t tcount{ 0u };
+
+		const auto cache_it = pclassify_cache_->find( func_ext );
+		if ( cache_it != pclassify_cache_->end() )
+		{
+			pst_->cache_hit++;
+			if ( !std::get<0>( cache_it->second ) )
+			{
+				return;
+			}
+			real_repr = std::get<1>( cache_it->second );
+			trans = std::get<2>( cache_it->second );
+		}
+		else
+		{
+			pst_->cache_miss++;
+			const auto spectral = call_with_stopwatch( pst_->time_classify, [&]() {
+					return kitty::exact_spectral_canonization_limit( func_ext, 100000, [&trans]( auto const& ops ) {
+					std::copy( ops.begin(), ops.end(), std::back_inserter( trans ) );
+				} );
+			} );
+			
+			pclassify_cache_->insert( std::make_pair( func_ext, std::make_tuple( spectral.second, spectral.first, trans ) ) );
+			real_repr = spectral.first;
+
+			if ( !spectral.second )
+			{
+				pst_->classify_abort++;
+				return;
+			}
+		}
+
+		auto search = pfunc_tcount_->find( kitty::to_hex( real_repr ) );
+		xag_network::signal po_db_repr;
+		if ( search != pfunc_tcount_->end() )
+		{
+			std::string db_repr_str = std::get<0>( search->second );
+			tcount = std::get<1>( search->second );
+			po_db_repr = std::get<2>( search->second );
+
+			kitty::static_truth_table<5u> db_repr;
+			kitty::create_from_hex_string( db_repr, db_repr_str );
+
+			call_with_stopwatch( pst_->time_classify, [&]() {
+				return kitty::exact_spectral_canonization( db_repr, [&trans]( auto const& ops ) {
+					std::copy( ops.rbegin(), ops.rend(), std::back_inserter( trans ) );
+				} );
+			} );
+		}
+		else
+		{
+			pst_->unknown_func_abort++;
+			return;
+		}
+
+		std::vector<bool> blocked;
+		cut_view<xag_network> db_partial{ db_, db_pis_, po_db_repr };
+		
+		if ( db_partial.is_xor( po_db_repr.index ) )
+		{
+			blocked.emplace_back( true );
+		}
+
+		std::vector<bool> blocked_tmp( 5u, true );
+		uint32_t ctr{ 0u };
+		mockturtle::fanout_view<cut_view<xag_network>> db_partial_fanout{ db_partial };
+		db_partial.foreach_pi( [&]( auto const& db_pi ) {
+			if ( db_partial_fanout.fanout( db_pi ).size() == 1u )
+			{
+				if ( db_partial.is_and( db_partial_fanout.fanout( db_pi )[0] ) )
+				{
+					blocked_tmp[ctr] = false;
+				}
+			}
+
+			++ctr;
+		} );
+
+		std::vector<int32_t> pi_ind( 5u, -1 );
+		
+		ctr = 1u;
+		for ( LeavesIterator l{ begin }; l != end; ++l )
+		{
+			pi_ind[ctr - 1] = ctr;
+			++ctr;
+			blocked.emplace_back( false );
+		}
+
+		for ( auto const& op: trans )
+		{
+			switch ( op._kind )
+			{
+			case kitty::detail::spectral_operation::kind::permutation:
+			{	
+				const auto v1 = log2( op._var1 );
+				const auto v2 = log2( op._var2 );
+				std::swap( pi_ind[v1], pi_ind[v2] );
+				std::swap( blocked_tmp[v1], blocked_tmp[v2] );
+				break;
+			}
+			case kitty::detail::spectral_operation::kind::spectral_translation:
+			{
+				const auto v1 = log2( op._var1 );
+				blocked_tmp[v1] = true;
+				break;
+			}
+			case kitty::detail::spectral_operation::kind::disjoint_translation:
+			{
+				blocked[0] = true;
+				break;
+			}
+			}
+		}
+
+		for ( auto i{ 0u }; i < pi_ind.size(); ++i )
+		{
+			if ( pi_ind[i] != -1 )
+			{
+				blocked[pi_ind[i]] = blocked_tmp[i];
+			}
+		}
+
+		fn( tcount, blocked );
 	}
 
 private:

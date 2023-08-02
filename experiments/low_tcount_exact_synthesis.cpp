@@ -201,7 +201,7 @@ void low_tcount_exact_synthesis_affine_5()
 			exp_res( benchmark.func, 0u, 0u, 0u, 0u, 0., true );
 			continue;
 		}
-		std::cout << "[i] processing " << benchmark.func << "\n";
+		//std::cout << "[i] processing " << benchmark.func << "\n";
 		kitty::dynamic_truth_table tt( 5u );
     kitty::create_from_hex_string( tt, benchmark.func );
     auto num_vars = ( kitty::min_base_inplace( tt ) ).size();
@@ -264,6 +264,17 @@ void low_tcount_exact_synthesis_affine_5()
       		++cases_impr_more_ands;
       	}
       	++cases_impr;
+
+      	std::cout << "\t{ \"" << benchmark.func << "\", { ";
+      	for ( auto i{ 0u }; i < topo.fanin_size.size(); ++i )
+      	{
+      		std::cout << topo.fanin_size[i];
+      		if ( i != topo.fanin_size.size() - 1 )
+      		{
+      			std::cout << ", ";
+      		}
+      	}
+      	std::cout << " } }, \n";
       	//if ( benchmark.func == "aa808080" )
       	//{
       	//	std::cout << "[i] The T-count-minimal XAG implementation of aa808080: \n";
@@ -440,8 +451,8 @@ void low_tcount_exact_synthesis_affine_5_gendb()
 int main( void )
 {
 	//mockturtle::learn_tcount( "../experiments/db_mc_5" );
-	//mockturtle::low_tcount_exact_synthesis_affine_5();
-	mockturtle::low_tcount_exact_synthesis_affine_5_gendb();
+	mockturtle::low_tcount_exact_synthesis_affine_5();
+	//mockturtle::low_tcount_exact_synthesis_affine_5_gendb();
 
 	return 0;
 }

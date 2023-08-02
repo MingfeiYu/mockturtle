@@ -1,0 +1,139 @@
+[
+  {
+    "entries": [
+      {
+        "T-count_after": 21120,
+        "T-count_before": 21120,
+        "XOR_after": 20325,
+        "XOR_before": 20325,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.46953797340393066,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "rewriting time [s]": 1.6383090019226074
+      },
+      {
+        "T-count_after": 26400,
+        "T-count_before": 26400,
+        "XOR_after": 25124,
+        "XOR_before": 25124,
+        "benchmark": "AES-non-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.6116800308227539,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "rewriting time [s]": 5.461328029632568
+      },
+      {
+        "T-count_after": 26460,
+        "T-count_before": 27126,
+        "XOR_after": 17187,
+        "XOR_before": 15431,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.8326873779296875,
+        "improvement %": 2.4552090167999268,
+        "iterations": 6,
+        "rewriting time [s]": 122.16483306884766
+      },
+      {
+        "T-count_after": 26122,
+        "T-count_before": 26860,
+        "XOR_after": 17133,
+        "XOR_before": 15286,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.8298263549804688,
+        "improvement %": 2.747580051422119,
+        "iterations": 8,
+        "rewriting time [s]": 108.6177749633789
+      },
+      {
+        "T-count_after": 282,
+        "T-count_before": 306,
+        "XOR_after": 120,
+        "XOR_before": 96,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.000782012939453125,
+        "improvement %": 7.843137741088867,
+        "iterations": 3,
+        "rewriting time [s]": 0.499455988407135
+      },
+      {
+        "T-count_after": 310,
+        "T-count_before": 326,
+        "XOR_after": 106,
+        "XOR_before": 97,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.00045603513717651367,
+        "improvement %": 4.907975196838379,
+        "iterations": 3,
+        "rewriting time [s]": 0.5324609875679016
+      },
+      {
+        "T-count_after": 282,
+        "T-count_before": 306,
+        "XOR_after": 120,
+        "XOR_before": 96,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.0007370114326477051,
+        "improvement %": 7.843137741088867,
+        "iterations": 3,
+        "rewriting time [s]": 0.4970709979534149
+      },
+      {
+        "T-count_after": 310,
+        "T-count_before": 326,
+        "XOR_after": 106,
+        "XOR_before": 97,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.0005459785461425781,
+        "improvement %": 4.907975196838379,
+        "iterations": 3,
+        "rewriting time [s]": 0.5246840119361877
+      },
+      {
+        "T-count_after": 37460,
+        "T-count_before": 37468,
+        "XOR_after": 31716,
+        "XOR_before": 29729,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 1.3582992553710938,
+        "improvement %": 0.02135155349969864,
+        "iterations": 3,
+        "rewriting time [s]": 18.52643585205078
+      },
+      {
+        "T-count_after": 45402,
+        "T-count_before": 45800,
+        "XOR_after": 45536,
+        "XOR_before": 44358,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 1.4908676147460938,
+        "improvement %": 0.8689956665039063,
+        "iterations": 11,
+        "rewriting time [s]": 65.1044921875
+      },
+      {
+        "T-count_after": 100990,
+        "T-count_before": 104760,
+        "XOR_after": 96025,
+        "XOR_before": 91497,
+        "benchmark": "sha-256_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 4.12860107421875,
+        "improvement %": 3.5987019538879395,
+        "iterations": 25,
+        "rewriting time [s]": 345.64300537109375
+      }
+    ],
+    "version": "4ffc6df"
+  }
+]

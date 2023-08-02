@@ -12,6 +12,7 @@
 #include <kitty/constructors.hpp>
 #include <kitty/operations.hpp>
 #include <mockturtle/algorithms/simulation.hpp>
+#include <mockturtle/generators/sorting.hpp>
 #include <mockturtle/networks/xag.hpp>
 #include <mockturtle/utils/progress_bar.hpp>
 #include <mockturtle/utils/stopwatch.hpp>
@@ -29,7 +30,7 @@ struct low_tcount_exact_synthesis_params
   bool no_subset_linear_fanin{ false };
   bool multilevel_subset_relation{ false };
   bool forbid_po_xor{ false };
-  //std::optional<uint32_t> heuristic_xor_bound{};
+  std::optional<uint32_t> expected_num_xor{};
   uint32_t conflict_limit{ 500000u };
   std::optional<std::string> write_dimacs{};
   bool verbose{ false };
@@ -67,7 +68,7 @@ public:
       func_( kitty::get_bit( func, 0 ) ? ~func : func ), 
       invert_( kitty::get_bit( func, 0 ) ), 
       num_ands_( num_ands ), 
-      //heuristic_xor_bound_( ps.heuristic_xor_bound ), 
+      expected_num_xor_( ps.expected_num_xor ), 
       ps_( ps ), 
       st_( st )
   {
@@ -77,19 +78,58 @@ public:
   {
     stopwatch<> time_total( st_.time_total );
 
-    Ntk ntk;
-    cnf_view_params cvps;
-    cvps.write_dimacs = ps_.write_dimacs;
-    problem_network_t pntk( cvps );
-    reset( pntk );
-
-    encode( pntk );
-
-    if ( const auto sat = solve( pntk ); sat )
+    if ( expected_num_xor_ )
     {
-      const auto sol = extract_network( pntk );
-      return sol;
-    } 
+      Ntk sol;
+      bool first_trial{ true }; 
+      
+      while ( true )
+      {
+        cnf_view_params cvps;
+        cvps.write_dimacs = ps_.write_dimacs;
+        problem_network_t pntk( cvps );
+        reset( pntk );
+
+        encode( pntk );
+        add_xor_counter( pntk );
+
+        if ( const auto sat = solve_xor_opt( pntk ); sat )
+        {
+          sol = extract_network( pntk );
+          first_trial = false;
+
+          if ( ps_.verbose )
+          {
+            std::cout << "[i] managed to find an implementation using " << count_xors( pntk ) << " XORs\n";
+          }
+        }
+        else
+        {
+          if ( !first_trial )
+          {
+            return sol;
+          }
+          break;
+        }
+      }
+    }
+
+    else 
+    {
+      cnf_view_params cvps;
+      cvps.write_dimacs = ps_.write_dimacs;
+      problem_network_t pntk( cvps );
+      reset( pntk );
+
+      encode( pntk );
+
+      if ( const auto sat = solve( pntk ); sat )
+      {
+        const auto sol = extract_network( pntk );
+        return sol;
+      }
+    }
+
     return std::nullopt;
   }
 
@@ -427,6 +467,22 @@ private:
     st_.num_clauses += pntk.num_clauses();
   }
 
+  void add_xor_counter( problem_network_t& pntk )
+  {
+    xor_counter_.clear();
+    for ( auto const& ltfi : ltfi_vars_ )
+    {
+      std::copy( ltfi.begin(), ltfi.end(), std::back_inserter( xor_counter_ ) );
+    }
+
+    insertion_sorting_network( static_cast<uint32_t>( xor_counter_.size() ), [&]( auto a, auto b ) {
+      auto const aa = pntk.create_and( xor_counter_[a], xor_counter_[b] );
+      auto const bb = pntk.create_or( xor_counter_[a], xor_counter_[b] );
+      xor_counter_[a] = aa;
+      xor_counter_[b] = bb;
+    } );
+  }
+
 private:
   bool solve( problem_network_t& pntk )
   {
@@ -441,6 +497,30 @@ private:
 
     if ( res && *res )
     {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool solve_xor_opt( problem_network_t& pntk )
+  {
+    stopwatch<> time_sol( st_.time_solving );
+    bill::result::clause_type assumptions;
+    
+    pntk.foreach_po( [&]( auto const& f ) {
+      assumptions.push_back( pntk.lit( f ) );
+    } );
+    if ( int32_t pos = static_cast<int32_t>( xor_counter_.size() ) - *expected_num_xor_ - 1; pos >= 0 )
+    {
+      assumptions.push_back( pntk.lit( !xor_counter_[pos] ) );
+    }
+
+    const auto res = pntk.solve( assumptions, 0u );
+
+    if ( res && *res )
+    {
+      --( *expected_num_xor_ );
       return true;
     }
 
@@ -509,15 +589,28 @@ private:
     return ntk;
   }
 
+  uint32_t count_xors( problem_network_t& pntk ) const
+  {
+    uint32_t ctr{};
+    for ( auto const& ltfi : ltfi_vars_ )
+    {
+      for ( auto const& l : ltfi )
+      {
+        ctr += pntk.model_value( l ) ? 1u : 0u;
+      }
+    }
+    return ctr;
+  }
+
 private:
   uint32_t num_vars_;
   std::vector<uint32_t> num_ands_;
   std::vector<std::vector<signal<problem_network_t>>> ltfi_vars_;
   std::vector<std::vector<signal<problem_network_t>>> truth_vars_;
-  //std::vector<signal<problem_network_t>> xor_counter_;
+  std::vector<signal<problem_network_t>> xor_counter_;
   kitty::dynamic_truth_table func_;
   bool invert_{false};
-  //std::optional<uint32_t> heuristic_xor_bound_; 
+  std::optional<uint32_t> expected_num_xor_; 
   low_tcount_exact_synthesis_params const& ps_;
   low_tcount_exact_synthesis_stats& st_;
 };

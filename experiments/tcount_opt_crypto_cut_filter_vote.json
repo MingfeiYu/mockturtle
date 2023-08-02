@@ -1,0 +1,127 @@
+[
+  {
+    "entries": [
+      {
+        "T-count_after": 21120,
+        "T-count_before": 21120,
+        "XOR_after": 20325,
+        "XOR_before": 20325,
+        "benchmark": "AES-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.4812469482421875,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "rewriting time [s]": 60.99709701538086
+      },
+      {
+        "T-count_after": 26400,
+        "T-count_before": 26400,
+        "XOR_after": 25124,
+        "XOR_before": 25124,
+        "benchmark": "AES-non-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.6444320678710938,
+        "improvement %": 0.0,
+        "iterations": 1,
+        "rewriting time [s]": 77.62728881835938
+      },
+      {
+        "T-count_after": 26412,
+        "T-count_before": 27126,
+        "XOR_after": 17248,
+        "XOR_before": 15431,
+        "benchmark": "DES-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.870452880859375,
+        "improvement %": 2.6321611404418945,
+        "iterations": 6,
+        "rewriting time [s]": 448.65478515625
+      },
+      {
+        "T-count_after": 26054,
+        "T-count_before": 26860,
+        "XOR_after": 17134,
+        "XOR_before": 15286,
+        "benchmark": "DES-non-expanded_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.82684326171875,
+        "improvement %": 3.000744581222534,
+        "iterations": 11,
+        "rewriting time [s]": 596.177978515625
+      },
+      {
+        "T-count_after": 276,
+        "T-count_before": 306,
+        "XOR_after": 119,
+        "XOR_before": 96,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.0007960796356201172,
+        "improvement %": 9.803921699523926,
+        "iterations": 3,
+        "rewriting time [s]": 2.6197569370269775
+      },
+      {
+        "T-count_after": 296,
+        "T-count_before": 326,
+        "XOR_after": 121,
+        "XOR_before": 97,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.0007848739624023438,
+        "improvement %": 9.202454566955566,
+        "iterations": 5,
+        "rewriting time [s]": 4.062172889709473
+      },
+      {
+        "T-count_after": 276,
+        "T-count_before": 306,
+        "XOR_after": 119,
+        "XOR_before": 96,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.0008418560028076172,
+        "improvement %": 9.803921699523926,
+        "iterations": 3,
+        "rewriting time [s]": 2.5547380447387695
+      },
+      {
+        "T-count_after": 296,
+        "T-count_before": 326,
+        "XOR_after": 121,
+        "XOR_before": 97,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 0.0007891654968261719,
+        "improvement %": 9.202454566955566,
+        "iterations": 5,
+        "rewriting time [s]": 4.08172082901001
+      },
+      {
+        "T-count_after": 37460,
+        "T-count_before": 37468,
+        "XOR_after": 31716,
+        "XOR_before": 29729,
+        "benchmark": "md5_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 1.34814453125,
+        "improvement %": 0.02135155349969864,
+        "iterations": 3,
+        "rewriting time [s]": 114.64481353759766
+      },
+      {
+        "T-count_after": 45208,
+        "T-count_before": 45800,
+        "XOR_after": 45575,
+        "XOR_before": 44358,
+        "benchmark": "sha-1_untilsat",
+        "equivalent": true,
+        "functional reduction time [s]": 1.62615966796875,
+        "improvement %": 1.2925764322280884,
+        "iterations": 15,
+        "rewriting time [s]": 657.8275146484375
+      }
+    ],
+    "version": "4ffc6df"
+  }
+]
