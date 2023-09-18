@@ -1785,7 +1785,7 @@ int main(int argc, char* argv[])  //
   }
   // return 0;
 
-  experiment<std::string, double, double, double, double> exp( "mapper", "benchmark", "N_PHASES", "#DFF", "area", "delay");
+  experiment<std::string, uint8_t, double, double, double, double> exp( "mapper_t1", "benchmark", "N_PHASES", "#DFF", "area", "delay", "#T1" );
 
   // uint8_t MIN_N_PHASES = std::stoi(argv[1]);
   // uint8_t MAX_N_PHASES = std::stoi(argv[2]);
@@ -1946,7 +1946,7 @@ int main(int argc, char* argv[])  //
     /* estimate the gain of implementing parts of the circuits using T1s instead */
     auto updated_area{ raw_area };
     // uint32_t num_t1_use_more_than_3{ 0u };
-    // uint32_t num_t1_cells{ 0u };
+    uint32_t num_t1_cells{ 0u };
 
     /* Rewrote this using iterator output */
     for ( auto it_t1_cands{ t1_candidates.begin() }; it_t1_cands != t1_candidates.end(); )
@@ -1959,6 +1959,7 @@ int main(int argc, char* argv[])  //
       else
       {
         ++it_t1_cands;
+        ++num_t1_cells;
       }
     }
 
@@ -2139,7 +2140,7 @@ int main(int argc, char* argv[])  //
         fmt::print("{} PHASES: #AREA  for {} is {}\n", n_phases, benchmark, total_area);
         fmt::print("{} PHASES: #MAX GLOB PHASE for {} is {}\n", n_phases, benchmark, max_phase);
 
-        exp(fmt::format("{}_{}", benchmark, (i==0)?"CPSAT":"GREEDY"), n_phases, total_num_dff, total_area, ( (max_phase - 1) / n_phases + 1 ));
+        exp(fmt::format("{}_{}", benchmark, (i==0)?"CPSAT":"GREEDY"), n_phases, total_num_dff, total_area, ( (max_phase - 1) / n_phases + 1 ), num_t1_cells);
         exp.save();
         exp.table();
       }
