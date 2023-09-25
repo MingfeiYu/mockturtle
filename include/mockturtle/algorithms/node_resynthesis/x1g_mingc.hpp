@@ -13,8 +13,10 @@
 #include <kitty/constructors.hpp>
 #include <kitty/hash.hpp>
 #include <kitty/operations.hpp>
+#include <kitty/print.hpp>
 #include <kitty/spectral.hpp>
 #include <mockturtle/algorithms/cleanup.hpp>
+#include <mockturtle/algorithms/simulation.hpp>
 #include <mockturtle/networks/x1g.hpp>
 #include <mockturtle/utils/stopwatch.hpp>
 #include <mockturtle/views/cut_view.hpp>
@@ -58,15 +60,17 @@ struct x1g_mingc_rewrite_stats
 class x1g_mingc_rewrite
 {
 public:
-	x1g_mingc_rewrite( std::string const& dbname, x1g_mingc_rewrite_params const& ps = {},
-										 x1g_mingc_rewrite_stats* pst = nullptr )
+	x1g_mingc_rewrite( std::string const& dbname, x1g_mingc_rewrite_params const& ps = {}, 
+	                   x1g_mingc_rewrite_stats* pst = nullptr )
 		: ps_( ps ),
-			pst_( pst ),
-			pfunc_gc_( std::make_shared<decltype( pfunc_gc_ )::element_type>() ),
-      pclassify_cache_( std::make_shared<decltype( pclassify_cache_ )::element_type>() ), 
-      pblacklist_cache_( std::make_shared<decltype( pblacklist_cache_ )::element_type>() )
+		  pst_( pst ), 
+		  pfunc_gc_( std::make_shared<decltype( pfunc_gc_ )::element_type>() ), 
+		  pclassify_cache_( std::make_shared<decltype( pclassify_cache_ )::element_type>() ), 
+		  pblacklist_cache_( std::make_shared<decltype( pblacklist_cache_ )::element_type>() )
 	{
+		fmt::print( "[i] started reading in database\n" );
 		build_db( dbname );
+		fmt::print( "[i] finished reading in database ( size : {} )\n", db_.num_pos() );
 	}
 
 	virtual ~x1g_mingc_rewrite()
@@ -78,8 +82,8 @@ public:
 	}
 
 	template<typename LeavesIterator, typename Fn>
-	void operator()( x1g_network& x1g, kitty::dynamic_truth_table func, kitty::dynamic_truth_table const& dc,
-									 LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
+	void operator()( x1g_network& x1g, kitty::dynamic_truth_table func, kitty::dynamic_truth_table const& dc, 
+	                 LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
 	{
 		if ( !kitty::is_const0( dc ) )
 		{
@@ -126,9 +130,9 @@ public:
 		}
 	}
 
-	template<typename LeavesIterator, typename Fn>
-	void operator()( x1g_network& x1g, kitty::dynamic_truth_table const& func,
-									 LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
+	template<class TT, typename LeavesIterator, typename Fn>
+	void operator()( x1g_network& x1g, TT const& func, 
+	                 LeavesIterator begin, LeavesIterator end, Fn&& fn, bool rewrite = true ) const
 	{
 		stopwatch t_total( pst_->time_total );
 
@@ -149,7 +153,7 @@ public:
 		}
 		else
 		{
-			if ( pblacklist_cache_->size() > 0u )
+			if ( !pblacklist_cache_->empty() )
 			{
 				const auto blacklist_it = std::find( pblacklist_cache_->begin(), pblacklist_cache_->end(), func_ext );
 				if ( blacklist_it != pblacklist_cache_->end() )
@@ -181,8 +185,15 @@ public:
 		x1g_network::signal po_db_repr;
 		if ( search != pfunc_gc_->end() )
 		{
-			std::string db_repr_str = std::get<0>( search->second );
-			po_db_repr = std::get<1>( search->second );
+			uint8_t gc = std::get<0>( search->second );
+			std::string db_repr_str = std::get<1>( search->second );
+			po_db_repr = std::get<2>( search->second );
+
+			if ( !rewrite )
+			{
+				fn( db_.get_constant( false ), gc / 2 );
+				return;
+			}
 
 			kitty::static_truth_table<6u> db_repr;
 			kitty::create_from_hex_string( db_repr, db_repr_str );
@@ -200,6 +211,7 @@ public:
 		else
 		{
 			pst_->unknown_func_abort++;
+			//fmt::print( "[e] {} is an unknown function\n", kitty::to_hex( real_repr ) );
 			return;
 		}
 
@@ -265,10 +277,10 @@ public:
 			po = x1g.create_xor( po, po_xor );
 		}
 
-		fn( po_inv ? !po : po );
+		fn( ( po_inv ? !po : po ), 0u );
 	}
 
-	private:
+private:
 	void build_db( std::string const& dbname )
 	{
 		stopwatch t_total( pst_->time_total );
@@ -280,7 +292,7 @@ public:
 		std::ifstream db_gc;
 		db_gc.open( dbname, std::ios::in );
 		std::string line;
-		uint32_t pos{ 0u };
+		uint32_t pos{ 0u };;
 
 		while ( std::getline( db_gc, line ) )
 		{
@@ -293,10 +305,10 @@ public:
 			pos += 17u;
 			line.erase( 0, pos );
 			pos = line.find( ' ' );
-			const uint32_t num_vars = std::stoul( line.substr( 0, pos++ ) );
+			const uint8_t num_vars = std::stoul( line.substr( 0, pos++ ) );
 			line.erase( 0, pos );
 			pos = line.find( ' ' );
-			const uint32_t gc = std::stoul( line.substr( 0, pos++ ) );
+			const uint8_t gc = std::stoul( line.substr( 0, pos++ ) );
 			line.erase( 0, pos );
 
 			std::vector<x1g_network::signal> signals_gc_opt( db_pis_.begin(), db_pis_.begin() + num_vars );
@@ -364,14 +376,14 @@ public:
 				}
 			}
 
-			pfunc_gc_->insert( std::make_pair( repr_real_str, std::make_tuple( repr_db_str, signal_po ) ) );
+			pfunc_gc_->insert( std::make_pair( repr_real_str, std::make_tuple( gc, repr_db_str, signal_po ) ) );
 		}
 	}
 
 private:
 	x1g_network db_;
 	std::vector<x1g_network::signal> db_pis_;
-	std::shared_ptr<std::unordered_map<std::string, std::tuple<std::string, x1g_network::signal>>> pfunc_gc_;
+	std::shared_ptr<std::unordered_map<std::string, std::tuple<uint8_t, std::string, x1g_network::signal>>> pfunc_gc_;
 	std::shared_ptr<std::unordered_map<kitty::static_truth_table<6u>, std::tuple<bool, kitty::static_truth_table<6u>, std::vector<kitty::detail::spectral_operation>>, kitty::hash<kitty::static_truth_table<6u>>>> pclassify_cache_;
 	std::shared_ptr<std::vector<kitty::static_truth_table<6u>>> pblacklist_cache_;
 

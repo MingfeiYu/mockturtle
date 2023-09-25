@@ -502,57 +502,57 @@ public:
       }
     }
 
-		/* Determine potential new children for node n */
-		signal child2 = new_signal;
-		signal child1 = node.children[( fanin + 1 ) % 3];
-		signal child0 = node.children[( fanin + 2 ) % 3];
+    // determine potential new children of node n
+    signal child2 = new_signal;
+    signal child1 = node.children[( fanin + 1 ) % 3];
+    signal child0 = node.children[( fanin + 2 ) % 3];
 
 		bool _is_onehot = is_onehot( n );
 
 		/* Normalize order */
-		if (_is_onehot)
-		{
-			if ( child0.index > child1.index )
-			{
-				std::swap( child0, child1 );
-			}
-			if ( child1.index > child2.index )
-			{
-				std::swap( child1, child2 );
-			}
-			if ( child0.index > child1.index )
-			{
-				std::swap( child0, child1 );
-			}
+		if ( _is_onehot )
+    {
+      if ( child0.index > child1.index )
+      {
+        std::swap( child0, child1 );
+      }
+      if ( child1.index > child2.index )
+      {
+        std::swap( child1, child2 );
+      }
+      if ( child0.index > child1.index )
+      {
+        std::swap( child0, child1 );
+      }
 
-			assert( child0.index <= child1.index );
-			assert( child1.index <= child2.index );
-		}
-		else
-		{
-			if ( child0.index < child1.index )
-			{
-				std::swap( child0, child1 );
-			}
-			if ( child1.index < child2.index )
-			{
-				std::swap( child1, child2 );
-			}
-			if ( child0.index < child1.index )
-			{
-				std::swap( child0, child1 );
-			}
+      assert( child0.index <= child1.index );
+      assert( child1.index <= child2.index );
+    }
+    else
+    {
+      if ( child0.index < child1.index )
+      {
+        std::swap( child0, child1 );
+      }
+      if ( child1.index < child2.index )
+      {
+        std::swap( child1, child2 );
+      }
+      if ( child0.index < child1.index )
+      {
+        std::swap( child0, child1 );
+      }
 
-			assert( child0.index >= child1.index );
-			assert( child1.index >= child2.index );
-		}
+      assert( child0.index >= child1.index );
+      assert( child1.index >= child2.index );
+    }
 
 		/* Normalize complemented edges */
 		bool node_complement = false;
 		if ( !_is_onehot )
 		{
 			/* if is XOR */
-			node_complement = ( child0.complement != child1.complement ) != child2.complement;
+      node_complement = ( child0.complement != child1.complement ) != child2.complement;
       child0.complement = child1.complement = child2.complement = false;
 		}
 
@@ -582,40 +582,42 @@ public:
 
 		/* Check uniqueness of node 'n' */
 		storage::element_type::node_type _hash_obj;
-		_hash_obj.children[0] = child0;
-		_hash_obj.children[1] = child1;
-		_hash_obj.children[2] = child2;
+    _hash_obj.children[0] = child0;
+    _hash_obj.children[1] = child1;
+    _hash_obj.children[2] = child2;
+    if ( const auto it = _storage->hash.find( _hash_obj ); it != _storage->hash.end() && it->second != old_node )
+    {
+      return std::make_pair( n, signal( it->second, 0 ) );
+    }
 
-		if ( const auto it = _storage->hash.find( _hash_obj ); it != _storage->hash.end() )
-		{
-			return std::make_pair( n, signal( it->second, 0 ) );
-		}
+    // remember before
+    const auto old_child0 = signal{ node.children[0] };
+    const auto old_child1 = signal{ node.children[1] };
+    const auto old_child2 = signal{ node.children[2] };
 
-		/* Erase old 'n' in hash table */
-		const signal old_child0 = signal{ node.children[0] };
-		const signal old_child1 = signal{ node.children[1] };
-		const signal old_child2 = signal{ node.children[2] };
+    // erase old node in hash table
+    _storage->hash.erase( node );
 
-		_storage->hash.erase( node );
+    // insert updated node into hash table
+    node.children[0] = child0;
+    node.children[1] = child1;
+    node.children[2] = child2;
+    _storage->hash[node] = n;
 
-		node.children[0] = child0;
-		node.children[1] = child1;
-		node.children[2] = child2;
+    // update the reference counter of the new signal
+    _storage->nodes[new_signal.index].data[0].h1++;
 
-		_storage->hash[node] = n;
-
-		_storage->nodes[new_signal.index].data[0].h1++;
-
-		for ( auto const& fn: _events->on_modified )
-		{
-			( *fn )( n, { old_child0, old_child1, old_child2 } );
-		}
-
-		return std::nullopt;
+    for ( auto const& fn : _events->on_modified )
+    {
+      ( *fn )( n, { old_child0, old_child1, old_child2 } );
+    }
 	}
 
 	void replace_in_outputs( node const& old_node, signal const& new_signal )
   {
+    if ( is_dead( old_node ) )
+      return;
+
     for ( auto& output : _storage->outputs )
     {
       if ( output.index == old_node )
@@ -625,6 +627,7 @@ public:
 
         if ( old_node != new_signal.index )
         {
+          /* increment fan-in of new node */
           _storage->nodes[new_signal.index].data[0].h1++;
         }
       }
@@ -633,13 +636,13 @@ public:
 
 	void take_out_node( node const& n )
   {
-    if ( n == 0 || is_ci( n ) )
+    if ( n == 0 || is_ci( n ) || is_dead( n ) )
     {
       return;
     }
 
     auto& nobj = _storage->nodes[n];
-    nobj.data[0].h1 = UINT32_C( 0x80000000 );
+    nobj.data[0].h1 = UINT32_C( 0x80000000 ); /* fanout size 0, but dead */
     _storage->hash.erase( nobj );
 
     for ( auto const& fn : _events->on_delete )
@@ -687,7 +690,7 @@ public:
       for ( auto idx = 1u; idx < _storage->nodes.size(); ++idx )
       {
         if ( is_ci( idx ) || is_dead( idx ) )
-          continue;
+          continue; /* ignore CIs */
 
         if ( const auto repl = replace_in_node( idx, _old, _new ); repl )
         {
@@ -695,8 +698,10 @@ public:
         }
       }
 
+      /* check outputs */
       replace_in_outputs( _old, _new );
 
+      // reset fan-in of old node
       if ( _old != _new.index )
       {
         old_to_new.insert( { _old, _new } );

@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <mockturtle/algorithms/cut_rewriting_on_scene.hpp>
-#include <mockturtle/algorithms/node_resynthesis/xag_mingc_rewrite.hpp>
+#include <mockturtle/algorithms/node_resynthesis/xag_mingc.hpp>
 #include <mockturtle/io/verilog_reader.hpp>
 #include <mockturtle/io/write_bench.hpp>
 #include <mockturtle/views/fanout_view.hpp>

@@ -294,7 +294,7 @@ struct satisfiability_dont_cares_checker
     init();
   }
 
-  bool is_dont_care( node<Ntk> const& n, std::vector<bool> const& assignment )
+  bool is_dont_care( node<Ntk> const& n, std::vector<bool> const& assignment, uint32_t conflict_limit = 0 )
   {
     if ( ntk_.fanin_size( n ) != assignment.size() )
       return false;
@@ -304,7 +304,7 @@ struct satisfiability_dont_cares_checker
       assumptions[i] = lit_not_cond( literals_[ntk_.get_node( f )], assignment[i] == ntk_.is_complemented( f ) );
     } );
 
-    return solver_.solve( &assumptions[0], &assumptions[0] + assumptions.size(), 0 ) == percy::failure;
+    return solver_.solve( &assumptions[0], &assumptions[0] + assumptions.size(), conflict_limit ) == percy::failure;
   }
 
 private:

@@ -228,7 +228,7 @@ int main()
 	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 0u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "garble_xag2x1g_" + std::to_string( benchmark_type_each );
-		//experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, float, float, float, bool> exp_res( json_name, "benchmark", "SOTA", "gc_before", "gc_after", "improvement ( before ) %", "improvement ( SOTA ) %", "avg. runtime [s]", "equivalent" );
+		experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, float, float, float, bool> exp_res( json_name, "benchmark", "SOTA", "gc_before", "gc_after", "improvement ( before ) %", "improvement ( SOTA ) %", "avg. runtime [s]", "equivalent" );
 		uint32_t benchmark_type = benchmark_type_each;
 		// 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 //
 		uint8_t opt = 2u;
@@ -256,7 +256,7 @@ int main()
 			( void )read_result;
 
 			uint32_t garble_cost_bfr = 0u;
-			//uint32_t garble_cost_aft = 0u;
+			uint32_t garble_cost_aft = 0u;
 
 			mockturtle::topo_view xag_topo{ xag };
 			merge_view xag_merge{ xag_topo };
@@ -273,29 +273,29 @@ int main()
 
 			const clock_t begin_time = clock();
 			mockturtle::x1g_network x1g = mockturtle::map_xag2x1g( xag );
-			//x1g.foreach_gate( [&]( auto n ) {
-			//	if ( x1g.is_onehot( n ) )
-			//	{
-			//		++garble_cost_aft;
-			//	}
-			//} );
-			//garble_cost_aft *= 2;
+			x1g.foreach_gate( [&]( auto n ) {
+				if ( x1g.is_onehot( n ) )
+				{
+					++garble_cost_aft;
+				}
+			} );
+			garble_cost_aft *= 2;
 
 			//mockturtle::write_bench( x1g, "/Users/myu/Documents/GitHub/abc/bench" );
 			//const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
 			//assert( cec );
 
-			time_avr += float( clock() - begin_time ) / CLOCKS_PER_SEC;
+			time_avr = float( clock() - begin_time ) / CLOCKS_PER_SEC;
 
-			//float improve_bfr = ( ( static_cast<float> ( garble_cost_bfr ) - static_cast<float> ( garble_cost_aft ) ) / static_cast<float> ( garble_cost_bfr ) ) * 100;
-			//float improve_sota = ( ( static_cast<float> ( best_scores[i] ) - static_cast<float> ( garble_cost_aft ) ) / static_cast<float> ( best_scores[i] ) ) * 100;
+			float improve_bfr = ( ( static_cast<float> ( garble_cost_bfr ) - static_cast<float> ( garble_cost_aft ) ) / static_cast<float> ( garble_cost_bfr ) ) * 100;
+			float improve_sota = ( ( static_cast<float> ( best_scores[i] ) - static_cast<float> ( garble_cost_aft ) ) / static_cast<float> ( best_scores[i] ) ) * 100;
 
-			//exp_res( benchmark,best_scores[i], garble_cost_bfr, garble_cost_aft, improve_bfr, improve_sota, ( float( clock() - begin_time ) / CLOCKS_PER_SEC ), cec );
+			exp_res( benchmark,best_scores[i], garble_cost_bfr, garble_cost_aft, improve_bfr, improve_sota, time_avr , true );
 		}
 
-		//exp_res.save();
-		//exp_res.table();
-		std::cout << "[i] spent " << time_avr / 10 << " seconds in average. \n";
+		exp_res.save();
+		exp_res.table();
+		//std::cout << "[i] spent " << time_avr / 10 << " seconds in average. \n";
 	} 
 	//
 	/*

@@ -176,19 +176,23 @@ x1g_network x1g_merge_optimization( x1g_network const& x1g )
 	return dest;
 }
 
-/* if a OneHot is satisfiability don't care for assignment 111, it can be         */
-/* replaced by a XOR3 */
-
-x1g_network x1g_dont_cares_optimization( x1g_network const& x1g )
+/* figure out if the input assignment 111 is a don't care ( either sat-   */
+/* or observability ) to an OneHot gate in the x1g                        */
+struct dc_params
 {
+	uint32_t satisfiability_conflict_limit{ 0u };
+	// int32_t observability_level_of_interest{ -1 };
+};
 
+x1g_network x1g_dont_cares_optimization( x1g_network const& x1g, dc_params const& ps = {} )
+{
 	node_map<x1g_network::signal, x1g_network> old2new( x1g );
 	x1g_network dest;
 
-	/* generate constant */
+	/* generate constants */
 	old2new[x1g.get_constant( false )] = dest.get_constant( false );
 
-	/* generate pi */
+	/* generate pis */
 	x1g.foreach_pi( [&]( auto const& n ) {
 		old2new[n] = dest.create_pi();
 	} );
@@ -210,7 +214,7 @@ x1g_network x1g_dont_cares_optimization( x1g_network const& x1g )
 
 		if ( x1g.is_onehot( n ) )
 		{
-			if ( checker.is_dont_care( n, { true, true, true } ) )
+			if ( checker.is_dont_care( n, { true, true, true }, ps.satisfiability_conflict_limit ) )
 			{
 				old2new[n] = dest.create_xor3( children[0], children[1], children[2] );
 			}
@@ -225,11 +229,67 @@ x1g_network x1g_dont_cares_optimization( x1g_network const& x1g )
 		}
 	} );
 
+	/* generate pos */
 	x1g.foreach_po( [&]( auto const& f ) {
 		dest.create_po( old2new[f] ^ x1g.is_complemented( f ) );
 	} );
 
 	return dest;
 }
+
+/* replace all the OneHots that are with a const-0 input, with an XOR */
+x1g_network x1g_post_process( x1g_network const& x1g )
+{
+	node_map<x1g_network::signal, x1g_network> old2new( x1g );
+
+	x1g_network dest;
+
+	/* generate constants */
+	old2new[x1g.get_constant( false )] = dest.get_constant( false );
+
+	/* generate pis */
+	x1g.foreach_pi( [&]( auto const& n ) {
+		old2new[n] = dest.create_pi();
+	} );
+
+	/* generate gates */
+	topo_view<x1g_network>{ x1g }.foreach_node( [&]( auto const& n ) {
+		if ( x1g.is_constant( n ) || x1g.is_pi( n ) )
+		{
+			return;
+		}
+
+		std::vector<x1g_network::signal> children;
+		bool has_const_0_fanin{ false };
+		x1g.foreach_fanin( n, [&]( auto const& f ) {
+			children.emplace_back( old2new[f] ^ x1g.is_complemented( f ) );
+			if ( !has_const_0_fanin && ( children.back() == dest.get_constant( false ) ) )
+			{
+				has_const_0_fanin = true;
+			}
+		} );
+
+		if ( x1g.is_onehot( n ) && has_const_0_fanin )
+		{
+			assert( children.front() == dest.get_constant( false ) );
+			children.erase( children.begin() );
+			assert( children.size() == 2 );
+			old2new[n] = dest.create_xor( children[0], children[1] );
+		}
+
+		else
+		{
+			old2new[n] = dest.clone_node( x1g, n, children );
+		}
+	} );
+
+	/* generate pos */
+	x1g.foreach_po( [&]( auto const& f ) {
+		dest.create_po( old2new[f] ^ x1g.is_complemented( f ) );
+	} );
+
+	return dest;
+}
+
 
 } /* namespace mockturtle */

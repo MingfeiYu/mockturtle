@@ -1,10 +1,11 @@
 #include <iostream>
 
-#include <mockturtle/algorithms/cut_rewriting.hpp>
-#include <mockturtle/algorithms/node_resynthesis/x1g_mingc_rewrite.hpp>
+#include <mockturtle/algorithms/node_resynthesis/x1g_mingc.hpp>
+#include <mockturtle/algorithms/rewriting.hpp>
 #include <mockturtle/algorithms/x1g_optimization.hpp>
 #include <mockturtle/io/verilog_reader.hpp>
 #include <mockturtle/io/write_bench.hpp>
+#include <mockturtle/utils/cost_functions.hpp>
 #include <mockturtle/views/fanout_view.hpp>
 #include <mockturtle/views/topo_view.hpp>
 
@@ -136,19 +137,19 @@ std::vector<uint32_t> mpc_host23()
 
 static const std::string EPFL_benchmarks[] = {
 	"adder", "bar", "div", "log2", "max", "multiplier", "sin", "sqrt", "square", "arbiter", 
-	"cavlc", "ctrl" , "dec", "i2c", "int2float", "mem_ctrl", "priority", "router", "voter", 
-	"hyp"};
+	"cavlc", "ctrl" , "dec", "i2c", "int2float" , "mem_ctrl", "priority", "router", "voter", 
+	"hyp" };
 
 static const std::string CRYPTO_benchmarks[] = {
-  "AES-expanded_untilsat", "AES-non-expanded_untilsat", "DES-expanded_untilsat", "DES-non-expanded_untilsat", 
-  "comparator_32bit_signed_lt_untilsat", "comparator_32bit_signed_lteq_untilsat", "comparator_32bit_unsigned_lt_untilsat", "comparator_32bit_unsigned_lteq_untilsat", 
-  "md5_untilsat", "sha-1_untilsat", "sha-256_untilsat"};
+	"AES-expanded_untilsat", "AES-non-expanded_untilsat", "DES-expanded_untilsat", "DES-non-expanded_untilsat", 
+	"comparator_32bit_signed_lt_untilsat", "comparator_32bit_signed_lteq_untilsat", "comparator_32bit_unsigned_lt_untilsat", "comparator_32bit_unsigned_lteq_untilsat", 
+	"md5_untilsat", "sha-1_untilsat", "sha-256_untilsat" };
 
 static const std::string MPC_benchmarks[] = {
-  "auction_N_2_W_16", "auction_N_2_W_32", "auction_N_3_W_16", "auction_N_3_W_32", "auction_N_4_W_16", "auction_N_4_W_32", 
-  "knn_comb_K_1_N_8", "knn_comb_K_1_N_16", "knn_comb_K_2_N_8", "knn_comb_K_2_N_16", "knn_comb_K_3_N_8", "knn_comb_K_3_N_16", 
-  "voting_N_1_M_3", "voting_N_1_M_4", "voting_N_2_M_2", "voting_N_2_M_3", "voting_N_2_M_4", "voting_N_3_M_4", 
-  "stable_matching_comb_Ks_4_S_8", "stable_matching_comb_Ks_8_S_8"};
+	"auction_N_2_W_16", "auction_N_2_W_32", "auction_N_3_W_16", "auction_N_3_W_32", "auction_N_4_W_16", "auction_N_4_W_32", 
+	"knn_comb_K_1_N_8", "knn_comb_K_1_N_16", "knn_comb_K_2_N_8", "knn_comb_K_2_N_16", "knn_comb_K_3_N_8", "knn_comb_K_3_N_16", 
+	"voting_N_1_M_3", "voting_N_1_M_4", "voting_N_2_M_2", "voting_N_2_M_3", "voting_N_2_M_4", "voting_N_3_M_4", 
+	"stable_matching_comb_Ks_4_S_8", "stable_matching_comb_Ks_8_S_8" };
 
 std::vector<std::string> epfl_benchmarks()
 {
@@ -239,11 +240,10 @@ struct num_onehot
 
 int main()
 {
-	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 0u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
-		std::string json_name = "x1g_mingc_5cut_" + std::to_string( benchmark_type_each );
-		experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, float, uint32_t, float, float, bool> exp_res( json_name, "benchmark", "gc_before", "gc_after", "gc_after_dc", "improvement %", "iterations", "avg. runtime [s]", "runtime with dc [s]", "equivalent" );
-		//experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, bool> exp_res( json_name, "benchmark", "gc_before", "gc_after", "improvement %", "iterations", "avg. runtime [s]", "equivalent" );
+		std::string json_name = "x1g_opt_" + std::to_string( benchmark_type_each );
+		experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, float, float, float, float, bool> exp_res( json_name, "benchmark", "#ct_sota", "#ct_opt", "improvement after rewrite %", "iterations", "rewrite runtime [s]", "improvement after dc %", "dc runtime [s]", "improvement after post-process %", "post-process runtime", "equivalence" );
 		uint32_t benchmark_type = benchmark_type_each;
 		/* 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 */
 		uint8_t opt = 2u;
@@ -252,15 +252,14 @@ int main()
 		//std::vector<uint32_t> const best_scores  = benchmark_type ? crypto_tcad22() : epfl_tcad22();
 		std::vector<uint32_t> const best_scores  = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_host23() : mpc_host23() ) : epfl_host23();
 
-		mockturtle::cut_rewriting_params ps_cut_rewrite;
-		ps_cut_rewrite.cut_enumeration_ps.cut_size = 6u;
-		ps_cut_rewrite.cut_enumeration_ps.cut_limit = 12u;
-		ps_cut_rewrite.verbose = false;
-		ps_cut_rewrite.progress = true;
-		ps_cut_rewrite.min_cand_cut_size = 2u;
+		mockturtle::rewriting_params ps_rewrite;
+		ps_rewrite.cut_enumeration_ps.cut_size = 6u;
+		ps_rewrite.cut_enumeration_ps.cut_limit = 12u;
+		ps_rewrite.verbose = false;
+		ps_rewrite.progress = true;
+		ps_rewrite.min_cand_cut_size = 2u;
 
-		//for ( auto i{ 0u }; i < benchmarks.size(); ++i )
-		for ( auto i{ 4u }; i < 5u; ++i )
+		for ( auto i{ 0u }; i < benchmarks.size(); ++i )
 		{
 			auto const benchmark = benchmarks[i];
 			if ( best_scores[i] == 0u )
@@ -284,35 +283,32 @@ int main()
 				abort();
 			}
 
-			uint32_t num_oh = 0u;
-			uint32_t num_oh_aft = 0u;
-			x1g.foreach_gate( [&]( auto const& n ) {
-				if ( x1g.is_onehot( n ) )
-				{
-					++num_oh;
-				}
-			} );
+			uint32_t num_oh{ 0u };
+			uint32_t num_oh_aft{ 0u };
+
+			num_oh = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
 			if ( num_oh == 0u )
 			{
-				//exp_res( benchmark, 0u, 0u, 0., 0u, 0., true );
-				exp_res( benchmark, 0u, 0u, 0u, 0., 0u, 0., 0., true );
+				exp_res( benchmark, 0u, 0u, 0., 0u, 0., 0., 0., 0., 0., true );
 				continue;
 			}
 
 			num_oh_aft = num_oh - 1u;
-			//uint32_t const best_score = num_oh;
 			uint32_t const best_score = best_scores[i];
-			uint32_t ite_cnt = 0u;
+			uint32_t ite_cnt{ 0u };
+
+			clock_t begin_time{ clock() };
 
 			mockturtle::x1g_mingc_rewrite_params ps;
 			ps.verbose = true;
-			//ps.verify_database = true;
+			ps.verify_database = true;
 			mockturtle::x1g_mingc_rewrite_stats st;
 			mockturtle::x1g_mingc_rewrite_stats* pst = &st;
-			mockturtle::x1g_mingc_rewrite x1g_rewrite( "db_gc_x1g_6_mc6", ps, pst );
+			mockturtle::x1g_mingc_rewrite x1g_rewrite( "../experiments/db_gc_x1g_6_mc6_new", ps, pst );
 
-			clock_t begin_time = clock();
-			while ( num_oh > num_oh_aft )
+			std::cout << "[i] started rewriting " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+
+			//while ( num_oh > num_oh_aft )
 			{
 				if ( ite_cnt > 0u )
 				{
@@ -320,63 +316,42 @@ int main()
 				}
 				++ite_cnt;
 
-				x1g = mockturtle::cut_rewriting<mockturtle::x1g_network, decltype( x1g_rewrite ), ::detail::num_onehot<>>( x1g, x1g_rewrite, ps_cut_rewrite );
+				x1g = mockturtle::rewriting<mockturtle::x1g_network, decltype( x1g_rewrite ), ::detail::num_onehot<mockturtle::x1g_network>>( x1g, x1g_rewrite, ps_rewrite );
 				
-				num_oh_aft = 0u;
-				x1g.foreach_gate( [&]( auto const& n ) {
-					if ( x1g.is_onehot( n ) )
-					{
-						++num_oh_aft;
-					}
-				} );
+				num_oh_aft = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
 			}
 
-			//std::cout << "[i] before post optimization, gc cost is: " << num_oh_aft * 2 << "\n";
+			float t_rewrite = ( float( clock() - begin_time ) / CLOCKS_PER_SEC );
+			std::cout << "[i] finished rewriting " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
-			//x1g = mockturtle::x1g_merge_optimization( x1g );
-			//num_oh_aft = 0u;
-			//x1g.foreach_gate( [&]( auto const& n ) {
-			//	if ( x1g.is_onehot( n ) )
-			//	{
-			//		++num_oh_aft;
-			//	}
-			//} );
-			//std::cout << "[i] after operating merging, gc cost is: " << num_oh_aft * 2 << "\n";
-
-			float t1 = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt;
-			float t2 = t1;
-
-			//if ( best_score < 20000u && !( ( i == 7u ) && ( benchmark_type_each == 0u ) ) && !( ( i == 1u ) && ( benchmark_type_each == 1u ) ) )
-			uint32_t num_oh_aft_dc = 0u;
-			if ( true )
-			{
-				x1g = mockturtle::x1g_dont_cares_optimization( x1g );
-				x1g.foreach_gate( [&]( auto const& n ) {
-					if ( x1g.is_onehot( n ) )
-					{
-						++num_oh_aft_dc;
-					}
-				} );
-				t2 = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) / ite_cnt;
-				//std::cout << "[i] after using don't cares, gc cost is: " << num_oh_aft * 2 << "\n";
-			}
-			//else
-			//{
-			//	std::cout << "[i] skip using don't cares, as the circuit is too large\n";
-			//}
-
-			//mockturtle::write_bench( x1g, "/Users/myu/Documents/GitHub/abc/bench" );
+			std::cout << "[i] started applying don't-care-based optimization to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+			uint32_t num_oh_dc{ 0u };
+			mockturtle::dc_params ps_dc;
+			ps_dc.satisfiability_conflict_limit = 100000;
+			// ps_dc.observability_level_of_interest = 5;
+			// x1g = mockturtle::x1g_dont_cares_optimization( x1g, ps_dc );
+			num_oh_dc = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
+			float t_dc = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) - t_rewrite;
+			std::cout << "[i] finished applying don't-care-based optimization to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+			
+			std::cout << "[i] started applying post-processing to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+			uint32_t num_oh_post_pro{ 0u };
+			// x1g = mockturtle::x1g_post_process( x1g );
+			num_oh_post_pro = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
+			float t_post_pro = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) - t_rewrite - t_dc;
+			std::cout << "[i] ended applying post-processing to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
 			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
-			assert( cec );
-			float improve = ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_aft * 2 ) ) / static_cast<float>( best_score ) ) * 100;
-			exp_res( benchmark, best_score, num_oh_aft * 2, num_oh_aft_dc * 2, improve, ite_cnt, t1, t2, cec );
-			//exp_res( benchmark, best_score, num_oh_aft * 2, improve, ite_cnt, t1, cec );
+			//const auto cec = true;
+
+			float improve_rewrite  =       ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_aft * 2 ) ) / static_cast<float>( best_score ) ) * 100;
+			float improve_dc       =        ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_dc * 2 ) ) / static_cast<float>( best_score ) ) * 100;
+			float improve_post_pro =  ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_post_pro * 2 ) ) / static_cast<float>( best_score ) ) * 100;
+
+			exp_res( benchmark, best_score, num_oh_post_pro, improve_rewrite, ite_cnt, t_rewrite, improve_dc, t_dc, improve_post_pro, t_post_pro, cec );
 		}
 
 		exp_res.save();
 		exp_res.table();
 	}
-
-	return 0;
 }

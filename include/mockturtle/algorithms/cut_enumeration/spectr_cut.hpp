@@ -151,7 +151,7 @@ struct lut_mapping_update_cuts<cut_enumeration_spectr_cut>
         /* set to zero cost */
         my_cut->data.cost = 0u;
 
-        /* crate cut truth table */
+        /* create cut truth table */
         kitty::dynamic_truth_table tt( node_to_cut[n].size() );
         kitty::create_parity( tt );
         my_cut->func_id = cuts.insert_truth_table( tt );
