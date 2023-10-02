@@ -277,7 +277,35 @@ public:
 			po = x1g.create_xor( po, po_xor );
 		}
 
-		fn( ( po_inv ? !po : po ), 0u );
+		po = po_inv ? !po : po;
+
+		fn( po, 0u );
+
+		/* for debugging */
+		// std::vector<x1g_network::signal> leaves;
+		// fmt::print( "[m] leaves of current cut are : " );
+		// for ( auto const pi : pis )
+		// {
+		// 	const auto it_node = std::find( x1g._storage->nodes.begin(), x1g._storage->nodes.end(), x1g.get_node( pi ) );
+		// 	if ( it_node != x1g._storage->nodes.end() )
+		// 	{
+		// 		leaves.emplace_back( pi );
+		// 		fmt::print( "{}{} ", ( x1g.is_complemented( pi ) ? "!" : "" ), x1g.get_node( pi ) );
+		// 	}
+		// 	else
+		// 	{
+		// 		leaves.emplace_back( x1g.get_constant( false ) );
+		// 	}
+		// }
+		// std::cout << std::endl;
+		// cut_view<x1g_network> x1g_partial{ x1g, leaves, po };
+		// auto result = simulate<kitty::static_truth_table<6u>>( x1g_partial )[0];
+		// fmt::print( "[m] targated TT is {}, while the candidate's is {}\n", kitty::to_hex( func_ext ), kitty::to_hex( result ) );
+    // if ( func_ext != result )
+    // {
+    //   fmt::print( "[e] unmatched implementation!\n" );
+    //   abort();
+    // }
 	}
 
 private:

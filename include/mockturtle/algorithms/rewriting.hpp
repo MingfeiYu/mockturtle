@@ -117,7 +117,6 @@ public:
 
     /* for debugging */
     // uint8_t rewrited{ 0u };
-
     // fmt::print( "[i] network properties before rewriting: #pis - {}, #pos - {}\n", ntk_.num_pis(), ntk_.num_pos() );
 
 
@@ -128,7 +127,7 @@ public:
     	// {
     	// 	return;
     	// }
-    	//std::cout << "\n[i] working on node " << n << "\n";
+    	// std::cout << "\n[i] working on node " << n << "\n";
     	pbar( i, i );
 
     	if ( ntk_.fanout_size( n ) == 0u )
@@ -179,6 +178,7 @@ public:
         //std::cout << "[i] mffc calculation ended\n";
 
         const auto on_signal = [&]( auto const& f_new, uint8_t cost_cut ) {
+          (void)f_new;
         	int32_t gain = cost_mffc - cost_cut;
         	//fmt::print( "[i] {} OneHots in new implementation of current cut\n", cost_cut );
 
@@ -189,7 +189,7 @@ public:
 						best_cut_index = cut_index - 1;
 					}
 
-					return true;
+          return true;
 				};
 
 				stopwatch<> t_rewriting( st_.time_rewriting );
@@ -202,8 +202,10 @@ public:
       	const auto tt = cuts.truth_table( cut );
       	signal<Ntk> best_signal;
       	const auto on_signal = [&]( auto const& f_new, uint8_t cost_cut ) {
-					best_signal = f_new;
-					return true;
+					(void)cost_cut;
+          best_signal = f_new;
+
+          return true;
 				};
 
       	stopwatch<> t_rewriting( st_.time_rewriting );
@@ -211,31 +213,36 @@ public:
       	//assert( n != ntk_.get_node( best_signal ) );
       	if ( n != ntk_.get_node( best_signal ) )
       	{
+          // fmt::print( "\n[i] logic rewriting performed at node {}\n", n );
       		/* for debugging */
-      		// if ( rewrited == 3 )
-      		// {
-      		// 	std::vector<signal<Ntk>> best_leaves_vec;
-      		// 	for ( auto const& best_leaf: best_leaves )
-      		// 	{
-      		// 		best_leaves_vec.emplace_back( best_leaf );
-      		// 	}
-      		// 	cut_view<x1g_network> ntk_partial{ ntk_, best_leaves_vec, best_signal };
-					// 	auto result = simulate<kitty::static_truth_table<6u>>( ntk_partial )[0];
-					// 	fmt::print( "[e] targated TT is {}, while the candidate's is {}\n", kitty::to_hex( tt ), kitty::to_hex( result ) );
-      		// }
-      		
-
-      		// fmt::print( "[i] logic rewriting performed at node {}\n", i );
-      		// fmt::print( "\n[m] trying substituting node {} with signal {}{}\n", ntk_.node_to_index( n ), ( ntk_.is_complemented( best_signal ) ? "!" : "" ), ntk_.node_to_index( ntk_.get_node( best_signal ) ) );
+          // std::vector<signal<Ntk>> best_leaves_vec;
+          // for ( auto const& best_leaf: best_leaves )
+          // {
+          //   if ( !ntk_.is_constant( ntk_.get_node( best_leaf ) ) )
+          //   {
+          //     best_leaves_vec.emplace_back( best_leaf );
+          //   }
+          // }
+          //cut_view<Ntk> ntk_partial{ ntk_, best_leaves_vec, best_signal };
+          //auto result = simulate<kitty::static_truth_table<6u>>( ntk_partial )[0];
+          //fmt::print( "[m] targated TT is {}, while the candidate's is {}\n", kitty::to_hex( tt ), kitty::to_hex( result ) );
+          // if ( tt != result )
+          // {
+          //   fmt::print( "[e] unmatched implementation!\n" );
+          //   abort();
+          // }
+      		// fmt::print( "[m] trying substituting node {} with signal {}{}\n", ntk_.node_to_index( n ), ( ntk_.is_complemented( best_signal ) ? "!" : "" ), ntk_.node_to_index( ntk_.get_node( best_signal ) ) );
+          // fmt::print( "[m] before substitution, fo size of node {} : {}; fo size of node {} : {}\n", ntk_.node_to_index( n ), ntk_.fanout_size( n ), ntk_.get_node( best_signal ), ntk_.fanout_size( ntk_.get_node( best_signal ) ) );
       		ntk_.substitute_node( n, best_signal );
       		clear_cuts_fanout_rec( ntk_fanout_, cuts, cut_manager, ntk_.get_node( best_signal ) );
       		// fmt::print( "[m] substitution is successfully performed\n" );
+          // fmt::print( "[m] after substitution, fo size of node {} : {}; fo size of node {} : {}\n", ntk_.node_to_index( n ), ntk_.fanout_size( n ), ntk_.get_node( best_signal ), ntk_.fanout_size( ntk_.get_node( best_signal ) ) );
       		// ++rewrited;
       	}
       }
 		} );
 
-		ntk_ = cleanup_dangling( ntk_ );
+		// ntk_ = cleanup_dangling( ntk_ );
 		uint32_t cost_aft = costs<Ntk, NodeCostFn>( ntk_ );
 		std::cout << "\toptimized cost = " << cost_aft << "\n";
 		// fmt::print( "[i] network properties after rewriting: #pis - {}, #pos - {}\n", ntk_.num_pis(), ntk_.num_pos() );
