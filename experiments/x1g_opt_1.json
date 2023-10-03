@@ -1,0 +1,150 @@
+[
+  {
+    "entries": [
+      {
+        "#ct_opt": 5120,
+        "#ct_sota": 10240,
+        "benchmark": "AES-expanded_untilsat",
+        "dc runtime [s]": 27.82345962524414,
+        "equivalence": true,
+        "improvement after dc %": 0.0,
+        "improvement after post-process %": 0.0,
+        "improvement after rewrite %": 0.0,
+        "iterations": 2,
+        "post-process runtime": 0.004425048828125,
+        "rewrite runtime [s]": 14.267784118652344
+      },
+      {
+        "#ct_opt": 6400,
+        "#ct_sota": 12800,
+        "benchmark": "AES-non-expanded_untilsat",
+        "dc runtime [s]": 4.9591064453125e-05,
+        "equivalence": true,
+        "improvement after dc %": 0.0,
+        "improvement after post-process %": 0.0,
+        "improvement after rewrite %": 0.0,
+        "iterations": 2,
+        "post-process runtime": 0.00598907470703125,
+        "rewrite runtime [s]": 52.078128814697266
+      },
+      {
+        "#ct_opt": 6237,
+        "#ct_sota": 13144,
+        "benchmark": "DES-expanded_untilsat",
+        "dc runtime [s]": 8.54132080078125,
+        "equivalence": true,
+        "improvement after dc %": 5.036518573760986,
+        "improvement after post-process %": 5.09738302230835,
+        "improvement after rewrite %": 2.130249500274658,
+        "iterations": 4,
+        "post-process runtime": 0.00341796875,
+        "rewrite runtime [s]": 540.9352416992188
+      },
+      {
+        "#ct_opt": 6139,
+        "#ct_sota": 12984,
+        "benchmark": "DES-non-expanded_untilsat",
+        "dc runtime [s]": 10.9354248046875,
+        "equivalence": true,
+        "improvement after dc %": 5.42205810546875,
+        "improvement after post-process %": 5.437461853027344,
+        "improvement after rewrite %": 2.2643253803253174,
+        "iterations": 5,
+        "post-process runtime": 0.00341796875,
+        "rewrite runtime [s]": 425.6979064941406
+      },
+      {
+        "#ct_opt": 60,
+        "#ct_sota": 130,
+        "benchmark": "comparator_32bit_signed_lt_untilsat",
+        "dc runtime [s]": 0.00351715087890625,
+        "equivalence": true,
+        "improvement after dc %": 7.692307949066162,
+        "improvement after post-process %": 7.692307949066162,
+        "improvement after rewrite %": 7.692307949066162,
+        "iterations": 3,
+        "post-process runtime": 0.00031185150146484375,
+        "rewrite runtime [s]": 6.863083839416504
+      },
+      {
+        "#ct_opt": 67,
+        "#ct_sota": 140,
+        "benchmark": "comparator_32bit_signed_lteq_untilsat",
+        "dc runtime [s]": 0.0028533935546875,
+        "equivalence": true,
+        "improvement after dc %": 4.285714626312256,
+        "improvement after post-process %": 4.285714626312256,
+        "improvement after rewrite %": 4.285714626312256,
+        "iterations": 2,
+        "post-process runtime": 9.965896606445313e-05,
+        "rewrite runtime [s]": 7.3610358238220215
+      },
+      {
+        "#ct_opt": 60,
+        "#ct_sota": 130,
+        "benchmark": "comparator_32bit_unsigned_lt_untilsat",
+        "dc runtime [s]": 0.0030722618103027344,
+        "equivalence": true,
+        "improvement after dc %": 7.692307949066162,
+        "improvement after post-process %": 7.692307949066162,
+        "improvement after rewrite %": 7.692307949066162,
+        "iterations": 3,
+        "post-process runtime": 8.7738037109375e-05,
+        "rewrite runtime [s]": 6.840129852294922
+      },
+      {
+        "#ct_opt": 67,
+        "#ct_sota": 140,
+        "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
+        "dc runtime [s]": 0.0033402442932128906,
+        "equivalence": true,
+        "improvement after dc %": 4.285714626312256,
+        "improvement after post-process %": 4.285714626312256,
+        "improvement after rewrite %": 4.285714626312256,
+        "iterations": 2,
+        "post-process runtime": 0.00019598007202148438,
+        "rewrite runtime [s]": 7.283576965332031
+      },
+      {
+        "#ct_opt": 9366,
+        "#ct_sota": 18734,
+        "benchmark": "md5_untilsat",
+        "dc runtime [s]": 6.4849853515625e-05,
+        "equivalence": true,
+        "improvement after dc %": 0.0,
+        "improvement after post-process %": 0.01067577674984932,
+        "improvement after rewrite %": 0.0,
+        "iterations": 1,
+        "post-process runtime": 0.0059261322021484375,
+        "rewrite runtime [s]": 27.8649959564209
+      },
+      {
+        "#ct_opt": 11318,
+        "#ct_sota": 22688,
+        "benchmark": "sha-1_untilsat",
+        "dc runtime [s]": 9.918212890625e-05,
+        "equivalence": true,
+        "improvement after dc %": 0.22919604182243347,
+        "improvement after post-process %": 0.22919604182243347,
+        "improvement after rewrite %": 0.22919604182243347,
+        "iterations": 3,
+        "post-process runtime": 0.0080413818359375,
+        "rewrite runtime [s]": 109.0079116821289
+      },
+      {
+        "#ct_opt": 25043,
+        "#ct_sota": 50540,
+        "benchmark": "sha-256_untilsat",
+        "dc runtime [s]": 0.00018310546875,
+        "equivalence": true,
+        "improvement after dc %": 0.8982983231544495,
+        "improvement after post-process %": 0.8982983231544495,
+        "improvement after rewrite %": 0.8982983231544495,
+        "iterations": 3,
+        "post-process runtime": 0.017852783203125,
+        "rewrite runtime [s]": 339.8309326171875
+      }
+    ],
+    "version": "84c8692"
+  }
+]
