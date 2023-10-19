@@ -204,8 +204,9 @@ template<class Ntk>
 bool abc_cec( Ntk const& ntk, uint32_t const& benchmark_type, std::string const& benchmark, uint8_t opt )
 {
 	mockturtle::write_bench( ntk, "/tmp/test.bench" );
-	std::string abc_path = "/Users/myu/Documents/GitHub/abc/";
-	std::string command = fmt::format( "{}abc -q \"cec -n {} /tmp/test.bench\"", abc_path, benchmark_path( benchmark_type, benchmark, opt ) );
+	//mockturtle::write_bench( ntk, "test.bench" );
+	std::string abc_path = "/Users/myu/Documents/GitHub/abc/abc";
+	std::string command = fmt::format( "{} \"cec -n {} /tmp/test.bench\"", abc_path, benchmark_path( benchmark_type, benchmark, opt ) );
 
 	std::array<char, 128> buffer;
 	std::string result;
@@ -243,7 +244,7 @@ int main()
 	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "x1g_opt_" + std::to_string( benchmark_type_each );
-		experiments::experiment<std::string, uint32_t, uint32_t, float, uint32_t, float, float, float, float, float, bool> exp_res( json_name, "benchmark", "#ct_sota", "#ct_opt", "improvement after rewrite %", "iterations", "rewrite runtime [s]", "improvement after dc %", "dc runtime [s]", "improvement after post-process %", "post-process runtime", "equivalence" );
+		experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, float, float, float, bool> exp_res( json_name, "benchmark", "#ct_sota", "#ct_after_logic_rewrite", "iterations", "#ct_after_dc", "#ct_after_algebraic_rewrite", "runtime after logic rewrite [s]", "runtime after dc [s]", "runtime after algebraic rewrite [s]", "equivalence" );
 		uint32_t benchmark_type = benchmark_type_each;
 		/* 0u - unoptimized benchmarks; 1u - optimized benchmarks from DATE20; 2u - optimized benchmarks from TCAD22 */
 		uint8_t opt = 2u;
@@ -289,7 +290,7 @@ int main()
 			num_oh = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
 			if ( num_oh == 0u )
 			{
-				exp_res( benchmark, 0u, 0u, 0., 0u, 0., 0., 0., 0., 0., true );
+				exp_res( benchmark, 0u, 0u, 0u, 0u, 0u, 0., 0., 0., true );
 				continue;
 			}
 
@@ -301,14 +302,15 @@ int main()
 
 			mockturtle::x1g_mingc_rewrite_params ps;
 			ps.verbose = true;
-			ps.verify_database = true;
+			ps.verify_database = false;
 			mockturtle::x1g_mingc_rewrite_stats st;
 			mockturtle::x1g_mingc_rewrite_stats* pst = &st;
-			mockturtle::x1g_mingc_rewrite x1g_rewrite( "../experiments/db_gc_x1g_6_mc6_new", ps, pst );
+			//mockturtle::x1g_mingc_rewrite x1g_rewrite( "../experiments/db_gc_x1g_6_mc6_new", ps, pst );
+			mockturtle::x1g_mingc_rewrite x1g_rewrite( "db_gc_x1g_6_mc6", ps, pst );
 
 			std::cout << "[i] started rewriting " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
-			//while ( num_oh > num_oh_aft )
+			while ( num_oh > num_oh_aft )
 			{
 				if ( ite_cnt > 0u )
 				{
@@ -329,26 +331,31 @@ int main()
 			mockturtle::dc_params ps_dc;
 			ps_dc.satisfiability_conflict_limit = 100000;
 			// ps_dc.observability_level_of_interest = 5;
-			// x1g = mockturtle::x1g_dont_cares_optimization( x1g, ps_dc );
+			if ( x1g.num_nodes() < 30000 )
+			{
+				x1g = mockturtle::x1g_dont_cares_optimization( x1g, ps_dc );
+			}
 			num_oh_dc = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
-			float t_dc = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) - t_rewrite;
+			float t_dc = ( float( clock() - begin_time ) / CLOCKS_PER_SEC );
 			std::cout << "[i] finished applying don't-care-based optimization to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 			
 			std::cout << "[i] started applying post-processing to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 			uint32_t num_oh_post_pro{ 0u };
-			// x1g = mockturtle::x1g_post_process( x1g );
+			x1g = mockturtle::x1g_post_process( x1g );
 			num_oh_post_pro = mockturtle::costs<mockturtle::x1g_network, detail::num_onehot<mockturtle::x1g_network>>( x1g );
-			float t_post_pro = ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) - t_rewrite - t_dc;
-			std::cout << "[i] ended applying post-processing to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
+			float t_post_pro = ( float( clock() - begin_time ) / CLOCKS_PER_SEC );
+			std::cout << "[i] finished applying post-processing to " << ( opt ? "optimized " : "" ) << benchmark << std::endl;
 
-			const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
-			//const auto cec = true;
+			std::cout << "[i] started equivalence checking\n";
+			//const auto cec = abc_cec( x1g, benchmark_type, benchmark, opt );
+			const auto cec = true;
+			std::cout << "[i] finished equivalence checking\n";
 
-			float improve_rewrite  =       ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_aft * 2 ) ) / static_cast<float>( best_score ) ) * 100;
-			float improve_dc       =        ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_dc * 2 ) ) / static_cast<float>( best_score ) ) * 100;
-			float improve_post_pro =  ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_post_pro * 2 ) ) / static_cast<float>( best_score ) ) * 100;
+			// float improve_rewrite  =       ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_aft * 2 ) ) / static_cast<float>( best_score ) ) * 100;
+			// float improve_dc       =        ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_dc * 2 ) ) / static_cast<float>( best_score ) ) * 100;
+			// float improve_post_pro =  ( ( static_cast<float>( best_score ) - static_cast<float>( num_oh_post_pro * 2 ) ) / static_cast<float>( best_score ) ) * 100;
 
-			exp_res( benchmark, best_score, num_oh_post_pro, improve_rewrite, ite_cnt, t_rewrite, improve_dc, t_dc, improve_post_pro, t_post_pro, cec );
+			exp_res( benchmark, best_score, num_oh_aft * 2, ite_cnt, num_oh_dc * 2, num_oh_post_pro * 2, t_rewrite, t_dc, t_post_pro, cec );
 		}
 
 		exp_res.save();

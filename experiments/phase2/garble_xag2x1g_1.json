@@ -3,7 +3,7 @@
     "entries": [
       {
         "SOTA": 10240,
-        "avg. runtime [s]": 27.488319396972656,
+        "avg. runtime [s]": 0.5699179768562317,
         "benchmark": "AES-expanded_untilsat",
         "equivalent": true,
         "gc_after": 10240,
@@ -13,7 +13,7 @@
       },
       {
         "SOTA": 12800,
-        "avg. runtime [s]": 38.972747802734375,
+        "avg. runtime [s]": 0.8079850077629089,
         "benchmark": "AES-non-expanded_untilsat",
         "equivalent": true,
         "gc_after": 12800,
@@ -23,7 +23,7 @@
       },
       {
         "SOTA": 13144,
-        "avg. runtime [s]": 19.58230972290039,
+        "avg. runtime [s]": 0.4194360077381134,
         "benchmark": "DES-expanded_untilsat",
         "equivalent": true,
         "gc_after": 13346,
@@ -33,7 +33,7 @@
       },
       {
         "SOTA": 12984,
-        "avg. runtime [s]": 18.093090057373047,
+        "avg. runtime [s]": 0.38362398743629456,
         "benchmark": "DES-non-expanded_untilsat",
         "equivalent": true,
         "gc_after": 13194,
@@ -43,7 +43,7 @@
       },
       {
         "SOTA": 130,
-        "avg. runtime [s]": 0.0033179998863488436,
+        "avg. runtime [s]": 0.00013299999409355223,
         "benchmark": "comparator_32bit_signed_lt_untilsat",
         "equivalent": true,
         "gc_after": 138,
@@ -53,7 +53,7 @@
       },
       {
         "SOTA": 140,
-        "avg. runtime [s]": 0.0033400000538676977,
+        "avg. runtime [s]": 0.0001320000010309741,
         "benchmark": "comparator_32bit_signed_lteq_untilsat",
         "equivalent": true,
         "gc_after": 152,
@@ -63,7 +63,7 @@
       },
       {
         "SOTA": 130,
-        "avg. runtime [s]": 0.0032510000746697187,
+        "avg. runtime [s]": 0.00014600000577047467,
         "benchmark": "comparator_32bit_unsigned_lt_untilsat",
         "equivalent": true,
         "gc_after": 138,
@@ -73,7 +73,7 @@
       },
       {
         "SOTA": 140,
-        "avg. runtime [s]": 0.0033970000222325325,
+        "avg. runtime [s]": 0.00013000000035390258,
         "benchmark": "comparator_32bit_unsigned_lteq_untilsat",
         "equivalent": true,
         "gc_after": 152,
@@ -83,7 +83,7 @@
       },
       {
         "SOTA": 18734,
-        "avg. runtime [s]": 54.8221435546875,
+        "avg. runtime [s]": 1.1681309938430786,
         "benchmark": "md5_untilsat",
         "equivalent": true,
         "gc_after": 18734,
@@ -93,7 +93,7 @@
       },
       {
         "SOTA": 22688,
-        "avg. runtime [s]": 115.29997253417969,
+        "avg. runtime [s]": 2.4413199424743652,
         "benchmark": "sha-1_untilsat",
         "equivalent": true,
         "gc_after": 22834,
@@ -103,7 +103,7 @@
       },
       {
         "SOTA": 50540,
-        "avg. runtime [s]": 507.9233703613281,
+        "avg. runtime [s]": 10.729657173156738,
         "benchmark": "sha-256_untilsat",
         "equivalent": true,
         "gc_after": 51832,
@@ -112,6 +112,6 @@
         "improvement ( before ) %": 0.5678330063819885
       }
     ],
-    "version": "077cbda"
+    "version": "84c8692"
   }
 ]

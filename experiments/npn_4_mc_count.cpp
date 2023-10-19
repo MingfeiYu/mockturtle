@@ -79,7 +79,15 @@ void npn_4_mc_count()
 
 int main()
 {	
-	npn_4_mc_count();
+	//npn_4_mc_count();
+	uint32_t mc{ 0u };
+	bool validity{ false };
+	kitty::dynamic_truth_table function( 3u );
+	std::string function_str = "68";
+	kitty::create_from_hex_string( function, function_str );
+	look_up_mc( function, mc, validity );
+	std::cout << "Functional MC of function 0x" << function_str << " is : "; 
+	std::cout << ( validity ? std::to_string( mc ) : "N/A" ) << std::endl;
 
 	return 0;
 }

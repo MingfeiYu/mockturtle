@@ -225,7 +225,7 @@ int main()
 {
 	/* 0u - epfl; 1u - crypto; 2u - mpc */
 	//
-	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 0u; ++benchmark_type_each ) 
+	for ( auto benchmark_type_each{ 0u }; benchmark_type_each <= 2u; ++benchmark_type_each ) 
 	{
 		std::string json_name = "garble_xag2x1g_" + std::to_string( benchmark_type_each );
 		experiments::experiment<std::string, uint32_t, uint32_t, uint32_t, float, float, float, bool> exp_res( json_name, "benchmark", "SOTA", "gc_before", "gc_after", "improvement ( before ) %", "improvement ( SOTA ) %", "avg. runtime [s]", "equivalent" );
@@ -237,7 +237,7 @@ int main()
 		std::vector<uint32_t> const best_scores  = benchmark_type ? ( ( benchmark_type == 1u ) ? crypto_host23() : mpc_host23() ) : epfl_host23();
 		float time_avr = 0;
 
-		for ( auto i = 9u; i < benchmarks.size(); ++i )
+		for ( auto i = 0u; i < benchmarks.size(); ++i )
 		{
 			auto const benchmark = benchmarks[i];
 			auto const best_score = best_scores[i];

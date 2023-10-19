@@ -775,6 +775,11 @@ public:
 		return static_cast<uint32_t>( _storage->hash.size() );
 	}
 
+	uint32_t num_nodes() const
+	{
+		return ( num_gates() - num_cis() );
+	}
+
 	uint32_t fanin_size( node const& n ) const
 	{
 		if ( is_constant( n ) || is_ci( n ) )

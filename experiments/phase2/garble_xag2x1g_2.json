@@ -3,7 +3,7 @@
     "entries": [
       {
         "SOTA": 194,
-        "avg. runtime [s]": 0.006113999988883734,
+        "avg. runtime [s]": 0.0002280000044265762,
         "benchmark": "auction_N_2_W_16",
         "equivalent": true,
         "gc_after": 194,
@@ -13,7 +13,7 @@
       },
       {
         "SOTA": 386,
-        "avg. runtime [s]": 0.019533000886440277,
+        "avg. runtime [s]": 0.0005450000171549618,
         "benchmark": "auction_N_2_W_32",
         "equivalent": true,
         "gc_after": 386,
@@ -23,7 +23,7 @@
       },
       {
         "SOTA": 460,
-        "avg. runtime [s]": 0.025040000677108765,
+        "avg. runtime [s]": 0.0006719999946653843,
         "benchmark": "auction_N_3_W_16",
         "equivalent": true,
         "gc_after": 464,
@@ -33,7 +33,7 @@
       },
       {
         "SOTA": 908,
-        "avg. runtime [s]": 0.09105899930000305,
+        "avg. runtime [s]": 0.0022120000794529915,
         "benchmark": "auction_N_3_W_32",
         "equivalent": true,
         "gc_after": 912,
@@ -43,7 +43,7 @@
       },
       {
         "SOTA": 986,
-        "avg. runtime [s]": 0.10180199891328812,
+        "avg. runtime [s]": 0.002486000070348382,
         "benchmark": "auction_N_4_W_16",
         "equivalent": true,
         "gc_after": 990,
@@ -53,7 +53,7 @@
       },
       {
         "SOTA": 1946,
-        "avg. runtime [s]": 0.392863005399704,
+        "avg. runtime [s]": 0.008942999877035618,
         "benchmark": "auction_N_4_W_32",
         "equivalent": true,
         "gc_after": 1950,
@@ -63,7 +63,7 @@
       },
       {
         "SOTA": 1104,
-        "avg. runtime [s]": 0.20830899477005005,
+        "avg. runtime [s]": 0.005061000119894743,
         "benchmark": "knn_comb_K_1_N_8",
         "equivalent": true,
         "gc_after": 1108,
@@ -73,7 +73,7 @@
       },
       {
         "SOTA": 2312,
-        "avg. runtime [s]": 0.8331130146980286,
+        "avg. runtime [s]": 0.01875000074505806,
         "benchmark": "knn_comb_K_1_N_16",
         "equivalent": true,
         "gc_after": 2324,
@@ -83,7 +83,7 @@
       },
       {
         "SOTA": 1698,
-        "avg. runtime [s]": 0.5024200081825256,
+        "avg. runtime [s]": 0.011477000080049038,
         "benchmark": "knn_comb_K_2_N_8",
         "equivalent": true,
         "gc_after": 1726,
@@ -93,7 +93,7 @@
       },
       {
         "SOTA": 3692,
-        "avg. runtime [s]": 2.2050158977508545,
+        "avg. runtime [s]": 0.048264000564813614,
         "benchmark": "knn_comb_K_2_N_16",
         "equivalent": true,
         "gc_after": 3754,
@@ -103,7 +103,7 @@
       },
       {
         "SOTA": 2092,
-        "avg. runtime [s]": 0.8260980248451233,
+        "avg. runtime [s]": 0.018445000052452087,
         "benchmark": "knn_comb_K_3_N_8",
         "equivalent": true,
         "gc_after": 2108,
@@ -113,7 +113,7 @@
       },
       {
         "SOTA": 4724,
-        "avg. runtime [s]": 3.971342086791992,
+        "avg. runtime [s]": 0.08643399924039841,
         "benchmark": "knn_comb_K_3_N_16",
         "equivalent": true,
         "gc_after": 4760,
@@ -123,7 +123,7 @@
       },
       {
         "SOTA": 14,
-        "avg. runtime [s]": 0.0006009999779053032,
+        "avg. runtime [s]": 3.9999998989515007e-05,
         "benchmark": "voting_N_1_M_3",
         "equivalent": true,
         "gc_after": 14,
@@ -133,7 +133,7 @@
       },
       {
         "SOTA": 28,
-        "avg. runtime [s]": 0.0009950000094249845,
+        "avg. runtime [s]": 5.199999941396527e-05,
         "benchmark": "voting_N_1_M_4",
         "equivalent": true,
         "gc_after": 28,
@@ -143,7 +143,7 @@
       },
       {
         "SOTA": 40,
-        "avg. runtime [s]": 0.0009399999980814755,
+        "avg. runtime [s]": 6.399999983841553e-05,
         "benchmark": "voting_N_2_M_2",
         "equivalent": true,
         "gc_after": 40,
@@ -153,7 +153,7 @@
       },
       {
         "SOTA": 110,
-        "avg. runtime [s]": 0.0031620000954717398,
+        "avg. runtime [s]": 0.00013000000035390258,
         "benchmark": "voting_N_2_M_3",
         "equivalent": true,
         "gc_after": 110,
@@ -163,7 +163,7 @@
       },
       {
         "SOTA": 208,
-        "avg. runtime [s]": 0.009212999604642391,
+        "avg. runtime [s]": 0.00028899998869746923,
         "benchmark": "voting_N_2_M_4",
         "equivalent": true,
         "gc_after": 208,
@@ -173,7 +173,7 @@
       },
       {
         "SOTA": 546,
-        "avg. runtime [s]": 0.03670499846339226,
+        "avg. runtime [s]": 0.0009500000160187483,
         "benchmark": "voting_N_3_M_4",
         "equivalent": true,
         "gc_after": 550,
@@ -183,7 +183,7 @@
       },
       {
         "SOTA": 28284,
-        "avg. runtime [s]": 27.21820831298828,
+        "avg. runtime [s]": 0.565995991230011,
         "benchmark": "stable_matching_comb_Ks_4_S_8",
         "equivalent": true,
         "gc_after": 29416,
@@ -193,7 +193,7 @@
       },
       {
         "SOTA": 105890,
-        "avg. runtime [s]": 349.327880859375,
+        "avg. runtime [s]": 7.122894763946533,
         "benchmark": "stable_matching_comb_Ks_8_S_8",
         "equivalent": true,
         "gc_after": 108320,
@@ -202,6 +202,6 @@
         "improvement ( before ) %": 1.3802396059036255
       }
     ],
-    "version": "077cbda"
+    "version": "84c8692"
   }
 ]
