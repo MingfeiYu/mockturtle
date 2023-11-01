@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <iomanip>
 
+#include <mockturtle/algorithms/xag2x1g.hpp>
 #include <mockturtle/networks/aig.hpp>
 #include <mockturtle/networks/x1g.hpp>
 #include <mockturtle/utils/include/percy.hpp>
@@ -1067,10 +1068,113 @@ void x1g_affine_5_exact_synthesis()
 	exp_res.table();
 }
 
+void x1g_affine_5_direct_mapping()
+{
+	experiments::experiment<std::string, uint32_t> exp_res( "x1g_affine_5_direct_mapping", "function", "num_onehot" );
+
+	std::ifstream db_mc;
+	db_mc.open( "../experiments/db_mc_5", std::ios::in );
+	std::string line;
+	uint32_t pos{ 0u };
+	uint32_t accum_num_oh{ 0u };
+	uint32_t accum_num_oh_special{ 0u };
+
+	using xag_network = mockturtle::xag_network;
+	using x1g_network = mockturtle::x1g_network;
+
+	const clock_t begin_time = clock();
+	while ( std::getline( db_mc, line ) )
+	{
+		pos = static_cast<uint32_t>( line.find( 'x' ) );
+    auto tt_str = line.substr( ++pos, 8u );
+    std::cout << "[i] Working on function " << tt_str << "\n";
+    pos += 9u;
+    line.erase( 0, pos );
+
+    kitty::dynamic_truth_table tt( 5u );
+    kitty::create_from_hex_string( tt, tt_str );
+    auto num_vars = ( kitty::min_base_inplace( tt ) ).size();
+
+    /* Reconstruct the mc-optimal XAG implementation */
+    xag_network xag_mc_opt;
+    std::vector<xag_network::signal> signals_mc_opt( num_vars );
+    std::generate( signals_mc_opt.begin(), signals_mc_opt.end(), [&]() { return xag_mc_opt.create_pi(); } );
+
+    while ( line.size() > 3 )
+  	{
+   		uint32_t signal_1, signal_2;
+    	signal_1 = std::stoul( line.substr( 0, line.find( ',' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+    	signal_2 = std::stoul( line.substr( 0, line.find( ',' ) ) );
+    	line.erase( 0, line.find( ' ' ) + 1 );
+
+    	xag_network::signal signal1, signal2;
+    	if ( signal_1 == 0u )
+    	{
+				signal1 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_1 == 1u )
+    	{
+				signal1 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal1 = signals_mc_opt[signal_1 / 2 - 1] ^ ( signal_1 % 2 != 0 );
+    	}
+    	if ( signal_2 == 0u )
+    	{
+				signal2 = xag_mc_opt.get_constant( false );
+    	}
+    	else if ( signal_2 == 1u )
+    	{
+				signal2 = xag_mc_opt.get_constant( true );
+    	}
+    	else
+    	{
+    		signal2 = signals_mc_opt[signal_2 / 2 - 1] ^ ( signal_2 % 2 != 0 );
+    	}
+
+    	if ( signal_1 > signal_2 )
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_xor( signal1, signal2 ) );
+    	}
+    	else
+    	{
+    		signals_mc_opt.emplace_back( xag_mc_opt.create_and( signal1, signal2 ) );
+    	}
+  	}
+
+  	const uint32_t signal_po = std::stoul( line );
+  	xag_mc_opt.create_po( signals_mc_opt[signal_po / 2 - 1] ^ ( signal_po % 2 != 0 ) );
+
+  	x1g_network x1g = map_xag2x1g( xag_mc_opt );
+  	uint32_t num_oh{ 0u };
+  	x1g.foreach_gate( [&]( auto const& n ) {
+  		if ( x1g.is_onehot( n ) )
+  		{
+  			++num_oh;
+  		}
+  	} );
+
+  	exp_res( tt_str, num_oh );
+  	accum_num_oh += num_oh;
+
+  	if ( tt_str == "aae6da80" || tt_str == "4966bac0" || tt_str == "58362ec0" || tt_str == "0eb8f6c0" || tt_str == "567cea40" )
+		{
+			continue;
+		}
+		accum_num_oh_special += num_oh;
+	}
+	std::cout << "Accumulated number of OneHots is: " << accum_num_oh << ", if exclude special case: " << accum_num_oh_special << "\n";
+	std::cout << "Runtime overhead is : " << ( float( clock() - begin_time ) / CLOCKS_PER_SEC ) << "\n";
+	exp_res.save();
+}
+
 int main()
 {	
 	//x1g_db_gen();
-	x1g_affine_5_exact_synthesis();
+	//x1g_affine_5_exact_synthesis();
+	x1g_affine_5_direct_mapping();
 
 	return 0;
 }
