@@ -473,6 +473,11 @@ public:
   {
     return n > 1 && !is_ci( n );
   }
+
+  bool is_not( node const& n ) const
+  {
+    return ( _storage->nodes[n].data[1].h1 == 3u );
+  }
 #pragma endregion
 
 #pragma region Functional properties

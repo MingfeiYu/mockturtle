@@ -527,7 +527,7 @@ template<class Ntk>
 inline bool abc_cec_impl( Ntk const& ntk, std::string const& benchmark_fullpath )
 {
   mockturtle::write_bench( ntk, "/tmp/test.bench" );
-  std::string command = fmt::format( "abc -q \"cec -n {} /tmp/test.bench\"", benchmark_fullpath );
+  std::string command = fmt::format( "/Users/myu/Documents/GitHub/abc/abc -q \"cec -n {} /tmp/test.bench\"", benchmark_fullpath );
 
   std::array<char, 128> buffer;
   std::string result;

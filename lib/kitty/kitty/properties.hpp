@@ -36,6 +36,7 @@
 #include <utility>
 #include <vector>
 
+#include "detail/constants.hpp"
 #include "bit_operations.hpp"
 #include "esop.hpp"
 #include "operations.hpp"
@@ -167,6 +168,89 @@ bool is_symmetric_in( const TT& tt, uint8_t var_index1, uint8_t var_index2 )
   return tt == swap( tt, var_index1, var_index2 );
 }
 
+template<typename TT>
+bool is_symmetric( TT const& tt )
+{
+  /* 0u - false; 1u - true; 2u - initialized */
+  std::vector<uint8_t> is_true( tt.num_vars() + 1, 2u );
+
+  for ( uint64_t i{ 0u }; i < tt.num_bits(); ++i )
+  {
+    uint32_t hw = __builtin_popcount( static_cast<uint32_t>( i ) );
+    if ( is_true[hw] == 2u )
+    {
+      is_true[hw] = get_bit( tt, i );
+    }
+    else if ( is_true[hw] != get_bit( tt, i ) )
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template<typename TT>
+std::tuple<bool, TT, uint8_t> is_symmetric_n( TT const& tt )
+{
+  /* Symmetry check with all input negation enumerated */
+  /* Denote the number of variables as VAR, have to enumerate floor( VAR/2 ) cases */
+
+  TT tt_tmp = tt;
+  std::vector<uint8_t> const& flips = detail::flips[tt.num_vars() / 2 - 1u];
+  
+  for ( uint8_t i{0}; i < flips.size(); ++i )
+  {
+    const uint8_t pos = flips[i];
+    flip_inplace( tt_tmp, pos );
+
+    if ( is_symmetric( tt_tmp ) )
+    {
+      uint8_t phase = 0;
+      for ( uint8_t j{ 0u }; j <= i; ++j )
+      {
+        phase ^= 1 << flips[j];
+      }
+      return std::make_tuple( true, tt_tmp, phase );
+    }
+  }
+
+  return std::make_tuple( false, tt, 0u );
+}
+
+template<typename TT>
+bool is_top_xor_decomposible( TT const& tt )
+{
+  for ( uint8_t i{ 0u }; i < tt.num_vars(); ++i )
+  {
+    auto const cofact0 = cofactor0( tt, i );
+    auto const cofact1 = cofactor1( tt, i );
+    if ( equal( cofact0, ~cofact1 ) )
+    {
+      return true;
+    }
+  }
+
+  return false;
+  /* TODO: what about -- 1. construct 'var'; 2. apply XOR to 'var' and 'tt', obtained 'tt_xored'; 3. check if 'tt_xored' is reducable on 'var_index' */
+}
+
+template<typename TT>
+std::tuple<bool, uint8_t> is_top_xor_decomposible_return_support( TT const& tt )
+{
+  for ( uint8_t i{ 0u }; i < tt.num_vars(); ++i )
+  {
+    auto const cofact0 = cofactor0( tt, i );
+    auto const cofact1 = cofactor1( tt, i );
+    if ( equal( cofact0, ~cofact1 ) )
+    {
+      return std::make_tuple( true, i );
+    }
+  }
+
+  return std::make_tuple( false, std::numeric_limits<uint8_t>::max() );
+}
+
 /*! \brief Checks whether a function is monotone
   A function is monotone if f(x) ≤ f(y) whenever x ⊆ y
   \param tt Truth table
@@ -193,6 +277,49 @@ bool is_monotone( const TT& tt )
     }
   }
   return true;
+}
+
+template<typename TT, typename = std::enable_if_t<is_complete_truth_table<TT>::value>>
+bool is_unate( TT const& tt )
+{
+  auto num_vars = tt.num_vars();
+  for ( auto i{ 0u }; i < num_vars; ++i )
+  {
+    auto const tt0 = cofactor0( tt, i );
+    auto const tt1 = cofactor1( tt, i );
+    uint8_t relate{ 0u };
+    for ( auto b{ 0u }; b < ( 1 << num_vars ); ++b )
+    {
+      if ( get_bit( tt0, b ) == get_bit( tt1, b ) )
+      {
+        continue;
+      }
+      else if ( get_bit( tt0, b ) > get_bit( tt1, b ) )
+      {
+        if ( relate == 2u )
+        {
+          return false;
+        }
+        else
+        {
+          relate = 1u;
+        }
+      }
+      else
+      {
+        if ( relate == 1 )
+        {
+          return false;
+        }
+        else
+        {
+          relate = 2u;
+        }
+      }
+    }
+
+    return true;
+  }
 }
 
 /*! \brief Checks whether a function is selfdual
