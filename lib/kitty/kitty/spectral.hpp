@@ -1380,4 +1380,25 @@ inline uint32_t get_spectral_mc( const TT& tt )
   }
 }
 
+namespace detail
+{
+
+static std::vector<uint32_t> mc[] = {
+  { 0u },
+  { 0u },
+  { 0u, 1u },
+  { 0u, 2u, 1u },
+  { 0u, 3u, 2u, 3u, 1u, 2u, 3u, 2u },
+  { 0u, 4u, 3u, 4u, 2u, 3u, 4u, 4u, 3u, 3u, 3u ,3u, 4u, 4u, 4u, 4u, 4u, 1u, 3u, 2u, 3u, 3u, 3u, 3u, 3u, 4u, 4u, 4u, 4u, 4u, 4u, 4u, 3u, 4u, 4u, 3u, 4u, 3u, 4u, 3u, 4u, 4u, 4u, 4u, 2u, 4u, 3u, 4u } };
+
+} /* namespace detail */
+
+template<typename TT>
+inline uint32_t get_mc( const TT& func )
+{
+  static_assert( is_complete_truth_table<TT>::value, "Can only be applied on complete truth tables." );
+  const uint32_t index = get_spectral_class( func );
+  return detail::mc[func.num_vars()][index];
+}
+
 } /* namespace kitty */
