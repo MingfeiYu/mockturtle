@@ -77,6 +77,7 @@ int main()
   using namespace mockturtle;
 
   uint32_t num_var{ 5u };
+  bool all_functions{ false };
   // uint32_t num_po{ 2u };
   // 'i' has to be larger than 2
   // upper bound of 'po': 2 ('num_var' = 3); 7 ('num_var' = 4); 47 ('num_var' = 5)
@@ -178,6 +179,8 @@ int main()
 
 
   uint32_t num_sampled{ 100u };
+  num_sampled = all_functions ? sampled.size() : num_sampled;
+  assert( num_sampled <= sampled.size() );
   std::vector<uint32_t> sampled_ind( num_sampled );
   std::vector<uint64_t> sampled_pos( num_sampled );
   std::uniform_int_distribution<std::mt19937::result_type> random( 0, sampled.size() - 1 );

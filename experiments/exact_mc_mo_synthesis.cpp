@@ -74,11 +74,11 @@ int main()
   using namespace experiments;
   using namespace mockturtle;
 
-  uint32_t num_var{ 4u };
-  uint32_t num_po{ 2u };
+  uint32_t num_var{ 3u };
+  uint32_t num_po{ 1u };
   for ( uint32_t i{ 2u }; i <= num_po; ++i )
   {
-    experiment<uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, double> exp( "exact_mc_mo_synthesis", "variables", "outputs", "index", "AND gates", "AND gates (base)", "synthesis time" );
+    // experiment<uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, double> exp( "exact_mc_mo_synthesis", "variables", "outputs", "index", "AND gates", "AND gates (base)", "synthesis time" );
 
     const auto exact_mc_mo_syn = [&]( uint32_t num_vars, uint32_t num_pos ) {
       stopwatch<>::duration time{};
@@ -119,11 +119,11 @@ int main()
         if ( res )
         {
           const uint32_t num_ands = *multiplicative_complexity( *res );
-          exp( num_vars, num_pos, cnt++, num_ands, num_ands_base, to_seconds( time ) );
+          // exp( num_vars, num_pos, cnt++, num_ands, num_ands_base, to_seconds( time ) );
         }
         else
         {
-          exp( num_vars, num_pos, cnt++, num_ands_base, num_ands_base, to_seconds( time ) );
+          // exp( num_vars, num_pos, cnt++, num_ands_base, num_ands_base, to_seconds( time ) );
         }
       }
 
@@ -143,9 +143,46 @@ int main()
 
     exact_mc_mo_syn( num_var, i );
 
-    exp.save();
-    exp.table();
+    // exp.save();
+    // exp.table();
   }
+
+  std::vector<uint64_t> sampled( ( 1 << ( ( 1 << num_var ) - 1 ) ) - 1 );
+  for ( auto i{ 1u }; i <= sampled.size(); ++i )
+  {
+    sampled[i - 1] = i;
+  }
+  std::vector<kitty::dynamic_truth_table> funcs( sampled.size() );
+  uint32_t ctr{ 0u };
+  for ( auto i{ 0u }; i < sampled.size(); ++i )
+  {
+    kitty::dynamic_truth_table tt( num_var );
+    uint64_t word = sampled[i] << 1;
+    if ( word == 0u )
+    {
+      continue;
+    }
+    kitty::create_from_words( tt, &word, &word + 1 );
+    funcs[ctr++] = tt;
+  }
+  exact_mc_mo_synthesis_params ps;
+  ps.conflict_limit = 0u ;
+  ps.verbose = false;
+
+  auto res = exact_mc_mo_synthesis<xag_network, bill::solvers::bsat2>( funcs, ps );
+  uint32_t num_ands_base{ 0u };
+  for ( auto const& func : funcs )
+  {
+    num_ands_base += kitty::get_mc( func );
+  }
+  std::cout << "[i] Upper bound on sum of AND count: " << num_ands_base << std::endl;
+  if ( res )
+  {
+    const uint32_t num_ands = *multiplicative_complexity( *res );
+    std::cout << "[i] Actual sum of AND count: " << num_ands << std::endl;
+  }
+
+  std::cout << "[i] Number of functions: " << funcs.size() << "\n";
 
   return 0;
 }
