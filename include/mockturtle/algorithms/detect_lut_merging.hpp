@@ -1,38 +1,13 @@
 #pragma once
 
 #include <algorithm>
-#include <parallel_hashmap/phmap.h>
 
 #include <kitty/print.hpp>
 #include <kitty/properties.hpp>
 
 #include "cleanup.hpp"
-#include "../networks/klut.hpp"
-
-struct ArrayHash
-{
-  size_t operator()( std::array<uint32_t, 4u> const& arr ) const
-  {
-    size_t seed = 0;
-    for ( uint32_t value : arr ) 
-    {
-      seed ^= value + 0x9e3779b97f4a7c55 + ( seed << 6 ) + ( seed >> 2 );
-    }
-    return seed;
-  }
-};
-
-typedef std::array<uint32_t, 4u> label_t;
-typedef phmap::flat_hash_map<label_t, std::vector<uint32_t>, ArrayHash> mergable_luts_map_t;
-
-enum MergeType: uint8_t 
-{
-    Trivial = 0u,
-    Symmetric = 1u,
-    Negacyclic = 2u,
-    Normal = 3u,
-    Invalid = 4u
-};
+#include "klut2lbf.hpp"
+#include "../views/fanout_view.hpp"
 
 namespace mockturtle
 {
@@ -69,20 +44,37 @@ klut_network invert_isolation( klut_network& ntk )
 			}
 			std::vector<klut_network::signal> children_new( children.size() );
 
-			const uint8_t phase =std::get<2>( sym_check );
+			const uint8_t phase = std::get<2>( sym_check );
 			for ( uint8_t i{ 0u }; i < num_vars; ++i )
 			{
 				if ( ( phase >> i ) & 1 )
 				{
-					/* If child node also functions an inverter, the two inverters cancel each other */
-					/* disjoint in NEG */
 					klut_network::node const& child_i = ntk.index_to_node( children[i] );
-					if ( ntk.is_not( child_i ) && ( ntk.fanout_size( child_i ) == 1u ) )
+
+					/* conservative handling */
+					if ( ntk.fanout_size( child_i ) == 1u )
 					{
-						children_new[i] = ntk.make_signal( ntk.index_to_node( ntk._storage->nodes[children[i]].children[0].index ) );
+						if ( ntk.is_not( child_i ) )
+						{
+							/* If child node also functions an inverter, the two inverters cancel each other */
+							children_new[i] = ntk.make_signal( ntk.index_to_node( ntk._storage->nodes[children[i]].children[0].index ) );
+						}
+						else
+						{
+							/* Otherwise, hide the negation into the function of the child node */
+							auto const& child_node = ntk._storage->nodes[ntk.node_to_index( child_i )];
+							std::vector<klut_network::signal> grand_children;
+							for ( auto const& grand_child : child_node.children )
+							{
+								grand_children.emplace_back( grand_child.index );
+							}
+							children_new[i] = ntk.create_node( grand_children, ~ntk.node_function( child_i ) );
+							ntk.substitute_node( child_i, children_new[i] );
+						}
 					}
 					else
 					{
+						/* Otherwise, give up the opportunity */
 						children_new[i] = ntk.create_not( children[i] );
 					}
 				}
@@ -97,6 +89,170 @@ klut_network invert_isolation( klut_network& ntk )
 
 		return true;
 	} );
+
+	return cleanup_dangling( ntk );
+}
+
+klut_network invert_isolation_new( klut_network& ntk )
+{
+	/* use an vector to record those nodes evaluated 'out of order' */
+	std::vector<klut_network::node> nodes_ofo;
+	std::vector<klut_network::node> topo_order;
+	topo_order.reserve( ntk.size() );
+	topo_view<klut_network>( ntk ).foreach_gate( [&]( klut_network::node const& n ) {
+		topo_order.emplace_back( n );
+	} );
+	auto ntk_fanout = fanout_view<klut_network>( ntk );
+
+	for ( klut_network::node const& n : topo_order )
+	{
+	// topo_view<klut_network>( ntk ).foreach_gate( [&]( klut_network::node const& n ) {
+		/* skip nodes that are evaluated already */
+		if ( std::find( std::begin( nodes_ofo ), std::end( nodes_ofo ), n ) != std::end( nodes_ofo ) )
+		{
+			// return true;
+			continue;
+		}
+
+		auto const& node = ntk._storage->nodes[ntk.node_to_index( n )];
+		auto const tt = ntk.node_function( n );
+
+		if ( tt.num_vars() == 3u )
+		{
+			if ( kitty::is_symmetric( tt ) || kitty::is_top_xor_decomposible( tt ) )
+			{
+				// return true;
+				continue;
+			}
+
+			uint8_t num_vars = tt.num_vars();
+			const auto sym_check = kitty::is_symmetric_n( tt );
+
+			if ( !( std::get<0>( sym_check ) ) )
+			{
+				std::cerr << "[e] a 3-LUT whose function is neither symmetric nor negacyclic is detected.\n";
+				std::cerr << "[e] TT: ";
+				kitty::print_hex( tt );
+				std::cerr << std::endl;
+				abort();
+			}
+
+			std::vector<klut_network::signal> children;
+			for ( auto const& child : node.children )
+			{
+				children.emplace_back( child.index );
+			}
+			std::vector<klut_network::signal> children_new( children.size() );
+
+			const uint8_t phase = std::get<2>( sym_check );
+			for ( uint8_t i{ 0u }; i < num_vars; ++i )
+			{
+				/* the number of negated input shall be at most one */
+				if ( ( phase >> i ) & 1 )
+				{
+					klut_network::node const& child_i = ntk.index_to_node( children[i] );
+
+					/* if the fanout size of 'child_i' is one, hide the negation into 'child_i' on the spot */
+					if ( ntk.fanout_size( child_i ) == 1u )
+					{
+						// auto const& child_node = ntk._storage->nodes[ntk.node_to_index( child_i )];
+						// std::vector<klut_network::signal> grand_children;
+						// for ( auto const& grand_child : child_node.children )
+						// {
+						// 	grand_children.emplace_back( grand_child.index );
+						// }
+						// children_new[i] = ntk.create_node( grand_children, ~ntk.node_function( child_i ) );
+						// ntk.substitute_node( child_i, children_new[i] );
+
+						auto& child_node = ntk._storage->nodes[ntk.node_to_index( child_i )];
+						child_node.data[1].h1 = ntk._storage->data.cache.insert( ~ntk.node_function( child_i ) );
+						children_new[i] = children[i];
+					}
+					else
+					{
+						/* otherwise, conduct a finer-grained analysis on other children nodes of 'child_i' */
+						bool should_negate = true;
+						ntk_fanout.foreach_fanout( child_i, [&]( klut_network::node const& no ) {
+							/* once such a negation turns out to be not good for one fanout node, stop considering commit the negation */
+							// if ( !should_negate )
+							// {
+							// 	return false;
+							// }
+							/* skip node 'n' */
+							if ( no == n )
+							{
+								return true;
+							}
+							if ( std::find( std::begin( nodes_ofo ), std::end( nodes_ofo ), no ) != nodes_ofo.end() )
+							{
+								nodes_ofo.emplace_back( no );
+							}
+
+							if ( !should_negate )
+							{
+								return true;
+							}
+
+							/* negation on 'child_i' is favored if all its other children nodes can absorb this negation */
+							/* such an absorption is impossible for a child node 'no' if 'no' implements a 3-input non-X(N)OR symmetric function */
+							auto const& tt_no = ntk.node_function( no );
+							if ( tt_no.num_vars() == 3u && kitty::is_symmetric( tt_no ) && !kitty::is_xor( tt_no ) && !kitty::is_xor( ~tt_no ) )
+							{
+								should_negate = false;
+							}
+						} );
+
+						if ( should_negate )
+						{
+							/* hide the negation into child node 'child_i' */
+							auto& child_node = ntk._storage->nodes[ntk.node_to_index( child_i )];
+							child_node.data[1].h1 = ntk._storage->data.cache.insert( ~ntk.node_function( child_i ) );
+
+							/* propogate the negation of node 'child_i' */
+							ntk_fanout.foreach_fanout( child_i, [&]( klut_network::node const& no ) {
+								if ( no == n )
+								{
+									return true;
+								}
+
+								auto& no_node = ntk._storage->nodes[ntk.node_to_index( no )];
+								auto const& tt_no = ntk.node_function( no );
+								/* figure out the index of 'child_i' */
+								uint8_t child_i_index{ 0u };
+								ntk.foreach_fanin( no, [&]( klut_network::node const& ni ) {
+									if ( ni == child_i )
+									{
+										return false;
+									}
+									++child_i_index;
+									return true;
+								} );
+								/* update truth table */
+								auto tt_no_new = kitty::flip( tt_no, child_i_index );
+								no_node.data[1].h1 = ntk._storage->data.cache.insert( tt_no_new );
+							} );
+
+							children_new[i] = children[i];
+						}
+						else
+						{
+							/* Otherwise, give up the opportunity */
+							children_new[i] = ntk.create_not( children[i] );
+						}
+					}
+				}
+				else
+				{
+					children_new[i] = children[i];
+				}
+			}
+
+			ntk.substitute_node( n, ntk.create_node( children_new, std::get<1>( sym_check ) ) );
+		}
+
+	// 	return true;
+	// } );
+	}
 
 	return cleanup_dangling( ntk );
 }
@@ -175,6 +331,21 @@ void detect_lut_merging( klut_network const& ntk )
 				std::cerr << "[e] TT: ";
 				kitty::print_hex( tt );
 				std::cerr << std::endl;
+
+
+				const auto sym_check = kitty::is_symmetric_n( tt );
+				if ( std::get<0>( sym_check ) )
+				{
+					std::cerr << "[e] But with input negation, it can be symmetric.\n";
+					std::cerr << "[e] TT: ";
+					kitty::print_hex( std::get<1>( sym_check ) );
+					std::cerr << std::endl;
+				}
+				else
+				{
+					std::cerr << "[e] Even allowing input negation cannot save it.\n";
+				}
+
 				abort();
 			}
 
@@ -187,7 +358,7 @@ void detect_lut_merging( klut_network const& ntk )
 				std::vector<uint32_t> indices( 1u );
 				indices[0]= idx;
 				mergable_luts_map.emplace( label, indices );
-				if ( label[3] == Symmetric )
+				if ( label[3] == MergeType::Symmetric )
 				{
 					++num_3_luts_sym;
 				}
@@ -236,6 +407,181 @@ void detect_lut_merging( klut_network const& ntk )
 	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym + num_3_luts_neg ) << "( SYM: " << num_3_luts_sym << ", NEG: " << num_3_luts_neg << " )\n";
 	std::cout << "[i] #2-LUTs: " << num_2_luts << "\n";
 	std::cout << "[i] #invertors: " << num_not << "\n\n";
+
+	std::cout << "[i] Converting the k-LUT network into an LBF file...\n";
+}
+
+node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map )
+{ 
+	uint32_t num_3_luts_sym_nm{ 0u };
+	uint32_t num_3_luts_neg_nm{ 0u };
+	uint32_t num_2_luts_nm{ 0u };
+	uint32_t num_3_luts_sym{ 0u };
+	uint32_t num_3_luts_neg{ 0u };
+	uint32_t num_2_luts{ 0u };
+	uint32_t num_not{ 0u };
+	uint32_t max_output_cnt{ 1u };
+
+	node_map<label_t, klut_network> node_to_label( ntk );
+
+	mergable_luts_map.clear();
+	ntk.foreach_node( [&]( klut_network::node const& n ) {
+
+		/* skip constants and PIs */
+		if ( ntk.is_pi( n ) || ntk.is_constant( n ) )
+		{
+			label_t label = { 0u, 0u, 0u, MergeType::Trivial };
+			node_to_label[n] = label;
+			return true;
+		}
+
+		uint32_t idx = ntk.node_to_index( n );
+		auto const node = ntk._storage->nodes[idx];
+
+		/* get children */
+		std::array<uint32_t, 3u> leaves;
+		auto cnt{ 0u };
+		for ( auto const& child : node.children )
+		{
+			leaves[cnt++] = child.index;
+		}
+		// std::sort( std::begin( leaves ), std::end( leaves ) );
+
+		label_t label;
+		for ( auto i{ 0u }; i < 3u; ++i )
+		{
+			label[i] = leaves[i];
+		}
+
+		/* figure out function property */
+		auto const tt = ntk.node_function( n );
+		if ( tt.num_vars() == 3u )
+		{
+			// either symmetric or negacyclic, otherwise illegal
+			if ( kitty::is_symmetric( tt ) )
+			{
+				std::sort( std::begin( label ), ( std::end( label ) - 1 ) );
+				label[3] = static_cast<uint32_t>( MergeType::Symmetric );
+				node_to_label[n] = label;
+				++num_3_luts_sym_nm;
+			}
+			else if ( std::tuple<bool, uint8_t> neg_check = kitty::is_top_xor_decomposible_return_support( tt ); std::get<0>( neg_check ) )
+			{
+				/* store node index of the disjoint support in label[0] */
+				/* reorder the remaining two supports */
+				uint32_t disjoint_support_idx = leaves[std::get<1>( neg_check )];
+				if ( disjoint_support_idx != label[0] )
+				{
+					for ( uint8_t i{ 1u }; i < tt.num_vars(); ++i )
+					{
+						if ( disjoint_support_idx == label[i] )
+						{
+							std::swap( label[0], label[i] );
+							break;
+						}
+					}
+				}
+				std::sort( ( std::begin( label ) + 1 ), ( std::end( label ) - 1 ) );
+				label[3] = static_cast<uint32_t>( MergeType::Negacyclic );
+				node_to_label[n] = label;
+				++num_3_luts_neg_nm;
+			}
+			else
+			{
+				std::cerr << "[e] a 3-LUT whose function is neither symmetric nor negacyclic is detected.\n";
+				std::cerr << "[e] TT: ";
+				kitty::print_hex( tt );
+				std::cerr << std::endl;
+
+
+				const auto sym_check = kitty::is_symmetric_n( tt );
+				if ( std::get<0>( sym_check ) )
+				{
+					std::cerr << "[e] But with input negation, it can be symmetric.\n";
+					std::cerr << "[e] TT: ";
+					kitty::print_hex( std::get<1>( sym_check ) );
+					std::cerr << std::endl;
+				}
+				else
+				{
+					std::cerr << "[e] Even allowing input negation cannot save it.\n";
+				}
+
+				abort();
+			}
+
+			if ( mergable_luts_map.contains( label ) )
+			{
+				mergable_luts_map.at( label ).emplace_back( idx );
+				max_output_cnt = std::max( max_output_cnt, static_cast<uint32_t>( mergable_luts_map.at( label ).size() ) );
+			}
+			else
+			{
+				std::vector<uint32_t> indices( 1u );
+				indices[0]= idx;
+				mergable_luts_map.emplace( label, indices );
+				if ( label[3] == MergeType::Symmetric )
+				{
+					++num_3_luts_sym;
+				}
+				else
+				{
+					++num_3_luts_neg;
+				}
+			}
+		}
+		else if ( tt.num_vars() == 2u )
+		{
+			label[2] = 0u;
+			std::sort( std::begin( label ), ( std::end( label ) - 2 ) );
+			label[3] = MergeType::Normal;
+			node_to_label[n] = label;
+			
+			if ( mergable_luts_map.contains( label ) )
+			{
+				mergable_luts_map.at( label ).emplace_back( idx );
+			}
+			else
+			{
+				std::vector<uint32_t> indices( 1u );
+				indices[0]= idx;
+				mergable_luts_map.emplace( label, indices );
+				++num_2_luts;
+			}
+
+			++num_2_luts_nm;
+		}
+		else
+		{
+			/* A potential abuse of labels: using 'Invalid' to indicate inverters */
+			/* this allow us to distinguish inverters without the need to check fan-in size */
+			label[1] = label[2] = 0u;
+			label[3] = MergeType::Invalid;
+			node_to_label[n] = label;
+			++num_not;
+		}
+
+		return true;
+	} );
+
+	std::cout << "[i] Without merging:\n";
+	std::cout << "[i] #BRs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm + num_2_luts_nm ) << "\n";
+	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm ) << "( SYM: " << num_3_luts_sym_nm << ", NEG: " << num_3_luts_neg_nm << " )\n";
+	std::cout << "[i] #2-LUTs: " << num_2_luts_nm << "\n";
+	std::cout << "[i] #invertors: " << num_not << "\n\n";
+
+	std::cout << "[i] With merging:\n";
+	std::cout << "[i] #BRs: " << ( num_3_luts_sym + num_3_luts_neg+ num_2_luts ) << "\n";
+	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym + num_3_luts_neg ) << "( SYM: " << num_3_luts_sym << ", NEG: " << num_3_luts_neg << " )\n";
+	std::cout << "[i] #2-LUTs: " << num_2_luts << "\n";
+	std::cout << "[i] #invertors: " << num_not << "\n";
+
+
+	std::cout << "[i] The maximum output count is: " << max_output_cnt << "\n\n";
+
+
+	std::cout << "[i] Converting the k-LUT network into an LBF file...\n";
+	return node_to_label;
 }
 
 void detect_lut_merging_ad( klut_network const& ntk )
@@ -406,6 +752,162 @@ void detect_lut_merging_ad( klut_network const& ntk )
 	std::cout << "[i] #2-LUTs: " << num_2_luts << "\n";
 	std::cout << "[i] #invertors: " << num_not << "\n\n";
 
+}
+
+void support_mo_luts( klut_network const& ntk )
+{ 
+	uint32_t num_3_luts_sym_nm{ 0u };
+	uint32_t num_3_luts_neg_nm{ 0u };
+	uint32_t num_2_luts_nm{ 0u };
+	uint32_t num_3_luts_sym{ 0u };
+	uint32_t num_3_luts_neg{ 0u };
+	uint32_t num_2_luts{ 0u };
+	uint32_t num_not{ 0u };
+
+	mergable_luts_map_t mergable_luts_map;
+	uint32_t ctr{ 0u };
+	ntk.foreach_node( [&]( klut_network::node const& n ) {
+
+		/* skip constants and PIs */
+		if ( ntk.is_pi( n ) || ntk.is_constant( n ) )
+		{
+			return true;
+		}
+
+		uint32_t idx = ntk.node_to_index( n );
+		auto const node = ntk._storage->nodes[idx];
+
+		/* get children */
+		std::array<uint32_t, 3u> leaves;
+		auto cnt{ 0u };
+		for ( auto const& child : node.children )
+		{
+			leaves[cnt++] = child.index;
+		}
+		// std::sort( std::begin( leaves ), std::end( leaves ) );
+
+		label_t label;
+		for ( auto i{ 0u }; i < 3u; ++i )
+		{
+			label[i] = leaves[i];
+		}
+
+		/* figure out function property */
+		auto const tt = ntk.node_function( n );
+		if ( tt.num_vars() == 3u )
+		{
+			// either symmetric or negacyclic, otherwise illegal
+			if ( kitty::is_symmetric( tt ) )
+			{
+				std::sort( std::begin( label ), ( std::end( label ) - 1 ) );
+				label[3] = static_cast<uint32_t>( MergeType::Symmetric );
+				++num_3_luts_sym_nm;
+
+
+				std::cout << "[m] " << ctr++ << "th function is: " << kitty::to_binary( tt ) << "\n";
+			}
+			else if ( const auto sym_check = kitty::is_symmetric_n( tt ); std::get<0>( sym_check ) )
+			{
+				std::sort( std::begin( label ), ( std::end( label ) - 1 ) );
+				label[3] = static_cast<uint32_t>( MergeType::Symmetric );
+        /* store input phase in the MSB of label[3] */
+        label[3] |= ( std::get<2>( sym_check ) << ( 32 - tt.num_vars() ) );
+        ++num_3_luts_sym_nm;
+
+
+        std::cout << "[m] " << ctr++ << "th function is: " << kitty::to_binary( tt ) << " (" << kitty::to_binary( std::get<1>( sym_check ) ) << ")\n";
+			}
+			else if ( std::tuple<bool, uint8_t> neg_check = kitty::is_top_xor_decomposible_return_support( tt ); std::get<0>( neg_check ) )
+			{
+				/* store node index of the disjoint support in label[0] */
+				/* reorder the remaining two supports */
+				uint32_t disjoint_support_idx = leaves[std::get<1>( neg_check )];
+				if ( disjoint_support_idx != label[0] )
+				{
+					for ( uint8_t i{ 1u }; i < tt.num_vars(); ++i )
+					{
+						if ( disjoint_support_idx == label[i] )
+						{
+							std::swap( label[0], label[i] );
+							break;
+						}
+					}
+				}
+				std::sort( ( std::begin( label ) + 1 ), ( std::end( label ) - 1 ) );
+				label[3] = static_cast<uint32_t>( MergeType::Negacyclic );
+				++num_3_luts_neg_nm;
+			}
+			else
+			{
+				std::cerr << "[e] a 3-LUT whose function is neither symmetric nor negacyclic is detected.\n";
+				std::cerr << "[e] TT: ";
+				kitty::print_hex( tt );
+				std::cerr << std::endl;
+				abort();
+			}
+
+			if ( mergable_luts_map.contains( label ) )
+			{
+				mergable_luts_map.at( label ).emplace_back( idx );
+			}
+			else
+			{
+				std::vector<uint32_t> indices( 1u );
+				indices[0]= idx;
+				mergable_luts_map.emplace( label, indices );
+				if ( label[3] == MergeType::Symmetric )
+				{
+					++num_3_luts_sym;
+				}
+				else
+				{
+					++num_3_luts_neg;
+				}
+			}
+		}
+		else if ( tt.num_vars() == 2u )
+		{
+			label[2] = 0u;
+			std::sort( std::begin( label ), ( std::end( label ) - 2 ) );
+			label[3] = MergeType::Normal;
+
+
+			std::cout << "[m] 2-input function is: " << kitty::to_binary( tt ) << "\n";
+			
+
+			if ( mergable_luts_map.contains( label ) )
+			{
+				mergable_luts_map.at( label ).emplace_back( idx );
+			}
+			else
+			{
+				std::vector<uint32_t> indices( 1u );
+				indices[0]= idx;
+				mergable_luts_map.emplace( label, indices );
+				++num_2_luts;
+			}
+
+			++num_2_luts_nm;
+		}
+		else
+		{
+			++num_not;
+		}
+
+		return true;
+	} );
+
+	std::cout << "[i] Without merging:\n";
+	std::cout << "[i] #BRs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm + num_2_luts_nm ) << "\n";
+	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm ) << "( SYM: " << num_3_luts_sym_nm << ", NEG: " << num_3_luts_neg_nm << " )\n";
+	std::cout << "[i] #2-LUTs: " << num_2_luts_nm << "\n";
+	std::cout << "[i] #invertors: " << num_not << "\n\n";
+
+	std::cout << "[i] With merging:\n";
+	std::cout << "[i] #BRs: " << ( num_3_luts_sym + num_3_luts_neg+ num_2_luts ) << "\n";
+	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym + num_3_luts_neg ) << "( SYM: " << num_3_luts_sym << ", NEG: " << num_3_luts_neg << " )\n";
+	std::cout << "[i] #2-LUTs: " << num_2_luts << "\n";
+	std::cout << "[i] #invertors: " << num_not << "\n\n";
 }
 
 } /* namespace mockturtle */

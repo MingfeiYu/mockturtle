@@ -197,7 +197,8 @@ std::tuple<bool, TT, uint8_t> is_symmetric_n( TT const& tt )
   /* Denote the number of variables as VAR, have to enumerate floor( VAR/2 ) cases */
 
   TT tt_tmp = tt;
-  std::vector<uint8_t> const& flips = detail::flips[tt.num_vars() / 2 - 1u];
+  uint32_t num_vars = tt.num_vars();
+  std::vector<uint8_t> const& flips = detail::flips[num_vars / 2 - 1u];
   
   for ( uint8_t i{0}; i < flips.size(); ++i )
   {
@@ -211,6 +212,19 @@ std::tuple<bool, TT, uint8_t> is_symmetric_n( TT const& tt )
       {
         phase ^= 1 << flips[j];
       }
+
+      /* minimize input negations */
+      if ( __builtin_popcount( phase ) > num_vars / 2 )
+      {
+        uint8_t inv{ 0u };
+        for ( uint8_t j{ 0u }; j < num_vars; ++j )
+        {
+          inv = ( inv << 1 ) + 1;
+        }
+        phase ^= inv;
+        tt_tmp = ~tt_tmp;
+      }
+
       return std::make_tuple( true, tt_tmp, phase );
     }
   }
@@ -249,6 +263,21 @@ std::tuple<bool, uint8_t> is_top_xor_decomposible_return_support( TT const& tt )
   }
 
   return std::make_tuple( false, std::numeric_limits<uint8_t>::max() );
+}
+
+template<typename TT>
+bool is_xor( TT const& tt )
+{
+  for ( uint64_t i{ 0u }; i < tt.num_bits(); ++i )
+  {
+    uint32_t hw = __builtin_popcount( static_cast<uint32_t>( i ) );
+    if ( ( hw % 2 != 0u || get_bit( tt, i ) ) && ( hw % 2 == 0u || !get_bit( tt, i ) ) )
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /*! \brief Checks whether a function is monotone

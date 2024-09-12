@@ -239,6 +239,11 @@ public:
     } );
     return i;
   }
+  
+  bool is_po( signal const& s ) const
+  {
+    return ( po_index( s ) != -1 );
+  }
 #pragma endregion
 
 #pragma region Create unary functions

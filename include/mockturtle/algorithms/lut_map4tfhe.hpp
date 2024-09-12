@@ -152,6 +152,16 @@ struct lut_map_stats
   /*! \brief Total runtime. */
   stopwatch<>::duration time_total{ 0 };
 
+  stopwatch<>::duration time_derive_label{ 0 };
+
+  stopwatch<>::duration time_exact_area{ 0 };
+
+  stopwatch<>::duration time_update_selected_labels{ 0 };
+
+  stopwatch<>::duration time_mffc_with_labels{ 0 };
+
+  // stopwatch<>::duration time_copy_labels{ 0 };
+
   /*! \brief Cut enumeration stats. */
   cut_enumeration_stats cut_enumeration_st{};
 
@@ -165,6 +175,11 @@ struct lut_map_stats
       std::cout << stat;
     }
     std::cout << fmt::format( "[i] Total runtime           = {:>5.2f} secs\n", to_seconds( time_total ) );
+    std::cout << fmt::format( "[i] Label deriving time     = {:>5.2f} secs\n", to_seconds( time_derive_label ) );
+    std::cout << fmt::format( "[i] Exact area round time   = {:>5.2f} secs\n", to_seconds( time_exact_area ) );
+    std::cout << fmt::format( "[i] Update selected labels  = {:>5.2f} secs\n", to_seconds( time_update_selected_labels ) );
+    std::cout << fmt::format( "[i] MFFC with labels time   = {:>5.2f} secs\n", to_seconds( time_mffc_with_labels ) );
+    // std::cout << fmt::format( "[i] Copy labels time        = {:>5.2f} secs\n", to_seconds( time_copy_labels ) );
   }
 };
 
@@ -181,6 +196,7 @@ struct cut_enumeration_lut_cut
   float area_flow{ 0 };
   float edge_flow{ 0 };
   bool ignore{ false };
+  label_t label{ { 0, 0, 0, static_cast<uint32_t>( MergeType::Invalid ) } };
 };
 
 enum class lut_cut_sort_type
@@ -770,7 +786,9 @@ private:
     i = 0;
     while ( i < ps.ela_rounds )
     {
+      stopwatch t( st.time_exact_area );
       compute_required_time();
+      // compute_mapping<true, true>( area_sort, false, ps.recompute_cuts );
       compute_mapping<true, true, true>( area_sort, false, ps.recompute_cuts );
       // if ( i == ( ps.ela_rounds - 1 ) )
       // {
@@ -797,6 +815,7 @@ private:
 
   void update_labels_selected()
   {
+    stopwatch t( st.time_update_selected_labels );
     labels_selected.clear();
 
     for ( auto it{ topo_order.begin() }; it != topo_order.end(); ++it )
@@ -809,7 +828,9 @@ private:
       uint32_t const index = ntk.node_to_index( *it );
       if ( node_match[index].map_refs != 0u )
       {
-        label_t const& current_best_label = derive_label( cuts[index][0] );
+        /* TODO: obtain the label by referring to the cache */
+        // label_t const& current_best_label = derive_label( cuts[index][0] );
+        label_t const& current_best_label = ( cuts[index][0] )->data.label;
         if ( labels_selected.find( current_best_label ) == labels_selected.end() )
         {
           labels_selected.insert( { current_best_label, 1u } );
@@ -2726,6 +2747,8 @@ private:
         if constexpr ( StoreFunction )
         {
           new_cut->func_id = compute_truth_table( index, vcuts, new_cut );
+
+          new_cut.data->label = derive_label( new_cut );
         }
 
         compute_cut_data<ELA>( new_cut, index, true );
@@ -2890,6 +2913,11 @@ private:
     if ( iteration != 0 && node_data.map_refs > 0 )
     {
       cut_deref_customized( *best_cut );
+
+      /* TODO: obtain the label by referring to the cache */
+      // label_t label = derive_label( *best_cut  );
+      label_t label = ( *best_cut )->data.label;
+      labels_selected[label] -= 1u;
     }
 
     /* recompute the data for all the cuts and pick the best */
@@ -2921,6 +2949,11 @@ private:
     if ( iteration != 0 && node_data.map_refs > 0 )
     {
       cut_ref_customized( *best_cut );
+
+      /* TODO: obtain the label by referring to the cache */
+      // label_t label = derive_label( *best_cut  );
+      label_t label = ( *best_cut )->data.label;
+      labels_selected[label] += 1u;
     }
 
     /* update the best cut */
@@ -3249,19 +3282,22 @@ private:
   uint32_t cut_ref_customized( cut_t const& cut )
   {
     uint32_t count = cut->data.lut_area;
-    label_t label = derive_label( cut );
-    if ( labels_selected.find( label ) != labels_selected.end() )
+
+    /* TODO: obtain the label by referring to the cache */
+    // label_t label = derive_label( cut );
+    label_t label = cut->data.label;
+    // if ( ( labels_selected.find( label ) != labels_selected.end() ) && ( labels_selected[label]++ != 0u ) )
+    if ( ( labels_selected.find( label ) != labels_selected.end() ) && ( labels_selected[label] != 0u ) )
     {
-      labels_selected[label] += 1u;
       if ( label[3] != MergeType::Invalid )
       {
         count = 0u;
       }
     }
-    else
-    {
-      labels_selected.insert( { label, 1u } );
-    }
+    // else
+    // {
+    //   labels_selected.insert( { label, 1u } );
+    // }
 
     for ( auto leaf : cut )
     {
@@ -3283,23 +3319,36 @@ private:
   uint32_t cut_deref_customized( cut_t const& cut )
   {
     uint32_t count = cut->data.lut_area;
-    label_t label = derive_label( cut );
+
+    /* TODO: obtain the label by referring to the cache */
+    // label_t label = derive_label( cut );
+    label_t label = cut->data.label;
     const auto it = labels_selected.find( label );
     if ( it != labels_selected.end() )
     {
-      if ( labels_selected[label] == 1u )
+      // if ( labels_selected[label] == 1u )
+      // {
+      //   labels_selected.erase( it );
+      // }
+      // else
       {
-        labels_selected.erase( it );
-      }
-      else
-      {
-        labels_selected[label] -= 1u;
+        // labels_selected[label] -= 1u;
         if ( label[3] != MergeType::Invalid )
         {
           count = 0u;
         }
       }
     }
+    // if ( ( labels_selected.find( label ) != labels_selected.end() ) && ( labels_selected[label] != 0u ) );
+    // {
+    //   if ( --labels_selected[label] != 0u )
+    //   {
+    //     if ( label[3] != MergeType::Invalid )
+    //     {
+    //       count = 0u;
+    //     }
+    //   }
+    // }
 
     for ( auto leaf : cut )
     {
@@ -3321,13 +3370,17 @@ private:
   uint32_t cut_measure_mffc_customized( cut_t const& cut )
   {
     tmp_visited.clear();
-    std::unordered_map<label_t, uint32_t, ArrayHash> labels_selected_tmp;
-    for ( auto it{ labels_selected.begin() }; it != labels_selected.end(); ++it )
-    {
-      labels_selected_tmp.insert( { it->first, it->second } );
-    }
+    // std::unordered_map<label_t, uint32_t, ArrayHash> labels_selected_tmp;
+    // {
+    // stopwatch t( st.time_copy_labels );
+    // for ( auto it{ labels_selected.begin() }; it != labels_selected.end(); ++it )
+    // {
+    //   labels_selected_tmp.insert( { it->first, it->second } );
+    // }
+    // }
 
-    uint32_t count = cut_ref_visit_customized( cut, &labels_selected_tmp );
+    // uint32_t count = cut_ref_visit_customized( cut, &labels_selected_tmp );
+    uint32_t count = cut_ref_visit_customized_new( cut );
 
     /* dereference visited */
     for ( auto const& s : tmp_visited )
@@ -3342,19 +3395,24 @@ private:
   {
     uint32_t count = cut->data.lut_area;
 
-    label_t label = derive_label( cut );
+    /* TODO: obtain the label by referring to the cache */
+    // label_t label = derive_label( cut );
+    label_t label = cut->data.label;
     if ( p_labels_selected->find( label ) != p_labels_selected->end() )
     {
-      ( *p_labels_selected )[label] += 1u;
-      if ( label[3] != MergeType::Invalid )
+      // ( *p_labels_selected )[label] += 1u;
+      // if ( ( *p_labels_selected )[label]++ != 0u )
       {
-        count = 0u;
+        if ( label[3] != MergeType::Invalid )
+        {
+          count = 0u;
+        }
       }
     }
-    else
-    {
-      p_labels_selected->insert( { label, 1u } );
-    }
+    // else
+    // {
+    //   p_labels_selected->insert( { label, 1u } );
+    // }
 
     for ( auto leaf : cut )
     {
@@ -3370,6 +3428,44 @@ private:
       if ( node_match[leaf].map_refs++ == 0u )
       {
         count += cut_ref_visit_customized( cuts[leaf][0], p_labels_selected );
+      }
+    }
+
+    return count;
+  }
+
+  uint32_t cut_ref_visit_customized_new( cut_t const& cut )
+  {
+    uint32_t count = cut->data.lut_area;
+
+    /* TODO: obtain the label by referring to the cache */
+    // label_t label = derive_label( cut );
+    label_t label = cut->data.label;
+
+    if ( labels_selected.find( label ) != labels_selected.end() )
+    {
+      {
+        if ( label[3] != MergeType::Invalid )
+        {
+          count = 0u;
+        }
+      }
+    }
+
+    for ( auto leaf : cut )
+    {
+      if ( ntk.is_ci( ntk.index_to_node( leaf ) ) || ntk.is_constant( ntk.index_to_node( leaf ) ) )
+      {
+        continue;
+      }
+
+      /* add to visited */
+      tmp_visited.push_back( leaf );
+
+      /* Recursive referencing if leaf was not referenced */
+      if ( node_match[leaf].map_refs++ == 0u )
+      {
+        count += cut_ref_visit_customized_new( cuts[leaf][0] );
       }
     }
 
@@ -3581,6 +3677,8 @@ private:
 
   label_t derive_label( cut_t const& cut )
   {
+    stopwatch t( st.time_derive_label );
+
     std::array<uint32_t, 3u> leaves;
     auto cnt{ 0u };
     for ( auto const& child_idx : cut )
@@ -3599,7 +3697,11 @@ private:
     {
       std::sort( std::begin( label ), ( std::end( label ) - 1 ) );
 
-      if ( std::tuple<bool, TT, uint8_t> sym_check = kitty::is_symmetric_n( tt ); std::get<0>( sym_check ) )
+      if ( kitty::is_symmetric( tt ) )
+      {
+        label[3] = static_cast<uint32_t>( MergeType::Symmetric );
+      }
+      else if ( std::tuple<bool, TT, uint8_t> sym_check = kitty::is_symmetric_n( tt ); std::get<0>( sym_check ) )
       {
         label[3] = static_cast<uint32_t>( MergeType::Symmetric );
         /* store input phase in the MSB of label[3] */
@@ -3797,7 +3899,9 @@ private:
       }
       else
       {
-        label_t pre_best_label = derive_label( best_cut );
+        /* TODO: obtain the label by referring to the cache */
+        // label_t pre_best_label = derive_label( best_cut );
+        label_t pre_best_label = best_cut->data.label;
         auto it = labels_selected.find( pre_best_label );
         if ( it == labels_selected.end() )
         {
@@ -3810,7 +3914,9 @@ private:
           {
             labels_selected.erase( it );
           }
-          label_t cur_best_label = derive_label( rcuts[0] );
+          /* TODO: obtain the label by referring to the cache */
+          // label_t cur_best_label = derive_label( rcuts[0] );
+          label_t cur_best_label = ( rcuts[0] )->data.label;
           if ( labels_selected.find( cur_best_label ) == labels_selected.end() )
           {
             labels_selected.insert( { cur_best_label, 1u } );
@@ -3824,7 +3930,9 @@ private:
     }
     else
     {
-      label_t cur_best_label = derive_label( rcuts[0] );
+      /* TODO: obtain the label by referring to the cache */
+      // label_t cur_best_label = derive_label( rcuts[0] );
+      label_t cur_best_label = ( rcuts[0] )->data.label;
       if ( labels_selected.find( cur_best_label ) == labels_selected.end() )
       {
         labels_selected.insert( { cur_best_label, 1u } );
@@ -3877,7 +3985,9 @@ private:
       lut_delay = cut->data.lut_delay;
     }
 
-    label_t label = derive_label( cut );
+    /* TODO: obtain the label by referring to the cache */
+    // label_t label = derive_label( cut );
+    label_t label = cut->data.label;
     if ( ( label[3] != MergeType::Invalid ) && ( labels_selected.find( label ) != labels_selected.end() ) )
     {
       lut_area = 0u;
@@ -4334,7 +4444,7 @@ private:
 
     return res;
   }
-
+  
   klut_network create_lut_network_mapped_delibrate_cut()
   {
 

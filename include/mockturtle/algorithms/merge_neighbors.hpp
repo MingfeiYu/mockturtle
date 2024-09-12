@@ -32,7 +32,7 @@ struct merge_neighbor_stats
 
 	void report() const
 	{
-		std::cout << fmt::format( "[i] Total runtime           = {:>5.2f} secs\n", to_seconds( runtime ) );
+		std::cout << fmt::format( "[i] Merging runtime           = {:>5.2f} secs\n", to_seconds( runtime ) );
 	}
 };
 

@@ -64,13 +64,16 @@ int main()
     ps2.cut_expansion = false;
     ps2.area_share_rounds = 0;
     ps2.edge_optimization = false;
-    ps2.verbose = true;
+    ps2.verbose = false;
     lut_map_stats st2;
     klut_network klut_2 = lut_map<xag_network, true>( xag_opt, ps2, &st2 );
 
     merge_neighbor_params ps;
+    ps.verbose = false;
+    merge_neighbor_stats st;
     fmt::print( "[i] merging neighbors...\n" );
-    klut_network klut_3 = merge_neighbors<klut_network>( klut_2, ps );
+    klut_network klut_3 = merge_neighbors<klut_network>( klut_2, ps, &st );
+    std::cout << fmt::format( "[i] Total runtime           = {:>5.2f} secs\n", ( mockturtle::to_seconds( st.runtime ) + mockturtle::to_seconds( st2.time_total ) ) );
 
     auto const cec = benchmark == "hyp" ? true : abc_cec( klut_3, benchmark );
     if ( !cec )
@@ -82,7 +85,10 @@ int main()
     fmt::print( "[i] isolating inverters...\n" );
     const klut_network klut_3_inv = invert_isolation( klut_3 );
     fmt::print( "[i] detecting merging chances...\n" );
-    detect_lut_merging( klut_3_inv );
+    mergable_luts_map_t mergable_luts_map;
+    mockturtle::node_map<mockturtle::label_t, mockturtle::klut_network> node_to_label = detect_lut_merging( klut_3_inv, mergable_luts_map );
+    std::string filename = fmt::format( "results_lbf/autohog/{}.lbf", benchmark );
+    mockturtle::klut2lbf_mod( klut_3_inv, mergable_luts_map, node_to_label, filename );
   }
 
   return 0;

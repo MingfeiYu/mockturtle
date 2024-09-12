@@ -1,28 +1,3 @@
-/* mockturtle: C++ logic network library
- * Copyright (C) 2018-2019  EPFL
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
-
 #include <string>
 #include <vector>
 
@@ -103,6 +78,10 @@ int main()
 
   for ( auto const& benchmark : epfl_benchmarks() )
   {
+    // if ( benchmark != "sin" )
+    // {
+    //   continue;
+    // }
     // if ( ( benchmark == "bar" ) || ( benchmark == "div" ) || ( benchmark == "hyp" ) || ( benchmark == "log2" ) || ( benchmark == "multiplier" ) || ( benchmark == "square" ) || ( benchmark == "arbiter" ) || ( benchmark == "mem_ctrl" ) )
     // {
     //   continue;
@@ -130,6 +109,8 @@ int main()
       xag_opt = xag;
     }
 
+    // fmt::print( "[i] Baseline gate count: {}\n", ( xag_opt.num_gates() ) );
+
     /* TODO: Change resub to rewrite? */
     // for ( uint8_t i{ 0u }; i < 3u; ++i )
     // {
@@ -151,36 +132,6 @@ int main()
     klut_network klut_3 = lut_map<xag_network, true, lut_cost_tfac>( xag_opt, ps, &st );
 
 
-    // mockturtle::write_bench( klut_3, "/tmp/opt.bench" );
-    // mockturtle::write_bench( aig, "/tmp/orig.bench" );
-    // std::string command = fmt::format( "/Users/myu/Documents/GitHub/abc/abc -q \"cec -n /tmp/orig.bench /tmp/opt.bench\"" );
-    // std::array<char, 128> buffer;
-    // std::string result;
-    // std::unique_ptr<FILE, decltype( &pclose )> pipe( popen( command.c_str(), "r" ), pclose );
-    // if ( !pipe )
-    // {
-    //   throw std::runtime_error( "popen() failed" );
-    // }
-    // while ( fgets( buffer.data(), buffer.size(), pipe.get() ) != nullptr )
-    // {
-    //   result += buffer.data();
-    // }
-
-    /* search for one line which says "Networks are equivalent" and ignore all other debug output from ABC */
-    // std::stringstream ss( result );
-    // std::string line;
-    // while ( std::getline( ss, line, '\n' ) )
-    // {
-    //   if ( line.size() >= 23u && line.substr( 0u, 23u ) == "Networks are equivalent" )
-    //   {
-    //     return 0u;
-    //   }
-    // }
-
-    // std::cout << "Optimized network is not equivalent to the original one!\n";
-    // abort();
-
-
     auto const cec = benchmark == "hyp" ? true : abc_cec( klut_3, benchmark );
     if ( !cec )
     {
@@ -190,10 +141,13 @@ int main()
 
 
     fmt::print( "[i] isolating inverters...\n" );
-    const klut_network klut_3_inv = invert_isolation( klut_3 );
+    // const klut_network klut_3_inv = invert_isolation( klut_3 );
+    const klut_network klut_3_inv = invert_isolation_new( klut_3 );
     fmt::print( "[i] detecting merging chances...\n" );
-    detect_lut_merging( klut_3_inv );
-    // detect_lut_merging_ad( klut_3_inv );
+    mergable_luts_map_t mergable_luts_map;
+    mockturtle::node_map<mockturtle::label_t, mockturtle::klut_network> node_to_label = detect_lut_merging( klut_3_inv, mergable_luts_map );
+    std::string filename = fmt::format( "results_lbf/area/{}.lbf", benchmark );
+    mockturtle::klut2lbf_mod( klut_3_inv, mergable_luts_map, node_to_label, filename );
 
     // lut_map_params ps1;
     // ps1.cut_enumeration_ps.cut_size = 2u;
