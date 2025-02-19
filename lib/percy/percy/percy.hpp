@@ -70,6 +70,7 @@ namespace percy
 
         spec.nr_steps = spec.initial_steps;
         while (spec.nr_steps <= spec.max_nr_steps) {
+            std::cout << "[m] number of steps: " << spec.nr_steps << std::endl;
             solver.restart();
             if (!encoder.encode(spec)) {
                 spec.nr_steps++;
