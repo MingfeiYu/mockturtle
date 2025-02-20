@@ -109,6 +109,9 @@ struct tech_library_params
   /*! \brief Loads multioutput gates in the library */
   bool load_multioutput_gates{ true };
 
+  /*! \brief Don't load symmetrical permutations of gate pins (drastically speeds-up mapping) */
+  bool ignore_symmetries{ false };
+
   /*! \brief Load gates with minimum size only */
   bool load_minimum_size_only{ true };
 
@@ -244,6 +247,9 @@ public:
       _struct.construct( 2 );
     }
   }
+
+  tech_library ( const tech_library& ) = delete;
+  tech_library& operator=( const tech_library& ) = delete;
 
   /*! \brief Get the gates matching the function.
    *
@@ -473,7 +479,7 @@ private:
             if ( sg.root->id == it->root->id )
             {
               /* if already in the library exit, else ignore permutations if with equal delay cost */
-              if ( sg.polarity == it->polarity && sg.tdelay == it->tdelay )
+              if ( sg.polarity == it->polarity && ( _ps.ignore_symmetries || sg.tdelay == it->tdelay ) )
               {
                 to_add = false;
                 break;
@@ -534,7 +540,7 @@ private:
               if ( sg.root->id == it->root->id )
               {
                 /* if already in the library exit, else ignore permutations if with equal delay cost */
-                if ( sg.polarity == it->polarity && sg.tdelay == it->tdelay )
+                if ( sg.polarity == it->polarity && ( _ps.ignore_symmetries || sg.tdelay == it->tdelay ) )
                 {
                   to_add = false;
                   break;
@@ -813,7 +819,7 @@ private:
 
         std::iota( order.begin(), order.end(), 0 );
 
-        std::sort( order.begin(), order.end(), [&]( size_t a, size_t b ) {
+        std::stable_sort( order.begin(), order.end(), [&]( size_t a, size_t b ) {
           return static_tts[a] < static_tts[b];
         } );
 
@@ -821,7 +827,7 @@ private:
           return static_tts[a];
         } );
 
-        // std::sort( static_tts.begin(), static_tts.end() );
+        // std::stable_sort( static_tts.begin(), static_tts.end() );
 
         auto& v = _multi_lib[sorted_tts];
 
@@ -1160,7 +1166,7 @@ private:
   bool _use_supergates;
 
   std::vector<gate> const _gates;    /* collection of gates */
-  super_lib const& _supergates_spec; /* collection of supergates declarations */
+  super_lib const _supergates_spec;  /* collection of supergates declarations */
   tech_library_params const _ps;
 
   std::vector<standard_cell> const _cells; /* collection of standard cells */
@@ -1403,14 +1409,14 @@ private:
       rewriting_fn( _database, function, pis.begin(), pis.end(), add_supergate );
       if ( supergates_pos.size() > 0 )
       {
-        std::sort( supergates_pos.begin(), supergates_pos.end(), [&]( auto const& a, auto const& b ) {
+        std::stable_sort( supergates_pos.begin(), supergates_pos.end(), [&]( auto const& a, auto const& b ) {
           return a.area < b.area;
         } );
         _super_lib.insert( { entry, supergates_pos } );
       }
       if ( _ps.np_classification && supergates_neg.size() > 0 )
       {
-        std::sort( supergates_neg.begin(), supergates_neg.end(), [&]( auto const& a, auto const& b ) {
+        std::stable_sort( supergates_neg.begin(), supergates_neg.end(), [&]( auto const& a, auto const& b ) {
           return a.area < b.area;
         } );
         _super_lib.insert( { not_entry, supergates_neg } );

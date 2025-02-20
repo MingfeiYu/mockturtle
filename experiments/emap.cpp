@@ -1,5 +1,5 @@
 /* mockturtle: C++ logic network library
- * Copyright (C) 2018-2023  EPFL
+ * Copyright (C) 2018-2024  EPFL
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -65,6 +65,7 @@ int main()
   }
 
   tech_library_params tps;
+  tps.ignore_symmetries = false; // set to true to drastically speed-up mapping with minor delay increase
   tps.verbose = true;
   tech_library<9> tech_lib( gates, tps );
 
@@ -81,7 +82,7 @@ int main()
     /* remove structural redundancies */
     aig_balancing_params bps;
     bps.minimize_levels = false;
-    bps.fast_mode = false;
+    bps.fast_mode = true;
     aig_balance( aig, bps );
 
     const uint32_t size_before = aig.num_gates();
@@ -91,6 +92,7 @@ int main()
     ps.matching_mode = emap_params::hybrid;
     ps.area_oriented_mapping = false;
     ps.map_multioutput = true;
+    ps.relax_required = 0;
     emap_stats st;
     cell_view<block_network> res = emap<9>( aig, tech_lib, ps, &st );
 

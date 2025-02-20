@@ -295,7 +295,7 @@ private:
     uint32_t shift = 0;
 
     /* sort cells by increasing order of area */
-    std::sort( indexes.begin(), indexes.end(),
+    std::stable_sort( indexes.begin(), indexes.end(),
                [&]( auto const& a, auto const& b ) -> bool {
                  return _supergates[a].area < _supergates[b].area;
                } );
@@ -370,6 +370,12 @@ private:
                                   gate.tdelay,
                                   perm,
                                   gate_pol };
+
+        /* permute pin-to-pin delays */
+        for ( uint32_t i = 0; i < gate.num_vars; ++i )
+        {
+          sg.tdelay[i] = gate.tdelay[perm[i]];
+        }
 
         auto& v = _label_to_gate[index_rule.data];
 
