@@ -42,6 +42,7 @@ enum MergeType: uint8_t
     Invalid = 4u
 };
 
+/* DEPRECATED. Dedicated for the previous version of the LBF format */
 void klut2lbf( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map, node_map<label_t, klut_network> const& node_to_label, std::string const& filename )
 {
 	std::ofstream os( filename.c_str(), std::ofstream::out );
@@ -129,9 +130,7 @@ void klut2lbf( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map, 
 				const std::string fanin_name = ntk_topo.is_pi( nf ) ? fmt::format( "pi{}", ntk_topo.node_to_index( nf ) ) : fmt::format( "n{}", ntk_topo.node_to_index( nf ) );
 				os << fanin_name << ' ';
 			} );
-			const std::string n_name = fmt::format( "n{}", ntk_topo.node_to_index( n ) );
-			os << n_name << '\n';
-			// names.insert( n_name );
+			os << fmt::format( "n{}", ntk_topo.node_to_index( n ) ) << '\n';
 			os << "-1 1\n";
 			return true;
 		}
@@ -213,7 +212,7 @@ void klut2lbf( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map, 
 				std::vector<uint32_t> indices = mergable_luts_map[current_label];
 				for ( uint32_t i{ 0u }; i < indices.size(); ++i )
 				{
-					const std::string fanout_name = fmt::format( "n{}", ntk_topo.index_to_node( indices[i] ) );
+					const std::string fanout_name = fmt::format( "n{}", indices[i] );
 					os << fanout_name;
 					if ( i != indices.size() - 1u )
 					{
@@ -433,7 +432,7 @@ void klut2lbf_mod( klut_network const& ntk, mergable_luts_map_t& mergable_luts_m
 		} );
 		os << "\n";
 	}
-	mo_node_names.clear();
+	// mo_node_names.clear();
 
 	/* write constants */
 	if ( has_zero )
@@ -709,20 +708,20 @@ void klut2lbf_mod( klut_network const& ntk, mergable_luts_map_t& mergable_luts_m
 			}
 
 			/* update 'mo_node_names' */
-			std::vector<uint32_t> mo_nodes = mergable_luts_map[current_label];
-			std::string mo_node_name = {};
-			for ( auto j{ 0u }; j < mo_nodes.size(); ++j )
-			{
-				mo_node_name += fmt::format( "n{}", mo_nodes[j] );
-				if ( j != mo_nodes.size() - 1u )
-				{
-					mo_node_name += ',';
-				}
-			}
-			for ( uint32_t each_node : mo_nodes )
-			{
-				mo_node_names.emplace( each_node, mo_node_name );
-			}
+			// std::vector<uint32_t> mo_nodes = mergable_luts_map[current_label];
+			// std::string mo_node_name = {};
+			// for ( auto j{ 0u }; j < mo_nodes.size(); ++j )
+			// {
+			// 	mo_node_name += fmt::format( "n{}", mo_nodes[j] );
+			// 	if ( j != mo_nodes.size() - 1u )
+			// 	{
+			// 		mo_node_name += ',';
+			// 	}
+			// }
+			// for ( uint32_t each_node : mo_nodes )
+			// {
+			// 	mo_node_names.emplace( each_node, mo_node_name );
+			// }
 		}
 
 		return true;
