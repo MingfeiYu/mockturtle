@@ -34,6 +34,12 @@ aig.foreach_node( [&]( auto node ) {
 } );
 ```
 
+### XAG-to-LBF Converter
+
+The [XAG-to-LBF Converter](https://github.com/MingfeiYu/mockturtle/blob/tfhe/experiments/xag2lbf.cpp) is a tool that reads an XOR-AND-Inverter Graph (XAG) from a Verilog file and converts it into the **Lincomb Bootstrap Format (LBF)**. The generated LBF file can then be passed to the [execution cost estimator](https://github.com/ssmiler/tfhe_lbf_eval) to evaluate the cost of homomorphic execution for the Boolean function implemented by the XAG.
+
+This converter not only performs a structural transformation but also **identifies opportunities for multi-value functional bootstrapping**, a key optimization in TFHE-based circuit evaluation. These opportunities are reflected in the generated LBF file, ensuring that the evaluation takes advantage of efficient homomorphic execution techniques.
+
 ## Installation requirements
 
 A modern compiler is required to build *mockturtle*.  We are continuously
