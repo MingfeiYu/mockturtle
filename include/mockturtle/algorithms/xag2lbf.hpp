@@ -97,6 +97,31 @@ void detect_mvfbs( xag_network const& ntk, mvfbs_map_t& mvfbs_map, node_map<bool
 	} );
 }
 
+void mvfbs_map_trivial_init( xag_network const& ntk, mvfbs_map_t& mvfbs_map )
+{
+	topo_view<xag_network> ntk_topo{ ntk };
+	ntk_topo.foreach_node( [&]( xag_network::node const& n ) {
+		if ( ntk_topo.is_pi( n ) || ntk_topo.is_constant( n ) )
+		{
+			return true;
+		}
+
+		uint8_t i{ 0u };
+		xag_label_t label = { ntk_topo.make_signal( 0u ), ntk_topo.make_signal( 0u ) };
+		ntk_topo.foreach_fanin( n, [&]( xag_network::signal const& fi ) {
+			label[i++] = fi;
+		} );
+
+		assert( !mvfbs_map.contains( label ) );
+		std::vector<uint32_t> shared_nodes;
+		shared_nodes.reserve( 1 );
+		shared_nodes.push_back( ntk_topo.node_to_index( n ) );
+		mvfbs_map.emplace( label, shared_nodes );
+
+		return true;
+	} );
+}
+
 void xag2lbf( xag_network const& ntk, mvfbs_map_t const& mvfbs_map, node_map<bool, xag_network> const& shall_be_negated, std::string const& filename )
 {
 	std::ofstream os( filename.c_str(), std::ofstream::out );
@@ -265,7 +290,7 @@ void xag2lbf( xag_network const& ntk, mvfbs_map_t const& mvfbs_map, node_map<boo
 				}
 				else
 				{
-					os << "0101\n";
+					os << "0110\n";
 				}
 			}
 
