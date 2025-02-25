@@ -15,6 +15,7 @@ int main()
 {
 	using namespace mockturtle;
 	using namespace experiments;
+	bool beta{ false };
 
 	for ( auto const& benchmark : epfl_benchmarks() )
 	{
@@ -28,10 +29,21 @@ int main()
 		node_map<bool, xag_network> shall_be_negated( ntk, false );
 		mvfbs_map_t mvfbs_map;
 		mvfbs_map.clear();
-		detect_mvfbs( ntk, mvfbs_map, shall_be_negated );
+
 		std::string filename = fmt::format( "results_lbf/xag/{}.lbf", benchmark );
-		xag2lbf( ntk, mvfbs_map, shall_be_negated, filename );
+		if ( beta )
+		{
+			shall_be_negated_init( ntk, shall_be_negated );
+			xag2lbf_beta( ntk, shall_be_negated, filename );
+		}
+		else
+		{
+			detect_mvfbs( ntk, mvfbs_map, shall_be_negated );
+			xag2lbf( ntk, mvfbs_map, shall_be_negated, filename );
+		}
 	}
+
+	/* TODO: new node type in the estimator! */
 
 	return 0;
 }

@@ -97,31 +97,6 @@ void detect_mvfbs( xag_network const& ntk, mvfbs_map_t& mvfbs_map, node_map<bool
 	} );
 }
 
-void mvfbs_map_trivial_init( xag_network const& ntk, mvfbs_map_t& mvfbs_map )
-{
-	topo_view<xag_network> ntk_topo{ ntk };
-	ntk_topo.foreach_node( [&]( xag_network::node const& n ) {
-		if ( ntk_topo.is_pi( n ) || ntk_topo.is_constant( n ) )
-		{
-			return true;
-		}
-
-		uint8_t i{ 0u };
-		xag_label_t label = { ntk_topo.make_signal( 0u ), ntk_topo.make_signal( 0u ) };
-		ntk_topo.foreach_fanin( n, [&]( xag_network::signal const& fi ) {
-			label[i++] = fi;
-		} );
-
-		assert( !mvfbs_map.contains( label ) );
-		std::vector<uint32_t> shared_nodes;
-		shared_nodes.reserve( 1 );
-		shared_nodes.push_back( ntk_topo.node_to_index( n ) );
-		mvfbs_map.emplace( label, shared_nodes );
-
-		return true;
-	} );
-}
-
 void xag2lbf( xag_network const& ntk, mvfbs_map_t const& mvfbs_map, node_map<bool, xag_network> const& shall_be_negated, std::string const& filename )
 {
 	std::ofstream os( filename.c_str(), std::ofstream::out );
@@ -306,6 +281,170 @@ void xag2lbf( xag_network const& ntk, mvfbs_map_t const& mvfbs_map, node_map<boo
 				}
 			}
 		}
+		return true;
+	} );
+
+	os << ".end\n";
+}
+
+void shall_be_negated_init( xag_network const& ntk, node_map<bool, xag_network>& shall_be_negated )
+{
+	topo_view<xag_network> ntk_topo{ ntk };
+	ntk_topo.foreach_node( [&]( xag_network::node const& n ) {
+		if ( ntk_topo.is_pi( n ) || ntk_topo.is_constant( n ) )
+		{
+			return true;
+		}
+
+		uint8_t i{ 0u };
+		ntk_topo.foreach_fanin( n, [&]( xag_network::signal const& fi ) {
+			if ( ntk_topo.is_complemented( fi ) )
+			{
+				shall_be_negated[ntk_topo.get_node( fi )] = true;
+			}
+		} );
+
+		return true;
+	} );
+
+	ntk_topo.foreach_po( [&]( xag_network::signal const& po ) {
+		if ( ntk_topo.is_complemented( po ) )
+		{
+			shall_be_negated[ntk_topo.get_node( po )] = true;
+		}
+	} );
+}
+
+void xag2lbf_beta( xag_network const& ntk, node_map<bool, xag_network> const& shall_be_negated, std::string const& filename )
+{
+	/* Since the computation of XOR does not rely on FBS, */
+	/* MVFBS is not applicable in the beta version. */
+	std::ofstream os( filename.c_str(), std::ofstream::out );
+	topo_view<xag_network> ntk_topo{ ntk };
+
+	/* write inputs */
+	if ( ntk_topo.num_pis() > 0u )
+	{
+		os << ".inputs ";
+		ntk_topo.foreach_pi( [&]( xag_network::node const& n ) {
+			const std::string input_name = fmt::format( "pi{}", ntk_topo.node_to_index( n ) );
+			os << input_name << ' ';
+		} );
+		os << "\n";
+	}
+
+	/* write outputs */
+	bool has_zero{ false };
+	bool has_one{ false };
+	if ( ntk_topo.num_pos() > 0u )
+	{
+		os << ".outputs ";
+		ntk_topo.foreach_po( [&]( xag_network::signal const& f ) {
+			xag_network::node nf = ntk_topo.get_node( f );
+			std::string postfix = ntk_topo.is_complemented( f ) ? "_neg" : "";
+
+			if ( ntk_topo.is_constant( nf ) )
+			{
+				if ( ntk_topo.is_complemented( f ) )
+				{
+					os << fmt::format( "CONST1" ) << ' ';
+					has_one = true;
+				}
+				else
+				{
+					os << fmt::format( "CONST0" ) << ' ';
+					has_zero = true;
+				}
+				return true;
+			}
+
+			if ( ntk_topo.is_pi( nf ) )
+			{
+				os << fmt::format( "pi{}{}", ntk_topo.node_to_index( nf ), postfix ) << ' ';
+				return true;
+			}
+
+			if ( postfix != "" )
+			{
+				os << fmt::format( "n{}_neg", ntk_topo.node_to_index( nf ) ) << ' ';
+				return true;
+			}
+
+			os << fmt::format( "n{}", ntk_topo.node_to_index( nf ) ) << ' ';
+			return true;
+		} );
+		os << "\n";
+	}
+
+	/* write constants */
+	if ( has_zero )
+	{
+		os << ".lincomb CONST0\n";
+		os << "0\n";
+	}
+	if ( has_one )
+	{
+		os << ".lincomb CONST1\n";
+		os << "1\n";
+	}
+
+	/* write LUTs */
+	ntk_topo.foreach_node( [&]( xag_network::node const& n ) {
+		if ( ntk_topo.is_constant( n ) )
+		{
+			return true;
+		}
+
+		uint32_t ind{ ntk_topo.node_to_index( n ) };
+		if ( ntk_topo.is_pi( n ) )
+		{
+			if ( shall_be_negated[n] )
+			{
+				os << fmt::format( ".lincomb " );
+				os << fmt::format( "pi{}", ind ) << ' ';
+				os << fmt::format( "pi{}_neg", ind ) << '\n';
+				os << "-1 1\n";
+			}
+			return true;
+		}
+
+		bool is_and = ntk_topo.is_and( n );
+		os << fmt::format( ".lincomb " );
+		ntk_topo.foreach_fanin( n, [&]( xag_network::signal const& fi ) {
+			uint32_t fi_ind = ntk_topo.node_to_index( ntk_topo.get_node( fi ) );
+			if ( ntk_topo.is_pi( ntk_topo.get_node( fi ) ) )
+			{
+				os << ( ntk_topo.is_complemented( fi ) ? fmt::format( "pi{}_neg", fi_ind ) : fmt::format( "pi{}", fi_ind ) ) << ' ';
+				return true;
+			}
+			if ( ntk_topo.is_complemented( fi ) )
+			{
+				os << fmt::format( "n{}_neg", fi_ind );
+			}
+			else
+			{
+				os << fmt::format( "n{}", fi_ind );
+			}
+			os << ' ';
+			return true;
+		} );
+
+		const std::string interm_name = fmt::format( "n{}_int", ind );
+		os << interm_name << '\n';
+		os << ( is_and ? "1 1\n" : "2 1\n" );
+
+		os << ".bootstrap " << interm_name << ' ';
+		os << fmt::format( "n{}\n", ind );
+		os << ( is_and ? "001\n" : "0110\n" );
+
+		if ( shall_be_negated[n] )
+		{
+			os << fmt::format( ".lincomb " );
+			os << fmt::format( "n{}", ind ) << ' ';
+			os << fmt::format( "n{}_neg", ind ) << '\n';
+			os << "-1 1\n";
+		}
+
 		return true;
 	} );
 
