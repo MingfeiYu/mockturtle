@@ -203,7 +203,7 @@ private:
  *
  * This implementation of the container is initialized with a network.
  * The map entries are constructed on the fly.  The container
- * can be accessed via ndoes, or indirectly via signals, from which
+ * can be accessed via nodes, or indirectly via signals, from which
  * the corresponding node is derived.
  *
  * The implementation uses an std::unordered_map as underlying data

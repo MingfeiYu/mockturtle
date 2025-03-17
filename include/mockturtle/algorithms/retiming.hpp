@@ -35,6 +35,7 @@
 #include <cstdint>
 #include <limits>
 
+#include "../networks/generic.hpp"
 #include "../utils/node_map.hpp"
 #include "../utils/stopwatch.hpp"
 #include "../views/fanout_view.hpp"
@@ -85,6 +86,97 @@ struct retime_stats
     std::cout << fmt::format( "[i] Total runtime   = {:>5.2f} secs\n", to_seconds( time_total ) );
   }
 };
+
+void print_current_flow_path( fanout_view<generic_network> const& ntk, node_map<uint32_t, fanout_view<generic_network>> const& flow_path, bool print_trav_id = false )
+{
+  std::cout << "[m] Printing out the current flow paths:\n";
+  ntk.foreach_node( [&]( generic_network::node const& n ) {
+    if ( flow_path[n] )
+    {
+      std::cout << ( ntk.is_pi( n ) ? fmt::format( "pi" ) : fmt::format( "n{}", n - 2 ) );
+      if ( print_trav_id )
+      {
+        std::cout << fmt::format( "({})", ntk.visited( n ) );
+      }
+      std::cout << " -> ";
+      uint32_t parent = flow_path[n];
+      std::cout << ( ( parent == UINT32_MAX ) ? fmt::format( "SINK" ) : fmt::format( "n{}", parent - 2 ) );
+      if ( print_trav_id && parent != UINT32_MAX )
+      {
+        std::cout << fmt::format( "({})", ntk.visited( ntk.index_to_node( parent ) ) );
+      }
+      std::cout << '\n';
+    }
+  } );
+  std::cout << "[m] Finished printing...\n";
+}
+
+void print_min_cut( fanout_view<generic_network> const& ntk, std::vector<generic_network::node> const& min_cut )
+{
+  std::cout << "[m] Printing out the min cut: { ";
+  for ( auto const n : min_cut )
+  {
+    if ( ntk.is_pi( n ) )
+    {
+      std::cout << fmt::format( "pi " );
+    }
+    else if ( ntk.is_po( n ) )
+    {
+      std::cout << fmt::format( "po{} ", ( n - ntk.num_gates() - ntk.num_pis() - 1 ) );
+    }
+    else
+    {
+      std::cout << fmt::format( "n{} ", n - 2 );
+    }
+    
+  }
+  std::cout << "}\n";
+  std::cout << "[m] Finished printing...\n";
+}
+
+void print_reg_pos( fanout_view<generic_network> const& ntk )
+{
+  uint32_t cnt{ 1u };
+
+  std::cout << "[m] Prining out register positions:\n";
+  ntk.foreach_register( [&]( auto const& n ) {
+    auto n_in = ntk.get_node( ntk.get_fanin0( n ) );
+    auto n_i = ntk.get_node( ntk.get_fanin0( n_in ) );
+    auto n_out = ntk.fanout( n )[0];
+    std::cout << fmt::format( "[m] Register {} connects node {} to", cnt++, ( ntk.node_to_index( n_i ) - 2 ) );
+    for ( auto n_o : ntk.fanout( n_out ) )
+    {
+      std::cout << fmt::format( " node {},", ( ntk.node_to_index( n_o ) - 2 ) );
+    }
+    std::cout << '\n';
+  } );
+}
+
+void print_current_info( fanout_view<generic_network> const& ntk )
+{
+  std::cout << "[m] Printing out the current information: { ";
+  ntk.foreach_node( [&]( auto const& n ) {
+    if ( ntk.is_constant( n ) )
+    {
+      return true;
+    }
+    if ( ntk.is_pi( n ) )
+    {
+      std::cout << fmt::format( "pi({}) ", ntk.visited( n ) );
+    }
+    else if ( ntk.is_po( n ) )
+    {
+      std::cout << fmt::format( "po{}({}) ", ( n - ntk.num_gates() - ntk.num_pis() - 1 ), ntk.visited( n ) );
+    }
+    else
+    {
+      std::cout << fmt::format( "n{}({}) ", n - 2, ntk.visited( n ) );
+    }
+    return true;
+  } );
+  std::cout << "}\n";
+  std::cout << "[m] Finished printing...\n";
+}
 
 namespace detail
 {
@@ -167,6 +259,8 @@ private:
     _flow_path.reset();
     _ntk.incr_trav_id();
 
+    int cnt{ 1u };
+
     /* run max flow from each register (capacity 1) */
     _ntk.foreach_register( [&]( auto const& n ) {
       uint32_t local_flow;
@@ -183,12 +277,20 @@ private:
       flow += local_flow;
 
       if ( local_flow )
+      {
         _ntk.incr_trav_id();
+
+        std::cout << fmt::format( "[m] Flow paths in the {}th iteration:\n", cnt );
+        print_current_flow_path( _ntk, _flow_path, true );
+      }
+      print_current_info( _ntk );
+      ++cnt;
 
       return true;
     } );
 
     /* run reachability */
+    // highlight the overlaps of more than one path
     _ntk.incr_trav_id();
     _ntk.foreach_register( [&]( auto const& n ) {
       uint32_t local_flow;
@@ -206,11 +308,38 @@ private:
       return true;
     } );
 
+    std::cout << "[m] The eventual flow paths and trav_id:\n";
+    print_current_flow_path( _ntk, _flow_path, true );
+    print_current_info( _ntk );
+
     auto min_cut = get_min_cut();
+    std::cout << "[m] Before legalizing retiming:\n";
+    print_min_cut( _ntk, min_cut );
 
     // assert( check_min_cut<forward>( min_cut, iteration ) );
 
     legalize_retiming<forward>( min_cut, iteration );
+    std::cout << "[m] After legalizing retiming:\n";
+    print_min_cut( _ntk, min_cut );
+    std::cout << "[m] Nodes whose value is 1: { ";
+    _ntk.foreach_node( [&]( auto const& n ) {
+      if ( _ntk.value( n ) )
+      {
+        if ( _ntk.is_pi( n ) )
+        {
+          std::cout << "pi ";
+        }
+        else if ( _ntk.is_po( n ) )
+        {
+          std::cout << fmt::format( "po{} ", ( n - _ntk.num_gates() - _ntk.num_pis() - 1 ) );
+        }
+        else
+        {
+          std::cout << fmt::format( "n{} ", n - 2 );
+        }
+      }
+    } );
+    std::cout << "}\n";
 
     return min_cut;
   }
@@ -249,6 +378,9 @@ private:
     }
 
     /* path has flow already, find alternative path from fanin with flow */
+    // TO CHECK: Is this case possible?
+    // If so, shouldn't the 'visited' flag of node 'n' be set already?
+    // -> makes sense, as the 'trav_id' would be updated every time a local flow is found
     node fanin_flow = 0;
     _ntk.foreach_fanin( n, [&]( auto const& f ) {
       if ( _ntk.is_constant( _ntk.get_node( f ) ) )
@@ -369,11 +501,13 @@ private:
     min_cut.reserve( _ntk.num_registers() );
 
     _ntk.foreach_node( [&]( auto const& n ) {
-      if ( _flow_path[n] == 0 )
+      if ( _flow_path[n] == 0 ) 
         return true;
       if ( _ntk.visited( n ) != _ntk.trav_id() )
         return true;
 
+      // What does "_ntk.visited( _flow_path[n] ) != _ntk.trav_id()" mean
+      // -> the intersection point of two path (flows) 
       if ( _ntk.value( n ) || _ntk.visited( _flow_path[n] ) != _ntk.trav_id() )
         min_cut.push_back( n );
       return true;
@@ -385,16 +519,45 @@ private:
   template<bool forward>
   void legalize_retiming( std::vector<node>& min_cut, uint32_t iteration )
   {
+    // setting the 'value' of registers to be relocated and their boxed inputs to 1
     _ntk.clear_values();
+
+    //                                  ----- n15 -||-> n19 -> n20 ->po2 
+    //                                  |     
+    // pi -> n1 -> n2 -> n3 -||-> n7 -> n8 -> n9 -||-> n13 -> n14 -> po1
+    // value = { n6, n12, n18 }
 
     _ntk.foreach_register( [&]( auto const& n ) {
       _ntk.set_value( _ntk.fanout( n )[0], 1 );
     } );
 
+    // min_cut = { n4, n8 }
+    // value = { n6, n12, n18, n4, n3, n2, n1, pi, n8, n7 } HERE
+
     for ( auto const& n : min_cut )
     {
       rec_mark_tfi( n );
     }
+    std::cout << "[m] Nodes whose value is 1: { ";
+    _ntk.foreach_node( [&]( auto const& n ) {
+      if ( _ntk.value( n ) )
+      {
+        if ( _ntk.is_pi( n ) )
+        {
+          std::cout << "pi ";
+        }
+        else if ( _ntk.is_po( n ) )
+        {
+          std::cout << fmt::format( "po{} ", ( n - _ntk.num_gates() - _ntk.num_pis() - 1 ) );
+        }
+        else
+        {
+          std::cout << fmt::format( "n{} ", n - 2 );
+        }
+      }
+    } );
+    std::cout << "}\n";
+    print_current_info( _ntk );
 
     min_cut.clear();
 
@@ -423,6 +586,9 @@ private:
         collect_cut_nodes_tfi( fanin, min_cut );
         return true;
       } );
+      std::cout << "[m] During legalizing retiming:\n";
+      print_min_cut( _ntk, min_cut );
+
       _ntk.foreach_node( [&]( auto const& n ) {
         if ( _ntk.visited( n ) == _ntk.trav_id() )
           _ntk.set_value( n, 1 );
@@ -473,6 +639,7 @@ private:
         _ntk.foreach_fanin( n, [&]( auto const& f ) {
           if ( _ntk.is_constant( _ntk.get_node( f ) ) )
             return;
+          /* 'Box input'-s are marked as well */
           _ntk.set_value( _ntk.get_node( f ), 1 );
         } );
       } );
@@ -482,7 +649,8 @@ private:
         rec_mark_tfo( n );
       } );
 
-      /* mark childrens of marked nodes */
+      /* mark fanins of marked nodes */
+      /* TO CONFIRM: Why? */
       std::vector<node> to_mark;
       to_mark.reserve( 200 );
       _ntk.foreach_gate( [&]( auto const& n ) {
@@ -520,7 +688,30 @@ private:
       _ntk.foreach_po( [&]( auto const& f ) {
         rec_mark_tfi( _ntk.get_node( f ) );
       } );
+
+      /* Why shall not the fanouts of the marked nodes be marked, */
+      /* which was done for the forward case? */
     }
+
+    std::cout << "[m] Nodes whose value is 1: { ";
+    _ntk.foreach_node( [&]( auto const& n ) {
+      if ( _ntk.value( n ) )
+      {
+        if ( _ntk.is_pi( n ) )
+        {
+          std::cout << "pi ";
+        }
+        else if ( _ntk.is_po( n ) )
+        {
+          std::cout << fmt::format( "po{} ", ( n - _ntk.num_gates() - _ntk.num_pis() - 1 ) );
+        }
+        else
+        {
+          std::cout << fmt::format( "n{} ", n - 2 );
+        }
+      }
+    } );
+    std::cout << "}\n";
   }
 
   template<bool forward>

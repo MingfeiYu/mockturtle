@@ -336,6 +336,23 @@ public:
   }
 #pragma endregion
 
+#pragma region Distinguish functions
+  bool is_buf( node const& n ) const
+  {
+    return _storage->nodes[n].data[1].h1 == 2;
+  }
+
+  bool is_not( node const& n ) const
+  {
+    return _storage->nodes[n].data[1].h1 == 3;
+  }
+
+  bool is_and( node const& n ) const
+  {
+    return _storage->nodes[n].data[1].h1 == 4;
+  }
+#pragma endregion
+
 #pragma region Create binary functions
   signal create_and( signal a, signal b )
   {
