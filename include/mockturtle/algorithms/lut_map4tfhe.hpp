@@ -1,35 +1,3 @@
-/* mockturtle: C++ logic network library
- * Copyright (C) 2018-2022  EPFL
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
-
-/*!
-  \file lut_mapper.hpp
-  \brief LUT mapper
-
-  \author Alessandro Tempia Calvino
-*/
-
 #pragma once
 
 #include <cstdint>
@@ -608,7 +576,7 @@ struct node_lut
   float est_refs;
 };
 
-template<class Ntk, bool StoreFunction, class LUTCostFn>
+template<class Ntk, bool StoreFunction, class LUTCostFn, bool multi_space = false>
 class lut_map_impl
 {
 private:
@@ -780,6 +748,7 @@ private:
       ++i;
     }
 
+    // update_labels_selected();
     update_labels_selected();
 
     /* compute mapping using exact area/edge */
@@ -807,6 +776,7 @@ private:
 
       if ( ps.ela_rounds != ( ps.ela_rounds - 1 ) )
       {
+        // update_labels_selected();
         update_labels_selected();
       }
       ++i;
@@ -817,19 +787,21 @@ private:
   {
     stopwatch t( st.time_update_selected_labels );
     labels_selected.clear();
+    space_switched.resize( ntk.size() );
+    std::fill( space_switched.begin(), space_switched.end(), false );
 
     for ( auto it{ topo_order.begin() }; it != topo_order.end(); ++it )
     {
       if ( ntk.is_constant( *it ) || ntk.is_ci( *it ) )
       {
+        /* TODO: Are PIs and constants flexible in encoding? */
+        space_switched[*it] = true;
         continue;
       }
 
       uint32_t const index = ntk.node_to_index( *it );
       if ( node_match[index].map_refs != 0u )
       {
-        /* TODO: obtain the label by referring to the cache */
-        // label_t const& current_best_label = derive_label( cuts[index][0] );
         label_t const& current_best_label = ( cuts[index][0] )->data.label;
         if ( labels_selected.find( current_best_label ) == labels_selected.end() )
         {
@@ -838,6 +810,19 @@ private:
         else
         {
           labels_selected[current_best_label] += 1u;
+        }
+
+        if constexpr ( multi_space )
+        {
+          auto const& current_cut = cuts[index][0];
+          const uint32_t current_cut_size = current_cut.size();
+          for ( uint32_t leaf : current_cut )
+          {
+            if ( cuts[leaf][0].size() != current_cut_size )
+            {
+              space_switched[leaf] = true;
+            }
+          }
         }
       }
     }
@@ -2914,8 +2899,6 @@ private:
     {
       cut_deref_customized( *best_cut );
 
-      /* TODO: obtain the label by referring to the cache */
-      // label_t label = derive_label( *best_cut  );
       label_t label = ( *best_cut )->data.label;
       labels_selected[label] -= 1u;
     }
@@ -2950,8 +2933,6 @@ private:
     {
       cut_ref_customized( *best_cut );
 
-      /* TODO: obtain the label by referring to the cache */
-      // label_t label = derive_label( *best_cut  );
       label_t label = ( *best_cut )->data.label;
       labels_selected[label] += 1u;
     }
@@ -3395,13 +3376,9 @@ private:
   {
     uint32_t count = cut->data.lut_area;
 
-    /* TODO: obtain the label by referring to the cache */
-    // label_t label = derive_label( cut );
     label_t label = cut->data.label;
     if ( p_labels_selected->find( label ) != p_labels_selected->end() )
     {
-      // ( *p_labels_selected )[label] += 1u;
-      // if ( ( *p_labels_selected )[label]++ != 0u )
       {
         if ( label[3] != MergeType::Invalid )
         {
@@ -3409,10 +3386,6 @@ private:
         }
       }
     }
-    // else
-    // {
-    //   p_labels_selected->insert( { label, 1u } );
-    // }
 
     for ( auto leaf : cut )
     {
@@ -3437,18 +3410,22 @@ private:
   uint32_t cut_ref_visit_customized_new( cut_t const& cut )
   {
     uint32_t count = cut->data.lut_area;
-
-    /* TODO: obtain the label by referring to the cache */
-    // label_t label = derive_label( cut );
     label_t label = cut->data.label;
 
-    if ( labels_selected.find( label ) != labels_selected.end() )
+    if constexpr ( multi_space )
     {
+      if ( labels_selected.find( label ) != labels_selected.end() &&
+           ( label[3] == MergeType::Symmetric || label[3] == MergeType::Negacyclic ) )
       {
-        if ( label[3] != MergeType::Invalid )
-        {
-          count = 0u;
-        }
+        count = 0u;
+      }
+    }
+    else
+    {
+      if ( labels_selected.find( label ) != labels_selected.end() &&
+           label[3] != MergeType::Invalid )
+      {
+        count = 0u;
       }
     }
 
@@ -3899,8 +3876,6 @@ private:
       }
       else
       {
-        /* TODO: obtain the label by referring to the cache */
-        // label_t pre_best_label = derive_label( best_cut );
         label_t pre_best_label = best_cut->data.label;
         auto it = labels_selected.find( pre_best_label );
         if ( it == labels_selected.end() )
@@ -3914,8 +3889,7 @@ private:
           {
             labels_selected.erase( it );
           }
-          /* TODO: obtain the label by referring to the cache */
-          // label_t cur_best_label = derive_label( rcuts[0] );
+
           label_t cur_best_label = ( rcuts[0] )->data.label;
           if ( labels_selected.find( cur_best_label ) == labels_selected.end() )
           {
@@ -3985,12 +3959,45 @@ private:
       lut_delay = cut->data.lut_delay;
     }
 
-    /* TODO: obtain the label by referring to the cache */
-    // label_t label = derive_label( cut );
     label_t label = cut->data.label;
-    if ( ( label[3] != MergeType::Invalid ) && ( labels_selected.find( label ) != labels_selected.end() ) )
+    if ( label[3] != MergeType::Invalid )
     {
-      lut_area = 0u;
+      if constexpr( multi_space )
+      {
+        if ( labels_selected.find( label ) != labels_selected.end() &&
+             ( label[3] == MergeType::Symmetric || label[3] == MergeType::Negacyclic ) )
+        {
+          lut_area = 0u;
+        }
+        else
+        {
+          /* add space-switching cost */
+          uint32_t additional_cost{ 0u };
+          uint32_t cut_size{ cut.size() };
+          for ( uint32_t leaf : cut )
+          {
+            if ( ntk.is_constant( ntk.index_to_node( leaf ) ) ||
+                 ntk.is_pi( ntk.index_to_node( leaf ) ) )
+            {
+              continue;
+            }
+
+            auto const& best_leaf_cut = cuts[leaf][0];
+            if ( best_leaf_cut.size() != cut_size && !space_switched[leaf] )
+            {
+              ++additional_cost;
+            }
+          }
+          lut_area += additional_cost;
+        }
+      }
+      else
+      {
+        if ( labels_selected.find( label ) != labels_selected.end() )
+        {
+          lut_area = 0u;
+        }
+      }
     }
 
     uint32_t delay{ 0 };
@@ -4954,6 +4961,7 @@ private:
   std::vector<node_lut> node_match;
   std::unordered_map<uint32_t, uint8_t> cut_sel_map;
   std::unordered_map<label_t, uint32_t, ArrayHash> labels_selected;
+  std::vector<bool> space_switched;
 
   std::vector<cut_set_t> cuts;  /* compressed representation of cuts */
   cut_merge_t lcuts;            /* cut merger container */
@@ -4993,7 +5001,7 @@ private:
  * - `foreach_node`
  * - `fanout_size`
  */
-template<class Ntk, bool ComputeTruth = false, class LUTCostFn = lut_unitary_cost>
+template<class Ntk, bool ComputeTruth = false, class LUTCostFn = lut_unitary_cost, bool multi_space = false>
 klut_network lut_map( Ntk& ntk, lut_map_params ps = {}, lut_map_stats* pst = nullptr )
 {
   static_assert( is_network_type_v<Ntk>, "Ntk is not a network type" );

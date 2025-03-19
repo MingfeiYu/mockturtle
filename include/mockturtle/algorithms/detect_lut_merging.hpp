@@ -411,8 +411,12 @@ void detect_lut_merging( klut_network const& ntk )
 	std::cout << "[i] Converting the k-LUT network into an LBF file...\n";
 }
 
+template<bool multi_space = false>
 node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map )
-{ 
+{
+	std::vector<bool> space_switched( ntk.size() );
+	std::cout << fmt::format( "[i] Network size: {}\n", ntk.size() );
+
 	uint32_t num_3_luts_sym_nm{ 0u };
 	uint32_t num_3_luts_neg_nm{ 0u };
 	uint32_t num_2_luts_nm{ 0u };
@@ -421,6 +425,7 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 	uint32_t num_2_luts{ 0u };
 	uint32_t num_not{ 0u };
 	uint32_t max_output_cnt{ 1u };
+	uint32_t num_space_switch{ 0u };
 
 	node_map<label_t, klut_network> node_to_label( ntk );
 
@@ -432,6 +437,7 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 		{
 			label_t label = { 0u, 0u, 0u, MergeType::Trivial };
 			node_to_label[n] = label;
+			space_switched[ntk.node_to_index( n )] = true;
 			return true;
 		}
 
@@ -493,7 +499,6 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 				kitty::print_hex( tt );
 				std::cerr << std::endl;
 
-
 				const auto sym_check = kitty::is_symmetric_n( tt );
 				if ( std::get<0>( sym_check ) )
 				{
@@ -527,7 +532,7 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 				else
 				{
 					++num_3_luts_neg;
-				}
+				}	
 			}
 		}
 		else if ( tt.num_vars() == 2u )
@@ -536,30 +541,73 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 			std::sort( std::begin( label ), ( std::end( label ) - 2 ) );
 			label[3] = MergeType::Normal;
 			node_to_label[n] = label;
-			
-			if ( mergable_luts_map.contains( label ) )
+
+			if constexpr ( multi_space )
 			{
-				mergable_luts_map.at( label ).emplace_back( idx );
-			}
-			else
-			{
+				/* MVFBS does not apply to Z_2 */
 				std::vector<uint32_t> indices( 1u );
 				indices[0]= idx;
 				mergable_luts_map.emplace( label, indices );
-				++num_2_luts;
+				// if ( !kitty::is_top_xor_decomposible( tt ) )
+				{
+					++num_2_luts;
+					++num_2_luts_nm;
+				}
 			}
-
-			++num_2_luts_nm;
+			else
+			{
+				if ( mergable_luts_map.contains( label ) )
+				{
+					mergable_luts_map.at( label ).emplace_back( idx );
+				}
+				else
+				{
+					std::vector<uint32_t> indices( 1u );
+					indices[0]= idx;
+					mergable_luts_map.emplace( label, indices );
+					++num_2_luts;
+				}
+				++num_2_luts_nm;
+			}
 		}
 		else
 		{
-			/* A potential abuse of labels: using 'Invalid' to indicate inverters */
+			/* This is an abuse of labels: we use 'Invalid' to indicate inverters */
 			/* this allow us to distinguish inverters without the need to check fan-in size */
 			label[1] = label[2] = 0u;
 			label[3] = MergeType::Invalid;
 			node_to_label[n] = label;
 			++num_not;
 		}
+
+		if constexpr ( multi_space )
+		{
+			const uint32_t num_vars = tt.num_vars();
+			if ( num_vars > 1u )
+			{
+				for ( auto i{ 0u }; i < num_vars; ++i )
+				{
+					const auto leaf = ntk.index_to_node( leaves[i] );
+					if ( ntk.fanin_size( leaf ) == 1u )
+					{
+						auto const& leaf_node = ntk._storage->nodes[leaf];
+						auto const leaf_fanin = leaf_node.children[0].index;
+						if ( ntk.fanin_size( leaf_fanin ) != num_vars &&
+						     !space_switched[leaf_fanin] )
+						{
+							space_switched[leaf_fanin] = true;
+							++num_space_switch;
+						}
+					}
+					else if ( ntk.fanin_size( leaf ) != num_vars &&
+					          !space_switched[leaf] )
+					{
+						space_switched[leaf] = true;
+						++num_space_switch;
+					}
+				}
+			}
+		}		
 
 		return true;
 	} );
@@ -576,9 +624,12 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 	std::cout << "[i] #2-LUTs: " << num_2_luts << "\n";
 	std::cout << "[i] #invertors: " << num_not << "\n";
 
+	if constexpr ( multi_space )
+	{
+		std::cout << fmt::format( "[i] #message-space-switch: {}\n\n", num_space_switch );
+	}
 
 	std::cout << "[i] The maximum output count is: " << max_output_cnt << "\n\n";
-
 
 	std::cout << "[i] Converting the k-LUT network into an LBF file...\n";
 	return node_to_label;

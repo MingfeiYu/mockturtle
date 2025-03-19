@@ -346,6 +346,7 @@ void klut2lbf( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map, 
 	os << ".end\n";
 }
 
+template<bool multi_space = false>
 void klut2lbf_mod( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map, node_map<label_t, klut_network> const& node_to_label, std::string const& filename )
 {
 	std::ofstream os( filename.c_str(), std::ofstream::out );
@@ -668,34 +669,82 @@ void klut2lbf_mod( klut_network const& ntk, mergable_luts_map_t& mergable_luts_m
 				}
 
 				/* write intermediate result */
-				const std::string interm_name = fmt::format( "in{}", ntk_topo.node_to_index( n ) );
-				os << interm_name << '\n';
-				os << "1 2\n";
-
-				/* write fan-outs */
-				os << ".bootstrap " << interm_name << " ";
-				std::vector<uint32_t> indices = mergable_luts_map[current_label];
-				for ( uint32_t i{ 0u }; i < indices.size(); ++i )
+				if constexpr ( multi_space )
 				{
-					const std::string fanout_name = fmt::format( "n{}", ntk_topo.index_to_node( indices[i] ) );
-					os << fanout_name;
-					if ( i != indices.size() - 1u )
+					const std::string interm_name = fmt::format( "in{}", ntk_topo.node_to_index( n ) );
+					os << interm_name << '\n';
+					std::vector<uint32_t> indices = mergable_luts_map[current_label];
+					auto const current_node = ntk_topo.index_to_node( indices[0] );
+					if ( kitty::is_top_xor_decomposible( ntk_topo.node_function( current_node ) ) )
 					{
-						os << ' ';
+						assert( indices.size() == 1u );
+						os << "1 2\n";
+
+						/* write fan-outs */
+						os << ".bootstrap " << interm_name << " ";
+						os << fmt::format( "n{}\n", indices[0] );
+						os << "0110\n";
 					}
-					// names.insert( fanout_name );
-				}
-				os << '\n';
-
-				/* write (projected) truth table */
-				for ( uint32_t const& index : indices )
-				{
-					auto const tt = ntk_topo.node_function( ntk_topo.index_to_node( index ) );
-					for ( uint32_t i{ 0u }; i < tt.num_bits(); ++i )
+					else
 					{
-						os << fmt::format( "{}", kitty::get_bit( tt, i ) );
+						os << "1 1\n";
+
+						/* write fan-outs */
+						os << ".bootstrap " << interm_name << " ";
+						for ( uint32_t i{ 0u }; i < indices.size(); ++i )
+						{
+							const std::string fanout_name = fmt::format( "n{}", ntk_topo.index_to_node( indices[i] ) );
+							os << fanout_name;
+							if ( i != indices.size() - 1u )
+							{
+								os << ' ';
+							}
+						}
+						os << '\n';
+					}
+
+					/* write (projected) truth table */
+					for ( uint32_t const& index : indices )
+					{
+						auto const tt = ntk_topo.node_function( ntk_topo.index_to_node( index ) );
+						for ( uint32_t i{ 1u }; i <= tt.num_bits(); i << 1 )
+						{
+							os << fmt::format( "{}", kitty::get_bit( tt, i - 1 ) );
+						}
+						os << '\n';
+					}
+				}
+				else
+				{
+					const std::string interm_name = fmt::format( "in{}", ntk_topo.node_to_index( n ) );
+					os << interm_name << '\n';
+					os << "1 2\n";
+	
+					/* write fan-outs */
+					os << ".bootstrap " << interm_name << " ";
+					std::vector<uint32_t> indices = mergable_luts_map[current_label];
+					for ( uint32_t i{ 0u }; i < indices.size(); ++i )
+					{
+						const std::string fanout_name = fmt::format( "n{}", ntk_topo.index_to_node( indices[i] ) );
+						os << fanout_name;
+						if ( i != indices.size() - 1u )
+						{
+							os << ' ';
+						}
+						// names.insert( fanout_name );
 					}
 					os << '\n';
+
+					/* write (projected) truth table */
+					for ( uint32_t const& index : indices )
+					{
+						auto const tt = ntk_topo.node_function( ntk_topo.index_to_node( index ) );
+						for ( uint32_t i{ 0u }; i < tt.num_bits(); ++i )
+						{
+							os << fmt::format( "{}", kitty::get_bit( tt, i ) );
+						}
+						os << '\n';
+					}
 				}
 				break;
 			}
