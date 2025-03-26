@@ -165,6 +165,7 @@ struct cut_enumeration_lut_cut
   float edge_flow{ 0 };
   bool ignore{ false };
   label_t label{ { 0, 0, 0, static_cast<uint32_t>( MergeType::Invalid ) } };
+  uint8_t space{ EncodingSpace::Init };
 };
 
 enum class lut_cut_sort_type
@@ -748,7 +749,6 @@ private:
       ++i;
     }
 
-    // update_labels_selected();
     update_labels_selected();
 
     /* compute mapping using exact area/edge */
@@ -774,9 +774,8 @@ private:
         expand_cuts<true>();
       }
 
-      if ( ps.ela_rounds != ( ps.ela_rounds - 1 ) )
+      if ( i != ( ps.ela_rounds - 1 ) )
       {
-        // update_labels_selected();
         update_labels_selected();
       }
       ++i;
@@ -789,22 +788,26 @@ private:
     labels_selected.clear();
     space_switched.resize( ntk.size() );
     std::fill( space_switched.begin(), space_switched.end(), false );
+    debtors.resize( ntk.size() );
+    std::fill( debtors.begin(), debtors.end(), 0u );
+    const_pi_space.resize( 2 + ntk.num_pis() );
+    std::fill( const_pi_space.begin(), const_pi_space.end(), 0u );
 
     for ( auto it{ topo_order.begin() }; it != topo_order.end(); ++it )
     {
       if ( ntk.is_constant( *it ) || ntk.is_ci( *it ) )
       {
-        /* TODO: Are PIs and constants flexible in encoding? */
-        space_switched[*it] = true;
+        // space_switched[*it] = true;
         continue;
       }
 
-      uint32_t const index = ntk.node_to_index( *it );
+      const uint32_t index = ntk.node_to_index( *it );
       if ( node_match[index].map_refs != 0u )
       {
         label_t const& current_best_label = ( cuts[index][0] )->data.label;
         if ( labels_selected.find( current_best_label ) == labels_selected.end() )
         {
+          // ++debtors[index];
           labels_selected.insert( { current_best_label, 1u } );
         }
         else
@@ -815,12 +818,41 @@ private:
         if constexpr ( multi_space )
         {
           auto const& current_cut = cuts[index][0];
-          const uint32_t current_cut_size = current_cut.size();
+          uint32_t current_cut_size = current_cut.size();
+          // if ( current_cut_size == 2u && current_cut->data.space == EncodingSpace::Z4 )
+          // {
+          //   current_cut_size = 3u;
+          // }
+
           for ( uint32_t leaf : current_cut )
           {
-            if ( cuts[leaf][0].size() != current_cut_size )
+            if ( ntk.is_constant( ntk.index_to_node( leaf ) ) ||
+                 ntk.is_pi( ntk.index_to_node( leaf ) ) )
+            {
+              if ( !const_pi_space[leaf] || const_pi_space[leaf] == current_cut_size )
+              {
+                const_pi_space[leaf] = current_cut_size;
+              }
+              else if ( space_switched[*it] == false )
+              {
+                space_switched[leaf] = true;
+                ++debtors[index];
+              }
+              continue;
+            }
+
+            uint32_t current_leaf_size = cuts[leaf][0].size();
+            // if ( current_leaf_size == 2u && ( cuts[leaf][0] )->data.space == EncodingSpace::Z4 )
+            // {
+            //   current_leaf_size = 3u;
+            // }
+
+            if ( current_leaf_size != current_cut_size &&
+            // if ( ( cuts[leaf][0] )->data.space != current_cut->data.space &&
+                 space_switched[leaf] == false )
             {
               space_switched[leaf] = true;
+              ++debtors[index];
             }
           }
         }
@@ -1192,7 +1224,7 @@ private:
         }
 
 
-        // std::cout << std::endl;
+        std::cout << std::endl;
 
 
         label_t label;
@@ -1247,7 +1279,7 @@ private:
         }
 
 
-        // std::cout << "[i] Label of the " << ( j + 1 ) << "th cut is {" << label[0] << ", " << label[1] << ", " << label[2] << ", " << label[3] << "}.\n";
+        // fmt::print( "[m] Label of the {}th cut is [{}, {}, {}, {}]\n", ( j + 1 ), ( ntk.is_pi( label[0] ) ? ( "PI" + std::to_string( label[0] - 1 ) ) : ( "n" + std::to_string( label[0] + 246 ) ) ), ( ntk.is_pi( label[1] ) ? ( "PI" + std::to_string( label[1] - 1 ) ) : ( "n" + std::to_string( label[1] + 246 ) ) ), ( ntk.is_pi( label[2] ) ? ( "PI" + std::to_string( label[2] - 1 ) ) : ( "n" + std::to_string( label[2] + 246 ) ) ), ( ( label[3] == MergeType::Symmetric ) ? "Symmetric" : ( ( label[3] == MergeType::Negacyclic ) ? "Negacyclic" : "Normal" ) ) ); 
 
 
         if ( mergable_luts_map.contains( label ) )
@@ -2604,6 +2636,9 @@ private:
           vcuts[0] = c1;
           vcuts[1] = c2;
           new_cut->func_id = compute_truth_table( index, vcuts, new_cut );
+          auto const& info = derive_label( new_cut );
+          new_cut->data.label = info.first;
+          new_cut->data.space = info.second;
         }
 
         compute_cut_data<ELA>( new_cut, ntk.index_to_node( index ), true );
@@ -2733,7 +2768,7 @@ private:
         {
           new_cut->func_id = compute_truth_table( index, vcuts, new_cut );
 
-          new_cut.data->label = derive_label( new_cut );
+          new_cut->label = derive_label( new_cut );
         }
 
         compute_cut_data<ELA>( new_cut, index, true );
@@ -2885,6 +2920,41 @@ private:
     // update_labels_selected();
   }
 
+  void print_design_choices( node const& n )
+  {
+    uint32_t index = ntk.node_to_index( n );
+    uint32_t cnt{ 1u };
+    fmt::print( "[m] Design choices of n{}:\n", index + 246 );
+    for ( cut_t* cut : cuts[index] )
+    {
+      if ( cut->size() == 1 && *cut->begin() == index )
+      {
+        fmt::print( "[m] The {}th choice is trivial...\n", cnt );
+        ++cnt;
+        continue;
+      }
+
+      fmt::print( "[m] The chilren of the {}th choice: [", cnt );
+      ++cnt;
+      for ( uint32_t child : *cut )
+      {
+        if ( ntk.is_constant( ntk.index_to_node( child ) ) )
+        {
+          fmt::print( "CONST{}, ", child );
+        }
+        else if ( ntk.is_pi( ntk.index_to_node( child ) ) )
+        {
+          fmt::print( "PI{}, ", child - 1 );
+        }
+        else
+        {
+          fmt::print( "n{}, ", child + 246 );
+        }
+      }
+      fmt::print( "], with cost {}( debt: {} )\n", ( *cut )->data.lut_area, debtors[ntk.node_to_index( n )] );
+    }
+  }
+
   void update_cut_data_customized( node const& n, lut_cut_sort_type const sort )
   {
     auto index = ntk.node_to_index( n );
@@ -2900,7 +2970,18 @@ private:
       cut_deref_customized( *best_cut );
 
       label_t label = ( *best_cut )->data.label;
-      labels_selected[label] -= 1u;
+      if constexpr ( multi_space )
+      {
+        if ( label[2] != 0u )
+        {
+          labels_selected[label] -= 1u;
+        }
+      }
+      else
+      {
+        labels_selected[label] -= 1u;
+      }
+      
     }
 
     /* recompute the data for all the cuts and pick the best */
@@ -2928,17 +3009,31 @@ private:
       ++cut_index;
     }
 
-
     if ( iteration != 0 && node_data.map_refs > 0 )
     {
       cut_ref_customized( *best_cut );
 
       label_t label = ( *best_cut )->data.label;
-      labels_selected[label] += 1u;
+
+      if constexpr ( multi_space )
+      {
+        if ( label[2] != 0u )
+        {
+          
+          labels_selected[label] += 1u;
+        }
+      }
+      else
+      {
+        labels_selected[label] += 1u;
+      }
     }
 
     /* update the best cut */
     node_cut_set.update_best( best_cut_index );
+
+
+    // print_design_choices( n );
   }
 
   void update_cut_data_share( node const& n, lut_cut_sort_type const sort )
@@ -3652,7 +3747,7 @@ private:
     }
   }
 
-  label_t derive_label( cut_t const& cut )
+  std::pair<label_t, uint8_t> derive_label( cut_t const& cut )
   {
     stopwatch t( st.time_derive_label );
 
@@ -3668,10 +3763,13 @@ private:
     {
       label[i] = leaves[i];
     }
+    uint8_t space = EncodingSpace::Init;
 
     auto const tt = truth_tables[cut->func_id];
     if ( tt.num_vars() == 3u )
     {
+      space = EncodingSpace::Z4;
+
       std::sort( std::begin( label ), ( std::end( label ) - 1 ) );
 
       if ( kitty::is_symmetric( tt ) )
@@ -3681,8 +3779,8 @@ private:
       else if ( std::tuple<bool, TT, uint8_t> sym_check = kitty::is_symmetric_n( tt ); std::get<0>( sym_check ) )
       {
         label[3] = static_cast<uint32_t>( MergeType::Symmetric );
-        /* store input phase in the MSB of label[3] */
-        label[3] |= ( std::get<2>( sym_check ) << ( 32 - tt.num_vars() ) );
+        // /* store input phase in the MSB of label[3] */
+        // label[3] |= ( std::get<2>( sym_check ) << ( 32 - tt.num_vars() ) );
       }
       else if ( std::tuple<bool, uint8_t> neg_check = kitty::is_top_xor_decomposible_return_support( tt ); std::get<0>( neg_check ) )
       {
@@ -3709,6 +3807,15 @@ private:
     }
     else if ( tt.num_vars() == 2u )
     {
+      if ( kitty::is_top_xor_decomposible( truth_tables[cut->func_id] ) )
+      {
+        space = EncodingSpace::Z2;
+      }
+      else
+      {
+        space = EncodingSpace::Z4;
+      }
+      
       label[2] = 0u;
       std::sort( std::begin( label ), ( std::end( label ) - 2 ) );
       label[3] = static_cast<uint32_t>( MergeType::Normal );
@@ -3719,7 +3826,7 @@ private:
       label[3] = static_cast<uint32_t>( MergeType::Trivial );
     }
 
-    return label;
+    return std::make_pair( label, space );
   }
 
   template<bool DO_AREA, bool ELA>
@@ -3904,8 +4011,6 @@ private:
     }
     else
     {
-      /* TODO: obtain the label by referring to the cache */
-      // label_t cur_best_label = derive_label( rcuts[0] );
       label_t cur_best_label = ( rcuts[0] )->data.label;
       if ( labels_selected.find( cur_best_label ) == labels_selected.end() )
       {
@@ -3962,9 +4067,10 @@ private:
     label_t label = cut->data.label;
     if ( label[3] != MergeType::Invalid )
     {
-      if constexpr( multi_space )
+      if constexpr ( multi_space )
       {
-        if ( labels_selected.find( label ) != labels_selected.end() &&
+        // fmt::print( "[m] Label is : {}\n", ( ( label[3] == MergeType::Symmetric ) ? "Symmetric" : ( ( label[3] == MergeType::Negacyclic ) ? "Negacyclic" : "Normal" ) ) );
+        if ( ( labels_selected.find( label ) != labels_selected.end() ) &&
              ( label[3] == MergeType::Symmetric || label[3] == MergeType::Negacyclic ) )
         {
           lut_area = 0u;
@@ -3972,18 +4078,36 @@ private:
         else
         {
           /* add space-switching cost */
-          uint32_t additional_cost{ 0u };
+          uint32_t additional_cost{ debtors[ntk.node_to_index( n )] };
+          // uint32_t additional_cost{ 0u };
           uint32_t cut_size{ cut.size() };
+          if ( cut_size == 2u && cut->data.space == EncodingSpace::Z4 )
+          {
+            cut_size = 3u;
+          }
+
           for ( uint32_t leaf : cut )
           {
             if ( ntk.is_constant( ntk.index_to_node( leaf ) ) ||
                  ntk.is_pi( ntk.index_to_node( leaf ) ) )
             {
+              if ( const_pi_space[leaf] != 0u &&
+                   const_pi_space[leaf] != cut_size &&
+                   !space_switched[leaf] )
+              {
+                ++additional_cost;
+              }
               continue;
             }
 
-            auto const& best_leaf_cut = cuts[leaf][0];
-            if ( best_leaf_cut.size() != cut_size && !space_switched[leaf] )
+            uint32_t current_leaf_size = cuts[leaf][0].size();
+            if ( current_leaf_size == 2u && ( cuts[leaf][0] )->data.space == EncodingSpace::Z4 )
+            {
+              current_leaf_size = 3u;
+            }
+
+            if ( ( current_leaf_size != cut_size ) &&
+                   !space_switched[leaf] )
             {
               ++additional_cost;
             }
@@ -4962,6 +5086,8 @@ private:
   std::unordered_map<uint32_t, uint8_t> cut_sel_map;
   std::unordered_map<label_t, uint32_t, ArrayHash> labels_selected;
   std::vector<bool> space_switched;
+  std::vector<uint32_t> debtors;
+  std::vector<uint32_t> const_pi_space;
 
   std::vector<cut_set_t> cuts;  /* compressed representation of cuts */
   cut_merge_t lcuts;            /* cut merger container */
@@ -5030,7 +5156,7 @@ klut_network lut_map( Ntk& ntk, lut_map_params ps = {}, lut_map_stats* pst = nul
     tps.cut_expansion = false;
   }
 
-  detail::lut_map_impl<Ntk, ComputeTruth, LUTCostFn> p( ntk, tps, st );
+  detail::lut_map_impl<Ntk, ComputeTruth, LUTCostFn, multi_space> p( ntk, tps, st );
   klut = p.run();
 
   if ( ps.verbose )

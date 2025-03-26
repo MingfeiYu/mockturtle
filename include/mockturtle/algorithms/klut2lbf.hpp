@@ -35,11 +35,18 @@ typedef phmap::flat_hash_map<label_t, std::vector<uint32_t>, ArrayHash> mergable
 
 enum MergeType: uint8_t 
 {
-    Trivial = 0u,
-    Symmetric = 1u,
-    Negacyclic = 2u,
-    Normal = 3u,
-    Invalid = 4u
+  Trivial = 0u,
+  Symmetric = 1u,
+  Negacyclic = 2u,
+  Normal = 3u,
+  Invalid = 4u
+};
+
+enum EncodingSpace: uint8_t 
+{
+	Init = 0u,
+  Z2 = 1u,
+  Z4 = 2u
 };
 
 /* DEPRECATED. Dedicated for the previous version of the LBF format */

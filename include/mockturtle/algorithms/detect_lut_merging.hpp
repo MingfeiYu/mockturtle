@@ -414,8 +414,10 @@ void detect_lut_merging( klut_network const& ntk )
 template<bool multi_space = false>
 node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mergable_luts_map_t& mergable_luts_map )
 {
-	std::vector<bool> space_switched( ntk.size() );
-	std::cout << fmt::format( "[i] Network size: {}\n", ntk.size() );
+	std::vector<bool> space_switched( ntk.size(), false );
+	std::vector<uint32_t> const_pi_space( 2 + ntk.num_pis(), 0u );
+
+	// std::cout << fmt::format( "[i] Network size: {}\n", ntk.size() );
 
 	uint32_t num_3_luts_sym_nm{ 0u };
 	uint32_t num_3_luts_neg_nm{ 0u };
@@ -437,7 +439,7 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 		{
 			label_t label = { 0u, 0u, 0u, MergeType::Trivial };
 			node_to_label[n] = label;
-			space_switched[ntk.node_to_index( n )] = true;
+			// space_switched[ntk.node_to_index( n )] = true;
 			return true;
 		}
 
@@ -548,9 +550,15 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 				std::vector<uint32_t> indices( 1u );
 				indices[0]= idx;
 				mergable_luts_map.emplace( label, indices );
-				// if ( !kitty::is_top_xor_decomposible( tt ) )
+				if ( !kitty::is_top_xor_decomposible( tt ) )
 				{
+					/* This is an abuse of variables: In "multi_space" mode, */
+					/* "num_2_luts" records the number of 2-LUTs implementing non-linear gates */
+					/* "num_2_luts_nm" records the number of 2-LUTs implementing linear gates */
 					++num_2_luts;
+				}
+				else
+				{
 					++num_2_luts_nm;
 				}
 			}
@@ -585,22 +593,62 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 			const uint32_t num_vars = tt.num_vars();
 			if ( num_vars > 1u )
 			{
+				uint32_t current_node_size{ num_vars };
+				// if ( current_node_size == 2u &&
+				//      !kitty::is_top_xor_decomposible( tt ) )
+				// {
+				// 	current_node_size = 3u;
+				// }
+
 				for ( auto i{ 0u }; i < num_vars; ++i )
 				{
 					const auto leaf = ntk.index_to_node( leaves[i] );
+					uint32_t leaf_index = leaves[i];
+
+					if ( ntk.is_constant( leaf ) || ntk.is_pi( leaf ) )
+					{
+						if ( const_pi_space[leaf_index] == 0u ||
+						     const_pi_space[leaf_index] == current_node_size )
+						{
+							const_pi_space[leaf_index] = current_node_size;
+						}
+						else if ( space_switched[leaf_index] == false )
+						{
+							space_switched[leaf_index] = true;
+							++num_space_switch;
+						}
+						continue;
+					}
+
 					if ( ntk.fanin_size( leaf ) == 1u )
 					{
 						auto const& leaf_node = ntk._storage->nodes[leaf];
 						auto const leaf_fanin = leaf_node.children[0].index;
-						if ( ntk.fanin_size( leaf_fanin ) != num_vars &&
-						     !space_switched[leaf_fanin] )
+						uint32_t leaf_fanin_size{ ntk.fanin_size( leaf_fanin ) };
+						// if ( leaf_fanin_size == 2u &&
+						//      !kitty::is_top_xor_decomposible( ntk.node_function( ntk.index_to_node( leaf_fanin ) ) ) )
+						// {
+						// 	leaf_fanin_size == 3u;
+						// }
+
+						if ( leaf_fanin_size != current_node_size &&
+						     space_switched[leaf_fanin] == false )
 						{
 							space_switched[leaf_fanin] = true;
 							++num_space_switch;
+							continue;
 						}
 					}
-					else if ( ntk.fanin_size( leaf ) != num_vars &&
-					          !space_switched[leaf] )
+
+					uint32_t leaf_size{ ntk.fanin_size( leaf ) };
+					// if ( leaf_size == 2u &&
+					//      !kitty::is_top_xor_decomposible( ntk.node_function( leaf ) ) )
+					// {
+					// 	leaf_size = 3u;
+					// }
+
+					if ( leaf_size != current_node_size &&
+					     space_switched[leaf] == false )
 					{
 						space_switched[leaf] = true;
 						++num_space_switch;
@@ -613,19 +661,20 @@ node_map<label_t, klut_network> detect_lut_merging( klut_network const& ntk, mer
 	} );
 
 	std::cout << "[i] Without merging:\n";
-	std::cout << "[i] #BRs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm + num_2_luts_nm ) << "\n";
+	std::cout << "[i] #BRs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm + num_2_luts_nm + num_space_switch ) << "\n";
 	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym_nm + num_3_luts_neg_nm ) << "( SYM: " << num_3_luts_sym_nm << ", NEG: " << num_3_luts_neg_nm << " )\n";
 	std::cout << "[i] #2-LUTs: " << num_2_luts_nm << "\n";
 	std::cout << "[i] #invertors: " << num_not << "\n\n";
 
 	std::cout << "[i] With merging:\n";
-	std::cout << "[i] #BRs: " << ( num_3_luts_sym + num_3_luts_neg+ num_2_luts ) << "\n";
+	std::cout << "[i] #BRs: " << ( num_3_luts_sym + num_3_luts_neg+ num_2_luts + num_space_switch ) << "\n";
 	std::cout << "[i] #3-LUTs: " << ( num_3_luts_sym + num_3_luts_neg ) << "( SYM: " << num_3_luts_sym << ", NEG: " << num_3_luts_neg << " )\n";
 	std::cout << "[i] #2-LUTs: " << num_2_luts << "\n";
 	std::cout << "[i] #invertors: " << num_not << "\n";
 
 	if constexpr ( multi_space )
 	{
+		std::cout << fmt::format( "[i] #free XORs           : {}\n", num_2_luts_nm );
 		std::cout << fmt::format( "[i] #message-space-switch: {}\n\n", num_space_switch );
 	}
 

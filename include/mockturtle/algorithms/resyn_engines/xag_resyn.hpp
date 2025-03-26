@@ -74,7 +74,7 @@ struct xag_resyn_static_params
   static constexpr uint32_t size_cost_of_and{ 1u };
 
   /*! \brief Size cost of each XOR gate (only relevant when `use_xor = true`). */
-  static constexpr uint32_t size_cost_of_xor{ 1u };
+  static constexpr uint32_t size_cost_of_xor{ 0u };
 
   /*! \brief Depth cost of each AND gate (only relevant when `preserve_depth = true`). */
   static constexpr uint32_t depth_cost_of_and{ 1u };

@@ -223,9 +223,9 @@ public:
   }
 
   template<typename LeavesIterator, typename Fn>
-  void operator()( xag_network& xag, kitty::dynamic_truth_table const& function, LeavesIterator begin, LeavesIterator end, Fn&& fn )
+  void operator()( xag_network& xag, kitty::dynamic_truth_table const& function, LeavesIterator begin, LeavesIterator end, Fn&& fn ) const
   {
-    stopwatch t1( st.time_total );
+    // stopwatch t1( st.time_total );
 
     const auto func_ext = kitty::extend_to<6u>( function );
     std::vector<kitty::detail::spectral_operation> trans;
@@ -235,7 +235,7 @@ public:
 
     if ( cache_it != classify_cache->end() )
     {
-      st.cache_hits++;
+      // st.cache_hits++;
       if ( !std::get<0>( cache_it->second ) )
       {
         return; /* quit */
@@ -245,17 +245,22 @@ public:
     }
     else
     {
-      st.cache_misses++;
-      const auto spectral = call_with_stopwatch( st.time_classify,
-                                                 [&]() { return kitty::exact_spectral_canonization_limit( func_ext, 100000,
-                                                                                                          [&trans]( auto const& ops ) {
-                                                                                                            std::copy( ops.begin(), ops.end(),
-                                                                                                                       std::back_inserter( trans ) );
-                                                                                                          } ); } );
+      // st.cache_misses++;
+      // const auto spectral = call_with_stopwatch( st.time_classify,
+      //                                            [&]() { return kitty::exact_spectral_canonization_limit( func_ext, 100000,
+      //                                                                                                     [&trans]( auto const& ops ) {
+      //                                                                                                       std::copy( ops.begin(), ops.end(),
+      //                                                                                                                  std::back_inserter( trans ) );
+      //                                                                                                     } ); } );
+      const auto spectral = kitty::exact_spectral_canonization_limit( func_ext, 100000,
+                                                                      [&trans]( auto const& ops ) {
+                                                                        std::copy( ops.begin(), ops.end(),
+                                                                        std::back_inserter( trans ) );
+                                                                      } );
       classify_cache->insert( { func_ext, { spectral.second, spectral.first, trans } } );
       if ( !spectral.second )
       {
-        st.classify_aborts++;
+        // st.classify_aborts++;
         return; /* quit */
       }
       tt_ext = spectral.first;
@@ -274,11 +279,17 @@ public:
       kitty::static_truth_table<6u> db_repr;
       kitty::create_from_hex_string( db_repr, original_f );
 
-      call_with_stopwatch( st.time_classify, [&]() { return kitty::exact_spectral_canonization(
-                                                         db_repr, [&trans]( auto const& ops ) {
-                                                           std::copy( ops.rbegin(), ops.rend(),
-                                                                      std::back_inserter( trans ) );
-                                                         } ); } );
+      // call_with_stopwatch( st.time_classify, [&]() { return kitty::exact_spectral_canonization(
+      //                                                    db_repr, [&trans]( auto const& ops ) {
+      //                                                      std::copy( ops.rbegin(), ops.rend(),
+      //                                                                 std::back_inserter( trans ) );
+      //                                                    } ); } );
+      kitty::exact_spectral_canonization(
+        db_repr, [&trans]( auto const& ops ) {
+          std::copy( ops.rbegin(), ops.rend(),
+          std::back_inserter( trans ) );
+        }
+      );
     }
     else if ( kitty::is_const0( tt_ext ) )
     {
@@ -287,7 +298,7 @@ public:
     else
     {
       // std::cout << "[w] unknown " << kitty::to_hex( tt_ext ) << " from " << kitty::to_hex( func_ext ) << "\n";
-      st.unknown_function_aborts++;
+      // st.unknown_function_aborts++;
       return; /* quit */
     }
 
@@ -296,7 +307,7 @@ public:
     std::vector<xag_network::signal> pis( 6, xag.get_constant( false ) );
     std::copy( begin, end, pis.begin() );
 
-    stopwatch t2( st.time_construct );
+    // stopwatch t2( st.time_construct );
     for ( auto const& t : trans )
     {
       switch ( t._kind )

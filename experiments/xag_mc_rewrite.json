@@ -1,0 +1,127 @@
+[
+  {
+    "entries": [
+      {
+        "#initial_mc": 382,
+        "#mc_new": 382,
+        "#mc_old": 382,
+        "benchmark": "adder"
+      },
+      {
+        "#initial_mc": 3141,
+        "#mc_new": 3141,
+        "#mc_old": 3141,
+        "benchmark": "bar"
+      },
+      {
+        "#initial_mc": 17459,
+        "#mc_new": 9720,
+        "#mc_old": 17459,
+        "benchmark": "div"
+      },
+      {
+        "#initial_mc": 115061,
+        "#mc_new": 102218,
+        "#mc_old": 115061,
+        "benchmark": "hyp"
+      },
+      {
+        "#initial_mc": 20137,
+        "#mc_new": 20135,
+        "#mc_old": 20137,
+        "benchmark": "log2"
+      },
+      {
+        "#initial_mc": 2809,
+        "#mc_new": 2805,
+        "#mc_old": 2809,
+        "benchmark": "max"
+      },
+      {
+        "#initial_mc": 14167,
+        "#mc_new": 14167,
+        "#mc_old": 14167,
+        "benchmark": "multiplier"
+      },
+      {
+        "#initial_mc": 3535,
+        "#mc_new": 3526,
+        "#mc_old": 3535,
+        "benchmark": "sin"
+      },
+      {
+        "#initial_mc": 12841,
+        "#mc_new": 12683,
+        "#mc_old": 12841,
+        "benchmark": "sqrt"
+      },
+      {
+        "#initial_mc": 10940,
+        "#mc_new": 10862,
+        "#mc_old": 10940,
+        "benchmark": "square"
+      },
+      {
+        "#initial_mc": 11839,
+        "#mc_new": 11839,
+        "#mc_old": 11839,
+        "benchmark": "arbiter"
+      },
+      {
+        "#initial_mc": 671,
+        "#mc_new": 671,
+        "#mc_old": 671,
+        "benchmark": "cavlc"
+      },
+      {
+        "#initial_mc": 116,
+        "#mc_new": 114,
+        "#mc_old": 116,
+        "benchmark": "ctrl"
+      },
+      {
+        "#initial_mc": 304,
+        "#mc_new": 304,
+        "#mc_old": 304,
+        "benchmark": "dec"
+      },
+      {
+        "#initial_mc": 1258,
+        "#mc_new": 1258,
+        "#mc_old": 1258,
+        "benchmark": "i2c"
+      },
+      {
+        "#initial_mc": 223,
+        "#mc_new": 223,
+        "#mc_old": 223,
+        "benchmark": "int2float"
+      },
+      {
+        "#initial_mc": 45303,
+        "#mc_new": 45293,
+        "#mc_old": 45303,
+        "benchmark": "mem_ctrl"
+      },
+      {
+        "#initial_mc": 846,
+        "#mc_new": 846,
+        "#mc_old": 846,
+        "benchmark": "priority"
+      },
+      {
+        "#initial_mc": 167,
+        "#mc_new": 167,
+        "#mc_old": 167,
+        "benchmark": "router"
+      },
+      {
+        "#initial_mc": 5427,
+        "#mc_new": 4356,
+        "#mc_old": 5427,
+        "benchmark": "voter"
+      }
+    ],
+    "version": "8220a34"
+  }
+]

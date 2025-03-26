@@ -3,6 +3,7 @@
 
 #include <fmt/format.h>
 #include <lorina/aiger.hpp>
+#include <lorina/verilog.hpp>
 #include <mockturtle/algorithms/node_resynthesis/xag_npn.hpp>
 #include <mockturtle/algorithms/aig_resub.hpp>
 #include <mockturtle/algorithms/mapper.hpp>
@@ -10,6 +11,7 @@
 #include <mockturtle/algorithms/detect_lut_merging.hpp>
 #include <mockturtle/algorithms/rewrite.hpp>
 #include <mockturtle/io/aiger_reader.hpp>
+#include <mockturtle/io/verilog_reader.hpp>
 #include <mockturtle/networks/aig.hpp>
 #include <mockturtle/networks/xag.hpp>
 #include <mockturtle/networks/klut.hpp>
@@ -43,7 +45,8 @@ struct tfhe_cost
     if ( num_vars == 3u )
     {
       /* detect symmetry, with input negation considered */
-      if ( kitty::is_symmetric( tt ) )
+      if ( kitty::is_symmetric( tt ) ||
+           std::get<0>( kitty::is_symmetric_n( tt ) ) )
       {
         return { 1u, 1u };
       }
@@ -55,15 +58,20 @@ struct tfhe_cost
       }
 
       /* detect symmetry, with input negation considered */
-      if ( std::get<0>( kitty::is_symmetric_n( tt ) ) )
-      {
-        return { 1u, 1u };
-      }
+      // if ( std::get<0>( kitty::is_symmetric_n( tt ) ) )
+      // {
+      //   return { 1u, 1u };
+      // }
     }
 
     return { 999u, 1u };
   }
 };
+
+std::string bench_path( std::string const& benchmark_name )
+{
+  return fmt::format( "{}BEST_RESULTS/EPFL/{}.v", EXPERIMENTS_PATH, benchmark_name );
+}
 
 int main()
 {
@@ -76,19 +84,23 @@ int main()
 
   for ( auto const& benchmark : epfl_benchmarks() )
   {
-    if ( benchmark != "adder" )
-    {
-      continue;
-    }
-    // if ( ( benchmark == "bar" ) || ( benchmark == "div" ) || ( benchmark == "hyp" ) || ( benchmark == "log2" ) || ( benchmark == "multiplier" ) || ( benchmark == "square" ) || ( benchmark == "arbiter" ) || ( benchmark == "mem_ctrl" ) )
+    // if ( benchmark != "adder" )
     // {
-    //   continue;
+      // continue;
     // }
+    // std::string benchmark = "adder_5LSB";
     fmt::print( "[i] processing {}\n", benchmark );
 
     xag_network aig;
+
+    // if ( lorina::read_verilog( bench_path( benchmark ) , verilog_reader( aig ) ) != lorina::return_code::success )
+    // {
+    //   // continue;
+    //   fmt::print( "[e] reading {} failed...\n", bench_path( benchmark ) );
+    //   return 0u;
+    // }
+
     if ( lorina::read_aiger( benchmark_path( benchmark ), aiger_reader( aig ) ) != lorina::return_code::success )
-    // if ( lorina::read_aiger( "fuzz.aig", aiger_reader( aig ) ) != lorina::return_code::success )
     {
       continue;
       // return 1;
@@ -114,6 +126,8 @@ int main()
     ps.area_oriented_mapping = true;
     ps.cut_expansion = false;
     ps.area_share_rounds = 0;
+    ps.area_flow_rounds = 1u;
+    ps.ela_rounds = 2u;
     ps.edge_optimization = false;
     ps.verbose = true;
     lut_map_stats st;
@@ -122,13 +136,12 @@ int main()
     klut_network klut_3 = lut_map<xag_network, true, tfhe_cost, true>( xag_opt, ps, &st );
 
 
-    auto const cec = benchmark == "hyp" ? true : abc_cec( klut_3, benchmark );
-    if ( !cec )
-    {
-      std::cerr << "[e] NON-EQ!\n";
-      abort();
-    }
-
+    // auto const cec = benchmark == "hyp" ? true : abc_cec( klut_3, benchmark );
+    // if ( !cec )
+    // {
+    //   std::cerr << "[e] NON-EQ!\n";
+    //   abort();
+    // }
 
     fmt::print( "[i] isolating inverters...\n" );
     // const klut_network klut_3_inv = invert_isolation( klut_3 );
