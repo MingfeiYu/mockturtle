@@ -69,12 +69,12 @@ std::vector<std::vector<uint32_t>> n_choose_r( uint32_t n, uint32_t r )
   return solutions;
 }
 
-int main()
+int main0()
 {
   using namespace experiments;
   using namespace mockturtle;
 
-  uint32_t num_var{ 3u };
+  uint32_t num_vars{ 3u };
   uint32_t num_po{ 1u };
   for ( uint32_t i{ 2u }; i <= num_po; ++i )
   {
@@ -141,13 +141,13 @@ int main()
       }
     };
 
-    exact_mc_mo_syn( num_var, i );
+    exact_mc_mo_syn( num_vars, i );
 
     // exp.save();
     // exp.table();
   }
 
-  std::vector<uint64_t> sampled( ( 1 << ( ( 1 << num_var ) - 1 ) ) - 1 );
+  std::vector<uint64_t> sampled( ( 1 << ( ( 1 << num_vars ) - 1 ) ) - 1 );
   for ( auto i{ 1u }; i <= sampled.size(); ++i )
   {
     sampled[i - 1] = i;
@@ -156,7 +156,7 @@ int main()
   uint32_t ctr{ 0u };
   for ( auto i{ 0u }; i < sampled.size(); ++i )
   {
-    kitty::dynamic_truth_table tt( num_var );
+    kitty::dynamic_truth_table tt( num_vars );
     uint64_t word = sampled[i] << 1;
     if ( word == 0u )
     {
@@ -183,6 +183,41 @@ int main()
   }
 
   std::cout << "[i] Number of functions: " << funcs.size() << "\n";
+
+  return 0;
+}
+
+static const std::vector<std::string> mult_gf_2_3 = {
+  "E47E6945553CCF00", "4B63786746155000", "7F78664F3C2A1500"
+};
+
+/* experiment on GF(2^3) multiplier */
+int main()
+{
+  using namespace mockturtle;
+
+  uint32_t num_vars{ 6u };
+  uint32_t num_pos{ 3u };
+  std::vector<kitty::dynamic_truth_table> funcs( num_pos );
+  for ( auto i{ 0u }; i < num_pos; ++i )
+  {
+    kitty::dynamic_truth_table tt( num_vars );
+    kitty::create_from_hex_string( tt, mult_gf_2_3[i] );
+    funcs[i] = tt;
+  }
+
+  exact_mc_mo_synthesis_params ps;
+  ps.conflict_limit = 0u ;
+  ps.verbose = false;
+
+  stopwatch<>::duration time{};
+  auto res = exact_mc_mo_synthesis<xag_network, bill::solvers::bsat2>( funcs, ps );
+  uint32_t num_ands{};
+  if ( res )
+  {
+    num_ands = *multiplicative_complexity( *res );
+    fmt::print( "[i] MC : {}; Time : {:.2f}", num_ands, to_seconds( time ) );
+  }
 
   return 0;
 }

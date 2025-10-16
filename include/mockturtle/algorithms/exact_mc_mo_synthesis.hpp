@@ -54,9 +54,18 @@ public:
 		{
 			funcs_.emplace_back( kitty::get_bit( func, 0 ) ? ~func : func );
 			invert_.emplace_back( kitty::get_bit( func, 0 ) );
-			uint32_t mc{ kitty::get_mc( func ) };
-			num_ands_min_ = std::max( num_ands_min_, mc );
-			num_ands_max_ += mc;
+			if ( func.num_vars() < 6u )
+			{
+				uint32_t mc = kitty::get_mc( func );
+				num_ands_min_ = std::max( num_ands_min_, mc );
+				num_ands_max_ += mc;
+			}
+			else
+			{
+				num_ands_min_ = 1u;
+				num_ands_max_ += 6u;
+			}
+			
 		}
 		num_ands_ = num_ands_min_;
 	}
@@ -66,7 +75,7 @@ public:
 		stopwatch<> t( st_.time_total );
 		for ( ; num_ands_ < num_ands_max_; ++num_ands_ )
 		{
-			// fmt::print( "[m] try with {} AND gates...\n", num_ands_ );
+			fmt::print( "[m] try with {} AND gates...\n", num_ands_ );
 
 			cnf_view_params cvps;
 			cvps.write_dimacs = ps_.write_dimacs;
